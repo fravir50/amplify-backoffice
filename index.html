@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amplify — Backoffice</title>
+<style>
+:root {
+  --bg-base: #0C0C0C;
+  --bg-sidebar: #111111;
+  --bg-card: #1A1A1A;
+  --bg-card-hover: #212121;
+  --bg-input: #242424;
+  --border: #2C2C2C;
+  --border-focus: #E8622C;
+  --accent: #E8622C;
+  --accent-hover: #D4561F;
+  --accent-light: rgba(232,98,44,0.12);
+  --text-primary: #F5F5F5;
+  --text-secondary: #A0A0A0;
+  --text-muted: #5A5A5A;
+  --green: #22C55E;
+  --red: #EF4444;
+  --yellow: #F59E0B;
+  --shadow-card: none;
+  --shadow-panel: none;
+  --badge-gray-bg: rgba(160,160,160,.13);
+  --badge-gray-color: #A0A0A0;
+}
+
+/* ── LIGHT MODE ──────────────────────────────────────────── */
+[data-theme="light"] {
+  --bg-base: #F1F1F3;
+  --bg-sidebar: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #F7F7F8;
+  --bg-input: #F1F1F3;
+  --border: #E2E2E6;
+  --border-focus: #E8622C;
+  --accent: #E8622C;
+  --accent-hover: #D4561F;
+  --accent-light: rgba(232,98,44,0.10);
+  --text-primary: #0A0A0B;
+  --text-secondary: #50505A;
+  --text-muted: #9898A8;
+  --green: #15803D;
+  --red: #B91C1C;
+  --yellow: #B45309;
+  --shadow-card: 0 1px 3px rgba(0,0,0,.07), 0 1px 2px rgba(0,0,0,.05);
+  --shadow-panel: -6px 0 24px rgba(0,0,0,.10);
+  --badge-gray-bg: rgba(0,0,0,.07);
+  --badge-gray-color: #50505A;
+}
+[data-theme="light"] .card { box-shadow: var(--shadow-card); }
+[data-theme="light"] .table-wrap { box-shadow: 0 1px 3px rgba(0,0,0,.05); }
+[data-theme="light"] .sidebar { box-shadow: 1px 0 0 var(--border), 4px 0 16px rgba(0,0,0,.04); }
+[data-theme="light"] .slide-panel { box-shadow: var(--shadow-panel); }
+[data-theme="light"] .modal { box-shadow: 0 8px 32px rgba(0,0,0,.12); }
+[data-theme="light"] .hamburger { box-shadow: var(--shadow-card); }
+[data-theme="light"] .badge-green { background: rgba(21,128,61,.12); }
+[data-theme="light"] .badge-yellow { background: rgba(180,83,9,.12); }
+[data-theme="light"] .badge-red { background: rgba(185,28,28,.12); }
+[data-theme="light"] .badge-accent { background: rgba(232,98,44,.10); }
+
+/* smooth theme transitions */
+body, .sidebar, .main, .card, .slide-panel, .panel-header, .panel-footer,
+.modal, .hamburger, .theme-toggle, thead th, tfoot td, .form-control,
+.filter-select, .nav-item, .table-wrap {
+  transition: background-color .22s ease, color .18s ease,
+              border-color .18s ease, box-shadow .22s ease;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg-base);color:var(--text-primary);display:flex;min-height:100vh;font-size:14px;line-height:1.5}
+a{color:inherit;text-decoration:none}
+
+/* SIDEBAR */
+.sidebar{width:220px;min-height:100vh;background:var(--bg-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;z-index:50;transition:transform .3s ease;overflow-y:auto}
+.sidebar-logo{padding:22px 20px 16px;border-bottom:1px solid var(--border)}
+.sidebar-logo h1{font-size:22px;font-weight:800;color:var(--accent);letter-spacing:3px;text-transform:uppercase}
+.sidebar-logo p{font-size:11px;color:var(--text-muted);margin-top:2px}
+.sidebar-tc{padding:10px 20px;border-bottom:1px solid var(--border);font-size:12px}
+.sidebar-tc .tc-label{color:var(--text-muted)}
+.sidebar-tc .tc-value{color:var(--accent);font-weight:700;font-size:13px}
+.sidebar-tc .tc-date{color:var(--text-muted);font-size:10px;margin-top:1px}
+.sidebar-nav{flex:1;padding:12px 0}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;color:var(--text-secondary);font-size:13px;font-weight:500;transition:all .15s;border-left:3px solid transparent;user-select:none}
+.nav-item:hover{color:var(--text-primary);background:var(--bg-card)}
+.nav-item.active{color:var(--text-primary);background:var(--accent-light);border-left-color:var(--accent)}
+.nav-item .icon{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+
+/* MAIN */
+.main{margin-left:220px;flex:1;display:flex;flex-direction:column;min-height:100vh;overflow:hidden}
+.content{flex:1;padding:28px 32px;overflow-y:auto;height:100vh}
+.section{display:none}
+.section.active{display:block}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:16px;flex-wrap:wrap}
+.section-title{font-size:22px;font-weight:700}
+
+/* CARDS */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.card-sm{padding:16px}
+.card-title{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+.card-value{font-size:26px;font-weight:700;color:var(--text-primary);line-height:1.2}
+.card-sub{font-size:12px;color:var(--text-secondary);margin-top:4px}
+
+/* GRIDS */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px}
+
+/* TABLES */
+.table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead th{background:var(--bg-base);color:var(--text-muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:9px 12px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--bg-card-hover)}
+tbody td{padding:9px 12px;white-space:nowrap;color:var(--text-primary)}
+tfoot td{padding:9px 12px;white-space:nowrap;font-weight:600;font-size:12px;color:var(--text-secondary);background:var(--bg-base);border-top:1px solid var(--border)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-green{background:rgba(34,197,94,.15);color:var(--green)}
+.badge-gray{background:var(--badge-gray-bg);color:var(--badge-gray-color)}
+.badge-yellow{background:rgba(245,158,11,.15);color:var(--yellow)}
+.badge-accent{background:var(--accent-light);color:var(--accent)}
+.badge-red{background:rgba(239,68,68,.15);color:var(--red)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;border:none;font-family:inherit;line-height:1}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-secondary{background:transparent;color:var(--text-secondary);border:1px solid var(--border)}
+.btn-secondary:hover{color:var(--text-primary);border-color:var(--text-muted)}
+.btn-danger{background:transparent;color:var(--red);border:1px solid rgba(239,68,68,.25)}
+.btn-danger:hover{background:rgba(239,68,68,.08)}
+.btn-sm{padding:4px 10px;font-size:12px;border-radius:6px}
+.btn-icon{padding:5px 7px;border-radius:6px;font-size:13px}
+.btn-ghost{background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:16px;padding:4px;line-height:1}
+.btn-ghost:hover{color:var(--text-primary)}
+
+/* FILTERS */
+.filters{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.filter-select,.filter-input{background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);font-size:13px;font-family:inherit;padding:7px 12px;outline:none;cursor:pointer}
+.filter-select:focus,.filter-input:focus{border-color:var(--border-focus);color:var(--text-primary)}
+
+/* SLIDE PANEL */
+.panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:90;opacity:0;pointer-events:none;transition:opacity .3s}
+.panel-overlay.open{opacity:1;pointer-events:all}
+.slide-panel{position:fixed;top:0;right:0;width:480px;max-width:100vw;height:100vh;background:var(--bg-card);border-left:1px solid var(--border);z-index:100;transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column;overflow:hidden}
+.slide-panel.open{transform:translateX(0)}
+.panel-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg-card);flex-shrink:0}
+.panel-header h2{font-size:17px;font-weight:600}
+.panel-body{padding:24px;flex:1;overflow-y:auto}
+.panel-footer{padding:14px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;background:var(--bg-card);flex-shrink:0}
+
+/* FORMS */
+.form-group{margin-bottom:14px}
+.form-group.readonly .form-control{color:var(--text-muted);cursor:default}
+label.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-secondary);margin-bottom:5px}
+.form-control{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text-primary);font-size:14px;font-family:inherit;padding:9px 12px;transition:border-color .15s;outline:none;appearance:none}
+.form-control:focus{border-color:var(--border-focus)}
+.form-control[readonly]{color:var(--text-muted)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-hint{font-size:11px;color:var(--text-muted);margin-top:3px}
+.form-section-title{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;width:380px;max-width:90vw}
+.modal h3{font-size:16px;font-weight:600;margin-bottom:8px}
+.modal p{font-size:13px;color:var(--text-secondary);margin-bottom:20px}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+
+/* COLORS */
+.text-green{color:var(--green)}
+.text-red{color:var(--red)}
+.text-yellow{color:var(--yellow)}
+.text-accent{color:var(--accent)}
+.text-muted{color:var(--text-muted)}
+.text-secondary{color:var(--text-secondary)}
+.text-bold{font-weight:600}
+
+/* DASHBOARD */
+.recent-item{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.recent-item:last-child{border-bottom:none}
+.recent-name{font-size:13px;font-weight:500;margin-bottom:1px}
+.recent-meta{font-size:11px;color:var(--text-muted)}
+.cat-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.cat-label{font-size:12px;color:var(--text-secondary);width:90px;flex-shrink:0}
+.cat-track{flex:1;height:5px;background:var(--border);border-radius:100px;overflow:hidden}
+.cat-fill{height:100%;border-radius:100px;background:var(--accent)}
+.cat-val{font-size:12px;color:var(--text-secondary);width:90px;text-align:right;flex-shrink:0}
+.partner-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border)}
+.partner-row:last-child{border-bottom:none}
+.partner-bar{height:6px;background:var(--border);border-radius:100px;margin-top:6px;overflow:hidden;width:160px}
+.partner-bar-fill{height:100%;border-radius:100px;transition:width .5s ease}
+
+/* SETTINGS */
+.settings-group{margin-bottom:28px}
+.settings-group-title{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);gap:16px}
+.settings-row:last-child{border-bottom:none}
+.settings-label{font-size:14px;font-weight:500;flex:1}
+.settings-desc{font-size:12px;color:var(--text-muted);margin-top:2px}
+
+/* SIDEBAR BOTTOM / THEME TOGGLE */
+.sidebar-bottom{padding:12px 16px;border-top:1px solid var(--border);margin-top:auto}
+.theme-toggle{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;background:var(--bg-input);border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);font-size:12px;font-weight:500;cursor:pointer;font-family:inherit;text-align:left}
+.theme-toggle:hover{color:var(--text-primary);border-color:var(--text-muted);background:var(--bg-card-hover)}
+.theme-toggle .toggle-track{margin-left:auto;width:32px;height:18px;background:var(--border);border-radius:100px;position:relative;transition:background .2s}
+.theme-toggle .toggle-track.on{background:var(--accent)}
+.theme-toggle .toggle-thumb{position:absolute;top:2px;left:2px;width:14px;height:14px;background:#fff;border-radius:100px;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.theme-toggle .toggle-thumb.on{transform:translateX(14px)}
+
+/* HAMBURGER */
+.hamburger{display:none;position:fixed;top:14px;left:14px;z-index:60;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:8px 10px;cursor:pointer;font-size:16px;line-height:1}
+
+/* MOBILE OVERLAY */
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:49}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text-muted)}
+
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.mobile-open{transform:translateX(0)}
+  .sidebar-overlay{display:none}
+  .sidebar-overlay.open{display:block}
+  .main{margin-left:0}
+  .content{padding:16px;padding-top:56px;height:auto;min-height:100vh}
+  .hamburger{display:block}
+  .grid-4{grid-template-columns:repeat(2,1fr)}
+  .grid-3{grid-template-columns:1fr 1fr}
+  .grid-2{grid-template-columns:1fr}
+  .section-header{flex-direction:column;align-items:flex-start}
+  .slide-panel{width:100vw}
+  .form-row{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .grid-3,.grid-4{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<button class="hamburger" id="hamburger" onclick="toggleSidebar()">☰</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <h1>Amplify</h1>
+    <p>Panel de control</p>
+  </div>
+  <div class="sidebar-tc" id="sidebarTC">
+    <div class="tc-label">USD Oficial</div>
+    <div class="tc-value" id="tcValue">Cargando…</div>
+    <div class="tc-date" id="tcDate"></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item active" onclick="navigate('dashboard')" id="nav-dashboard"><span class="icon">📊</span> Dashboard</div>
+    <div class="nav-item" onclick="navigate('inventory')" id="nav-inventory"><span class="icon">📦</span> Inventario</div>
+    <div class="nav-item" onclick="navigate('sales')" id="nav-sales"><span class="icon">💰</span> Ventas</div>
+    <div class="nav-item" onclick="navigate('expenses')" id="nav-expenses"><span class="icon">💸</span> Gastos</div>
+    <div class="nav-item" onclick="navigate('partners')" id="nav-partners"><span class="icon">⚖️</span> Socios</div>
+    <div class="nav-item" onclick="navigate('settings')" id="nav-settings"><span class="icon">⚙️</span> Configuración</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">
+      <span id="themeIcon">☀️</span>
+      <span id="themeLabel">Modo claro</span>
+      <span class="toggle-track" id="toggleTrack"><span class="toggle-thumb" id="toggleThumb"></span></span>
+    </button>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="content">
+    <div class="section active" id="section-dashboard"></div>
+    <div class="section" id="section-inventory"></div>
+    <div class="section" id="section-sales"></div>
+    <div class="section" id="section-expenses"></div>
+    <div class="section" id="section-partners"></div>
+    <div class="section" id="section-settings"></div>
+  </div>
+</main>
+
+<!-- SLIDE PANEL -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+<div class="slide-panel" id="slidePanel">
+  <div class="panel-header">
+    <h2 id="panelTitle">Agregar</h2>
+    <button class="btn-ghost" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-body" id="panelBody"></div>
+  <div class="panel-footer" id="panelFooter"></div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3>¿Eliminar este registro?</h3>
+    <p>Esta acción no se puede deshacer.</p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-danger" id="modalConfirmBtn">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── INITIAL DATA ────────────────────────────────────────────────────────────
+const INIT_INVENTORY = [
+  {id:'AMP-0001',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:407,purchase_date:'2025-11-01',status:'Vendido',sale_price_usd:1600,sale_price_ars:0,collected_by:'Frank',notes:''},
+  {id:'AMP-0002',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:407,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0003',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:407,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0004',description:'WiiM Ultra',category:'Streamer',cost_usd:263,tax_usd:282,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0005',description:'WiiM Ultra',category:'Streamer',cost_usd:263,tax_usd:282,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:'SANTI DEBE $20'},
+  {id:'AMP-0006',description:'WiiM Pro Plus',category:'Streamer',cost_usd:175,tax_usd:187,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0007',description:'WiiM Pro Plus',category:'Streamer',cost_usd:175,tax_usd:187,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0008',description:'WiiM Amp Ultra',category:'Amplificador',cost_usd:423,tax_usd:453,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0009',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:306,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0010',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:306,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0011',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:306,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0012',description:'FM3 Mark II Turbo',category:'Amplificador',cost_usd:1030,tax_usd:1252,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:'tax $102 + envío Fractal $1150'},
+  {id:'AMP-0013',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:352.03,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0014',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:352.03,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0015',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:352.03,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0016',description:'WiiM Pro Plus',category:'Streamer',cost_usd:219,tax_usd:234.33,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0017',description:'WiiM Pro Plus',category:'Streamer',cost_usd:219,tax_usd:234.33,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0018',description:'Music Hall mmf-1.3',category:'Tocadiscos',cost_usd:349,tax_usd:373.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0019',description:'Music Hall mmf-1.3',category:'Tocadiscos',cost_usd:349,tax_usd:373.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0020',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:159.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0021',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:159.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0022',description:'KEF Q1 Meta (bookshelf, negro)',category:'Speakers',cost_usd:399.99,tax_usd:427.99,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0023',description:'Denon PMA-600NE (integrado)',category:'Amplificador',cost_usd:599,tax_usd:640.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0024',description:'Pro-Ject Debut EVO 2 (negro satinado)',category:'Tocadiscos',cost_usd:799,tax_usd:854.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0025',description:'Pro-Ject Debut EVO 2 (vino satinado)',category:'Tocadiscos',cost_usd:799,tax_usd:854.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0026',description:'Kanto YU6MB (powered, negro mate)',category:'Speakers',cost_usd:579.99,tax_usd:620.59,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0027',description:'ELAC Debut 3.0 DB63-WN (nogal)',category:'Speakers',cost_usd:499,tax_usd:533.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0028',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:159.43,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0029',description:'Cambridge Audio AXA35 (integrado)',category:'Amplificador',cost_usd:449,tax_usd:480.43,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0030',description:'Fluance RT85 (tocadiscos, nogal)',category:'Tocadiscos',cost_usd:549.99,tax_usd:588.49,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0031',description:'Fluance RT85 (tocadiscos, nogal)',category:'Tocadiscos',cost_usd:549.99,tax_usd:588.49,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0032',description:'Kanto YU6MB (powered, negro mate)',category:'Speakers',cost_usd:579.99,tax_usd:620.59,purchase_date:'2026-03-20',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+];
+
+const INIT_SALES = [
+  {id:'VTA-0001',inventory_id:'AMP-0001',sale_price_usd:1600,sale_price_ars:0,tc_used:1000,sale_date:'2025-11-01',channel:'Fractal',collected_by:'Frank',notes:''},
+];
+
+const INIT_EXPENSES = [
+  {id:'EXP-0001',description:'Dominio 1',category:'IT',amount_usd:12,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0002',description:'Dominio 2',category:'IT',amount_usd:2.99,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0003',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0004',description:'VPN',category:'IT',amount_usd:11.19,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0005',description:'Pedido Fractal',category:'Productos',amount_usd:1150,amount_ars:0,date:'2025-11-01',paid_by:'Santi',notes:'Pedido + envío Nati a Miami'},
+  {id:'EXP-0006',description:'Pedido Amazon',category:'Productos',amount_usd:3529,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0007',description:'Courier Fractal',category:'Courier',amount_usd:189.20,amount_ars:0,date:'2025-12-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0008',description:'Courier Amazon',category:'Courier',amount_usd:905,amount_ars:0,date:'2025-12-01',paid_by:'Santi',notes:''},
+  {id:'EXP-0009',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2025-12-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0010',description:'Stickers',category:'Varios',amount_usd:0,amount_ars:88000,date:'2025-12-04',paid_by:'Ambos',notes:''},
+  {id:'EXP-0011',description:'Luz grabación',category:'Varios',amount_usd:0,amount_ars:18989,date:'2026-01-15',paid_by:'Ambos',notes:''},
+  {id:'EXP-0012',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2026-01-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0013',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2026-02-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0014',description:'VPN',category:'IT',amount_usd:11.19,amount_ars:0,date:'2026-02-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0015',description:'Pedido Amazon',category:'Productos',amount_usd:2590.47,amount_ars:0,date:'2026-02-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0016',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0017',description:'VPN',category:'IT',amount_usd:19.56,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0018',description:'Pedido Amazon',category:'Productos',amount_usd:3933.30,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0019',description:'Pedido Amazon',category:'Productos',amount_usd:4999,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0020',description:'Pedido Amazon',category:'Productos',amount_usd:1816.84,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0021',description:'Pedido Amazon',category:'Productos',amount_usd:620.59,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0022',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2026-04-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0023',description:'VPN',category:'IT',amount_usd:18.97,amount_ars:0,date:'2026-04-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0024',description:'Recarga Movistar',category:'Varios',amount_usd:0,amount_ars:0,date:'2026-04-01',paid_by:'Frank',notes:'Monto pendiente'},
+];
+
+const INIT_PARTNERS = [
+  {id:'MOV-0001',date:'2025-11-01',description:'Pedido Amazon batch 1',amount_usd:3529,partner:'Frank',notes:''},
+  {id:'MOV-0002',date:'2025-11-01',description:'Pedido Fractal',amount_usd:1150,partner:'Santi',notes:''},
+  {id:'MOV-0003',date:'2025-12-01',description:'Courier Amazon',amount_usd:905,partner:'Santi',notes:''},
+  {id:'MOV-0004',date:'2025-12-01',description:'Courier Fractal',amount_usd:189.20,partner:'Frank',notes:''},
+  {id:'MOV-0005',date:'2026-02-01',description:'Pedido Amazon batch 2',amount_usd:2590.47,partner:'Frank',notes:''},
+  {id:'MOV-0006',date:'2026-03-01',description:'Pedido Amazon batch 3 (múltiples)',amount_usd:11369.73,partner:'Frank',notes:''},
+];
+
+// ─── STORAGE ──────────────────────────────────────────────────────────────────
+const K = {inv:'amp_inv',sales:'amp_sales',exp:'amp_exp',partners:'amp_partners',settings:'amp_settings',init:'amp_init'};
+const load = k => JSON.parse(localStorage.getItem(k) || 'null');
+const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
+
+function getInventory(){ return load(K.inv) || []; }
+function getSales(){ return load(K.sales) || []; }
+function getExpenses(){ return load(K.exp) || []; }
+function getPartners(){ return load(K.partners) || []; }
+function getSettings(){ return load(K.settings) || {tc:1000, tc_date:null}; }
+function saveInventory(d){ save(K.inv,d); }
+function saveSales(d){ save(K.sales,d); }
+function saveExpenses(d){ save(K.exp,d); }
+function savePartners(d){ save(K.partners,d); }
+function saveSettings(d){ save(K.settings,d); }
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentSection = 'dashboard';
+let currentTC = 1000;
+let panelCallback = null;
+let deleteCallback = null;
+let invFilter = {status:'', category:''};
+let salesFilter = {channel:''};
+let expFilter = {category:'', paid_by:''};
+
+// ─── FORMATTING ───────────────────────────────────────────────────────────────
+function fUSD(n){ n=parseFloat(n)||0; return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fARS(n){ n=Math.round(parseFloat(n)||0); return '$'+n.toLocaleString('es-AR'); }
+function fPct(n){ if(n===null||n===undefined||isNaN(n)) return '—'; return (parseFloat(n)||0).toFixed(1)+'%'; }
+function fDate(d){ if(!d) return '—'; try{ const [y,m,day]=d.split('-'); return `${day}/${m}/${y}`; }catch(e){ return d; } }
+function colorMargin(pct){ if(pct===null||pct===undefined||isNaN(pct)) return ''; if(pct<0) return 'text-red'; if(pct>=30) return 'text-green'; return ''; }
+
+function statusBadge(s){
+  if(s==='En Stock') return '<span class="badge badge-green">En Stock</span>';
+  if(s==='Vendido') return '<span class="badge badge-gray">Vendido</span>';
+  if(s==='Reservado') return '<span class="badge badge-yellow">Reservado</span>';
+  return s;
+}
+
+// ─── EXCHANGE RATE ────────────────────────────────────────────────────────────
+async function fetchTC(silent=false){
+  try{
+    const r = await fetch('https://dolarapi.com/v1/dolares/oficial');
+    const d = await r.json();
+    const tc = parseFloat(d.venta);
+    if(!isNaN(tc) && tc>0){
+      currentTC = tc;
+      const s = getSettings();
+      s.tc = tc;
+      s.tc_date = new Date().toISOString();
+      saveSettings(s);
+      updateTCDisplay();
+      if(!silent) renderCurrentSection();
+      return true;
+    }
+  }catch(e){}
+  if(!silent) updateTCDisplay();
+  return false;
+}
+
+function updateTCDisplay(){
+  const s = getSettings();
+  currentTC = parseFloat(s.tc) || 1000;
+  document.getElementById('tcValue').textContent = fARS(currentTC);
+  if(s.tc_date){
+    const d = new Date(s.tc_date);
+    document.getElementById('tcDate').textContent = 'Act. '+d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}) + ' ' + d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+  } else {
+    document.getElementById('tcDate').textContent = 'Sin actualizar';
+  }
+}
+
+// ─── NAVIGATION ───────────────────────────────────────────────────────────────
+function navigate(section){
+  document.getElementById('section-'+currentSection).classList.remove('active');
+  document.getElementById('nav-'+currentSection).classList.remove('active');
+  currentSection = section;
+  document.getElementById('section-'+section).classList.add('active');
+  document.getElementById('nav-'+section).classList.add('active');
+  renderCurrentSection();
+  if(window.innerWidth<=768) toggleSidebar(false);
+}
+
+function renderCurrentSection(){
+  if(currentSection==='dashboard') renderDashboard();
+  else if(currentSection==='inventory') renderInventory();
+  else if(currentSection==='sales') renderSales();
+  else if(currentSection==='expenses') renderExpenses();
+  else if(currentSection==='partners') renderPartners();
+  else if(currentSection==='settings') renderSettings();
+}
+
+function toggleSidebar(force){
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebarOverlay');
+  const isOpen = sb.classList.contains('mobile-open');
+  const shouldOpen = force !== undefined ? force : !isOpen;
+  sb.classList.toggle('mobile-open', shouldOpen);
+  ov.classList.toggle('open', shouldOpen);
+}
+
+// ─── CALC HELPERS ─────────────────────────────────────────────────────────────
+function calcItem(item, tc){
+  const total = (parseFloat(item.cost_usd)||0) + (parseFloat(item.tax_usd)||0);
+  const totalARS = total * tc;
+  const sp = parseFloat(item.sale_price_usd)||0;
+  const spARS = parseFloat(item.sale_price_ars)||0;
+  const effectiveSP = sp > 0 ? sp : (spARS > 0 ? spARS/tc : 0);
+  const margin = effectiveSP > 0 ? effectiveSP - total : null;
+  const marginPct = effectiveSP > 0 ? (margin/total*100) : null;
+  return {total, totalARS, sp, spARS, effectiveSP, margin, marginPct};
+}
+
+function calcExpEquiv(exp, tc){
+  const usd = parseFloat(exp.amount_usd)||0;
+  const ars = parseFloat(exp.amount_ars)||0;
+  if(usd>0) return usd;
+  if(ars>0) return ars/tc;
+  return 0;
+}
+
+// ─── DASHBOARD ────────────────────────────────────────────────────────────────
+function renderDashboard(){
+  const inv = getInventory();
+  const sales = getSales();
+  const exp = getExpenses();
+  const partners = getPartners();
+  const tc = currentTC;
+
+  const counts = {stock:0,sold:0,reserved:0};
+  inv.forEach(i=>{
+    if(i.status==='En Stock') counts.stock++;
+    else if(i.status==='Vendido') counts.sold++;
+    else if(i.status==='Reservado') counts.reserved++;
+  });
+
+  const capitalTotal = inv.reduce((a,i)=>{ const c=calcItem(i,tc); return a+c.total; },0);
+
+  let ingresos=0, costoVentas=0;
+  sales.forEach(s=>{
+    ingresos += parseFloat(s.sale_price_usd)||0;
+    const item = inv.find(i=>i.id===s.inventory_id);
+    if(item){ const c=calcItem(item,tc); costoVentas+=c.total; }
+  });
+  const margenBruto = ingresos - costoVentas;
+  const margenPct = ingresos>0 ? (margenBruto/costoVentas*100) : 0;
+
+  // Gastos por categoría
+  const cats = {IT:0,Courier:0,Productos:0,Varios:0};
+  exp.forEach(e=>{ cats[e.category] = (cats[e.category]||0) + calcExpEquiv(e,tc); });
+  const maxCat = Math.max(...Object.values(cats), 0.01);
+
+  // Balance socios
+  const frank = partners.filter(m=>m.partner==='Frank').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0);
+  const santi = partners.filter(m=>m.partner==='Santi').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0);
+  const total = frank+santi;
+
+  // Reciente
+  const recentSales = [...sales].sort((a,b)=>b.sale_date.localeCompare(a.sale_date)).slice(0,5);
+  const recentExp = [...exp].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+
+  const margenClass = margenBruto < 0 ? 'text-red' : margenBruto > 0 ? 'text-green' : '';
+
+  document.getElementById('section-dashboard').innerHTML = `
+    <div class="section-header">
+      <h2 class="section-title">Dashboard</h2>
+    </div>
+
+    <div class="grid-4">
+      <div class="card card-sm">
+        <div class="card-title">En Stock</div>
+        <div class="card-value text-green">${counts.stock}</div>
+        <div class="card-sub">${counts.sold} vendidas · ${counts.reserved} reservadas</div>
+      </div>
+      <div class="card card-sm">
+        <div class="card-title">Capital Invertido</div>
+        <div class="card-value">${fUSD(capitalTotal)}</div>
+        <div class="card-sub">${fARS(capitalTotal*tc)} ARS</div>
+      </div>
+      <div class="card card-sm">
+        <div class="card-title">Ingresos Ventas</div>
+        <div class="card-value">${fUSD(ingresos)}</div>
+        <div class="card-sub">${sales.length} venta${sales.length!==1?'s':''}</div>
+      </div>
+      <div class="card card-sm">
+        <div class="card-title">Margen Bruto</div>
+        <div class="card-value ${margenClass}">${fUSD(margenBruto)}</div>
+        <div class="card-sub ${margenClass}">${fPct(margenPct)} sobre costo</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px">Gastos por Categoría</div>
+        ${Object.entries(cats).map(([cat,val])=>`
+          <div class="cat-row">
+            <span class="cat-label">${cat}</span>
+            <div class="cat-track"><div class="cat-fill" style="width:${(val/maxCat*100).toFixed(1)}%"></div></div>
+            <span class="cat-val">${fUSD(val)}</span>
+          </div>
+        `).join('')}
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px">
+          <span class="text-secondary">Total gastos</span>
+          <span class="text-bold">${fUSD(Object.values(cats).reduce((a,b)=>a+b,0))}</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title" style="margin-bottom:16px">Balance Socios</div>
+        <div class="partner-row">
+          <div>
+            <div style="font-weight:600">Frank</div>
+            <div class="partner-bar"><div class="partner-bar-fill" style="width:${total>0?(frank/total*100).toFixed(1):50}%;background:var(--accent)"></div></div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:600">${fUSD(frank)}</div>
+            <div class="text-muted" style="font-size:12px">${total>0?(frank/total*100).toFixed(1):0}%</div>
+          </div>
+        </div>
+        <div class="partner-row">
+          <div>
+            <div style="font-weight:600">Santi</div>
+            <div class="partner-bar"><div class="partner-bar-fill" style="width:${total>0?(santi/total*100).toFixed(1):50}%;background:#60A5FA"></div></div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-weight:600">${fUSD(santi)}</div>
+            <div class="text-muted" style="font-size:12px">${total>0?(santi/total*100).toFixed(1):0}%</div>
+          </div>
+        </div>
+        ${frank>santi ? `<div style="margin-top:12px;padding:10px;background:rgba(239,68,68,.08);border-radius:8px;border:1px solid rgba(239,68,68,.2);font-size:13px">
+          <span class="text-secondary">Santi debe a Frank</span>
+          <span class="text-red text-bold" style="float:right">${fUSD(frank-santi)}</span>
+        </div>` : ''}
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px">Últimas Ventas</div>
+        ${recentSales.length===0 ? '<p class="text-muted" style="font-size:13px;padding:16px 0">Sin ventas registradas</p>' :
+          recentSales.map(s=>{
+            const item = inv.find(i=>i.id===s.inventory_id);
+            return `<div class="recent-item">
+              <div><div class="recent-name">${item?item.description:s.inventory_id}</div><div class="recent-meta">${s.id} · ${fDate(s.sale_date)} · ${s.channel}</div></div>
+              <div style="text-align:right"><div style="font-weight:600">${fUSD(s.sale_price_usd)}</div><div class="recent-meta">${s.collected_by}</div></div>
+            </div>`;
+          }).join('')
+        }
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:12px">Últimos Gastos</div>
+        ${recentExp.length===0 ? '<p class="text-muted" style="font-size:13px;padding:16px 0">Sin gastos registrados</p>' :
+          recentExp.map(e=>{
+            const equiv = calcExpEquiv(e, tc);
+            return `<div class="recent-item">
+              <div><div class="recent-name">${e.description}</div><div class="recent-meta">${e.category} · ${fDate(e.date)} · ${e.paid_by}</div></div>
+              <div style="text-align:right"><div style="font-weight:600">${fUSD(equiv)}</div><div class="recent-meta">${e.amount_ars>0?fARS(e.amount_ars)+' ARS':''}</div></div>
+            </div>`;
+          }).join('')
+        }
+      </div>
+    </div>
+  `;
+}
+
+// ─── INVENTORY ────────────────────────────────────────────────────────────────
+function renderInventory(){
+  const inv = getInventory();
+  const tc = currentTC;
+  let filtered = inv.filter(i=>{
+    if(invFilter.status && i.status!==invFilter.status) return false;
+    if(invFilter.category && i.category!==invFilter.category) return false;
+    return true;
+  });
+
+  const cats = ['Headphones','Streamer','Amplificador','Tocadiscos','DAC','Speakers'];
+
+  const rows = filtered.map(item=>{
+    const c = calcItem(item,tc);
+    const mc = colorMargin(c.marginPct);
+    return `<tr>
+      <td>${item.id}</td>
+      <td style="max-width:200px;white-space:normal;min-width:140px">${item.description}</td>
+      <td>${item.category}</td>
+      <td>${fUSD(item.cost_usd)}</td>
+      <td>${fUSD(item.tax_usd)}</td>
+      <td class="text-bold">${fUSD(c.total)}</td>
+      <td>${fARS(c.totalARS)}</td>
+      <td>${fDate(item.purchase_date)}</td>
+      <td>${statusBadge(item.status)}</td>
+      <td>${c.sp>0?fUSD(c.sp):'—'}</td>
+      <td>${c.spARS>0?fARS(c.spARS):'—'}</td>
+      <td class="${mc}">${c.margin!==null?fUSD(c.margin):'—'}</td>
+      <td class="${mc}">${fPct(c.marginPct)}</td>
+      <td>${item.collected_by||'—'}</td>
+      <td style="max-width:140px;white-space:normal;min-width:80px;font-size:12px;color:var(--text-muted)">${item.notes||''}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="btn btn-secondary btn-icon btn-sm" onclick="editInventory('${item.id}')">✏️</button>
+          <button class="btn btn-danger btn-icon btn-sm" onclick="deleteInventory('${item.id}')">🗑️</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('section-inventory').innerHTML = `
+    <div class="section-header">
+      <h2 class="section-title">Inventario <span style="color:var(--text-muted);font-size:16px;font-weight:400">(${inv.length} productos)</span></h2>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn btn-secondary btn-sm" onclick="exportInvCSV()">⬇️ CSV</button>
+        <button class="btn btn-primary btn-sm" onclick="addInventory()">+ Agregar</button>
+      </div>
+    </div>
+    <div class="filters">
+      <select class="filter-select" onchange="invFilter.status=this.value;renderInventory()">
+        <option value="">Todos los estados</option>
+        <option value="En Stock" ${invFilter.status==='En Stock'?'selected':''}>En Stock</option>
+        <option value="Vendido" ${invFilter.status==='Vendido'?'selected':''}>Vendido</option>
+        <option value="Reservado" ${invFilter.status==='Reservado'?'selected':''}>Reservado</option>
+      </select>
+      <select class="filter-select" onchange="invFilter.category=this.value;renderInventory()">
+        <option value="">Todas las categorías</option>
+        ${cats.map(c=>`<option value="${c}" ${invFilter.category===c?'selected':''}>${c}</option>`).join('')}
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Código</th><th>Descripción</th><th>Categoría</th>
+          <th>Costo USD</th><th>Tax+Envío</th><th>Total USD</th><th>Total ARS</th>
+          <th>Fecha</th><th>Estado</th>
+          <th>Precio USD</th><th>Precio ARS</th>
+          <th>Margen USD</th><th>Margen %</th>
+          <th>Cobrado</th><th>Notas</th><th></th>
+        </tr></thead>
+        <tbody>${rows || '<tr><td colspan="16" style="text-align:center;padding:40px;color:var(--text-muted)">Sin registros</td></tr>'}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function addInventory(){
+  openPanel('Agregar Producto', buildInventoryForm(null), (data)=>{
+    const inv = getInventory();
+    const maxNum = inv.reduce((mx,i)=>{ const n=parseInt(i.id.replace('AMP-',''))||0; return Math.max(mx,n); },0);
+    data.id = 'AMP-'+(maxNum+1).toString().padStart(4,'0');
+    inv.push(data);
+    saveInventory(inv);
+    renderInventory();
+    closePanel();
+  });
+}
+
+function editInventory(id){
+  const inv = getInventory();
+  const item = inv.find(i=>i.id===id);
+  if(!item) return;
+  openPanel('Editar: '+item.id, buildInventoryForm(item), (data)=>{
+    const idx = inv.findIndex(i=>i.id===id);
+    inv[idx] = {...item, ...data, id:item.id};
+    saveInventory(inv);
+    renderInventory();
+    closePanel();
+  });
+}
+
+function deleteInventory(id){
+  confirmDelete(()=>{
+    const inv = getInventory().filter(i=>i.id!==id);
+    saveInventory(inv);
+    const sales = getSales().filter(s=>s.inventory_id!==id);
+    saveSales(sales);
+    renderInventory();
+  });
+}
+
+function buildInventoryForm(item){
+  const cats = ['Headphones','Streamer','Amplificador','Tocadiscos','DAC','Speakers'];
+  const statuses = ['En Stock','Vendido','Reservado'];
+  const v = item || {};
+  return `
+    <div class="form-section-title">Información del Producto</div>
+    <div class="form-group">
+      <label class="form-label">Descripción *</label>
+      <input class="form-control" id="f_desc" type="text" value="${esc(v.description||'')}" placeholder="Ej: Sennheiser HD 650">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Categoría *</label>
+        <select class="form-control" id="f_cat">
+          ${cats.map(c=>`<option value="${c}" ${v.category===c?'selected':''}>${c}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Estado</label>
+        <select class="form-control" id="f_status">
+          ${statuses.map(s=>`<option value="${s}" ${v.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+    <div class="form-section-title">Costos</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Costo USD *</label>
+        <input class="form-control" id="f_cost" type="number" step="0.01" value="${v.cost_usd||''}" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tax + Envío USD *</label>
+        <input class="form-control" id="f_tax" type="number" step="0.01" value="${v.tax_usd||''}" placeholder="0.00">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group readonly">
+        <label class="form-label">Total USD (calculado)</label>
+        <input class="form-control" id="f_total" readonly value="${v.cost_usd&&v.tax_usd?fUSD((parseFloat(v.cost_usd)||0)+(parseFloat(v.tax_usd)||0)):''}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha Compra</label>
+        <input class="form-control" id="f_date" type="date" value="${v.purchase_date||''}">
+      </div>
+    </div>
+    <div class="form-section-title">Precio de Venta</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Precio Venta USD</label>
+        <input class="form-control" id="f_sp_usd" type="number" step="0.01" value="${v.sale_price_usd||''}" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Precio Venta ARS</label>
+        <input class="form-control" id="f_sp_ars" type="number" step="1" value="${v.sale_price_ars||''}" placeholder="0">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Cobrado por</label>
+        <select class="form-control" id="f_cob">
+          <option value="" ${!v.collected_by?'selected':''}>—</option>
+          <option value="Frank" ${v.collected_by==='Frank'?'selected':''}>Frank</option>
+          <option value="Santi" ${v.collected_by==='Santi'?'selected':''}>Santi</option>
+          <option value="Ambos" ${v.collected_by==='Ambos'?'selected':''}>Ambos</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notas</label>
+      <textarea class="form-control" id="f_notes" rows="2" placeholder="Observaciones...">${esc(v.notes||'')}</textarea>
+    </div>
+  `;
+}
+
+function collectInventoryForm(){
+  return {
+    description: document.getElementById('f_desc').value.trim(),
+    category: document.getElementById('f_cat').value,
+    cost_usd: parseFloat(document.getElementById('f_cost').value)||0,
+    tax_usd: parseFloat(document.getElementById('f_tax').value)||0,
+    purchase_date: document.getElementById('f_date').value,
+    status: document.getElementById('f_status').value,
+    sale_price_usd: parseFloat(document.getElementById('f_sp_usd').value)||0,
+    sale_price_ars: parseFloat(document.getElementById('f_sp_ars').value)||0,
+    collected_by: document.getElementById('f_cob').value,
+    notes: document.getElementById('f_notes').value.trim(),
+  };
+}
+
+function exportInvCSV(){
+  const inv = getInventory();
+  const tc = currentTC;
+  const headers = ['Código','Descripción','Categoría','Costo USD','Tax+Envío','Total USD','Total ARS','Fecha','Estado','Precio USD','Precio ARS','Margen USD','Margen %','Cobrado','Notas'];
+  const rows = inv.map(item=>{
+    const c = calcItem(item,tc);
+    return [item.id,item.description,item.category,item.cost_usd,item.tax_usd,c.total.toFixed(2),(c.totalARS).toFixed(0),item.purchase_date,item.status,c.sp||'',c.spARS||'',c.margin!==null?c.margin.toFixed(2):'',c.marginPct!==null?c.marginPct.toFixed(1)+'%':'',item.collected_by,item.notes].map(v=>`"${v}"`).join(',');
+  });
+  dlFile('amplify-inventario.csv', [headers.join(','),...rows].join('\n'), 'text/csv');
+}
+
+// ─── SALES ────────────────────────────────────────────────────────────────────
+function renderSales(){
+  const sales = getSales();
+  const inv = getInventory();
+  const tc = currentTC;
+
+  let filtered = sales.filter(s=>{
+    if(salesFilter.channel && s.channel!==salesFilter.channel) return false;
+    return true;
+  }).sort((a,b)=>b.sale_date.localeCompare(a.sale_date));
+
+  let totalIngresos=0, totalMargen=0;
+
+  const rows = filtered.map(s=>{
+    const item = inv.find(i=>i.id===s.inventory_id);
+    const costTotal = item ? calcItem(item,tc).total : 0;
+    const spUSD = parseFloat(s.sale_price_usd)||0;
+    const margin = spUSD - costTotal;
+    const marginPct = costTotal>0 ? (margin/costTotal*100) : null;
+    const mc = colorMargin(marginPct);
+    totalIngresos += spUSD;
+    totalMargen += margin;
+    return `<tr>
+      <td>${s.id}</td>
+      <td>${s.inventory_id}</td>
+      <td style="max-width:180px;white-space:normal;min-width:140px">${item?item.description:'—'}</td>
+      <td>${fUSD(costTotal)}</td>
+      <td class="text-bold">${fUSD(spUSD)}</td>
+      <td>${s.sale_price_ars>0?fARS(s.sale_price_ars):'—'}</td>
+      <td>${s.tc_used||'—'}</td>
+      <td class="${mc}">${fUSD(margin)}</td>
+      <td class="${mc}">${fPct(marginPct)}</td>
+      <td>${fDate(s.sale_date)}</td>
+      <td>${s.channel}</td>
+      <td>${s.collected_by}</td>
+      <td style="max-width:140px;white-space:normal;font-size:12px;color:var(--text-muted)">${s.notes||''}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="btn btn-secondary btn-icon btn-sm" onclick="editSale('${s.id}')">✏️</button>
+          <button class="btn btn-danger btn-icon btn-sm" onclick="deleteSale('${s.id}')">🗑️</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('section-sales').innerHTML = `
+    <div class="section-header">
+      <h2 class="section-title">Ventas <span style="color:var(--text-muted);font-size:16px;font-weight:400">(${sales.length})</span></h2>
+      <button class="btn btn-primary btn-sm" onclick="addSale()">+ Agregar</button>
+    </div>
+    <div class="filters">
+      <select class="filter-select" onchange="salesFilter.channel=this.value;renderSales()">
+        <option value="">Todos los canales</option>
+        ${['MercadoLibre','Fractal','Directo','Otro'].map(c=>`<option value="${c}" ${salesFilter.channel===c?'selected':''}>${c}</option>`).join('')}
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>ID</th><th>Producto</th><th>Descripción</th>
+          <th>Costo USD</th><th>Precio USD</th><th>Precio ARS</th><th>TC</th>
+          <th>Margen USD</th><th>Margen %</th>
+          <th>Fecha</th><th>Canal</th><th>Cobrado</th><th>Notas</th><th></th>
+        </tr></thead>
+        <tbody>${rows||'<tr><td colspan="14" style="text-align:center;padding:40px;color:var(--text-muted)">Sin ventas</td></tr>'}</tbody>
+        ${filtered.length>0?`<tfoot><tr>
+          <td colspan="4">Total (${filtered.length} ventas)</td>
+          <td>${fUSD(totalIngresos)}</td><td></td><td></td>
+          <td class="${totalMargen<0?'text-red':'text-green'}">${fUSD(totalMargen)}</td>
+          <td colspan="6"></td>
+        </tr></tfoot>`:''}
+      </table>
+    </div>
+  `;
+}
+
+function addSale(){
+  openPanel('Nueva Venta', buildSaleForm(null), (data)=>{
+    const sales = getSales();
+    const maxN = sales.reduce((mx,s)=>{ const n=parseInt(s.id.replace('VTA-',''))||0; return Math.max(mx,n); },0);
+    data.id = 'VTA-'+(maxN+1).toString().padStart(4,'0');
+    sales.push(data);
+    saveSales(sales);
+    // Update inventory status
+    if(data.inventory_id){
+      const inv = getInventory();
+      const idx = inv.findIndex(i=>i.id===data.inventory_id);
+      if(idx>=0){ inv[idx].status='Vendido'; if(data.sale_price_usd) inv[idx].sale_price_usd=data.sale_price_usd; if(data.sale_price_ars) inv[idx].sale_price_ars=data.sale_price_ars; if(data.collected_by) inv[idx].collected_by=data.collected_by; saveInventory(inv); }
+    }
+    renderSales();
+    closePanel();
+  });
+}
+
+function editSale(id){
+  const sales = getSales();
+  const s = sales.find(x=>x.id===id);
+  if(!s) return;
+  openPanel('Editar: '+s.id, buildSaleForm(s), (data)=>{
+    const idx = sales.findIndex(x=>x.id===id);
+    sales[idx] = {...s,...data,id:s.id};
+    saveSales(sales);
+    renderSales();
+    closePanel();
+  });
+}
+
+function deleteSale(id){
+  confirmDelete(()=>{
+    const sales = getSales().filter(s=>s.id!==id);
+    saveSales(sales);
+    renderSales();
+  });
+}
+
+function buildSaleForm(sale){
+  const inv = getInventory().filter(i=>!sale?(i.status==='En Stock'||i.status==='Reservado'):true);
+  const v = sale||{};
+  return `
+    <div class="form-group">
+      <label class="form-label">Producto *</label>
+      <select class="form-control" id="f_inv_id" onchange="onSaleInvChange()">
+        <option value="">Seleccionar…</option>
+        ${inv.map(i=>`<option value="${i.id}" ${v.inventory_id===i.id?'selected':''}>${i.id} — ${i.description}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group readonly">
+      <label class="form-label">Descripción (auto)</label>
+      <input class="form-control" id="f_inv_desc" readonly value="${sale ? (getInventory().find(i=>i.id===sale.inventory_id)||{}).description||'' : ''}">
+    </div>
+    <div class="form-group readonly">
+      <label class="form-label">Costo Total USD (auto)</label>
+      <input class="form-control" id="f_costo" readonly value="${sale ? (()=>{const it=getInventory().find(i=>i.id===sale.inventory_id);return it?fUSD(calcItem(it,currentTC).total):'';})() : ''}">
+    </div>
+    <div class="form-section-title">Precio de Venta</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Precio USD</label>
+        <input class="form-control" id="f_sp_usd" type="number" step="0.01" value="${v.sale_price_usd||''}" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Precio ARS</label>
+        <input class="form-control" id="f_sp_ars" type="number" step="1" value="${v.sale_price_ars||''}" placeholder="0">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">TC Usado</label>
+        <input class="form-control" id="f_tc" type="number" step="0.01" value="${v.tc_used||currentTC}" placeholder="${currentTC}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha Venta</label>
+        <input class="form-control" id="f_date" type="date" value="${v.sale_date||new Date().toISOString().split('T')[0]}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Canal</label>
+        <select class="form-control" id="f_channel">
+          ${['MercadoLibre','Fractal','Directo','Otro'].map(c=>`<option value="${c}" ${v.channel===c?'selected':''}>${c}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Cobrado por</label>
+        <select class="form-control" id="f_cob">
+          <option value="Frank" ${v.collected_by==='Frank'?'selected':''}>Frank</option>
+          <option value="Santi" ${v.collected_by==='Santi'?'selected':''}>Santi</option>
+          <option value="Ambos" ${v.collected_by==='Ambos'?'selected':''}>Ambos</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notas</label>
+      <textarea class="form-control" id="f_notes" rows="2">${esc(v.notes||'')}</textarea>
+    </div>
+  `;
+}
+
+function onSaleInvChange(){
+  const id = document.getElementById('f_inv_id').value;
+  const item = getInventory().find(i=>i.id===id);
+  if(item){
+    document.getElementById('f_inv_desc').value = item.description;
+    document.getElementById('f_costo').value = fUSD(calcItem(item,currentTC).total);
+  } else {
+    document.getElementById('f_inv_desc').value = '';
+    document.getElementById('f_costo').value = '';
+  }
+}
+
+function collectSaleForm(){
+  return {
+    inventory_id: document.getElementById('f_inv_id').value,
+    sale_price_usd: parseFloat(document.getElementById('f_sp_usd').value)||0,
+    sale_price_ars: parseFloat(document.getElementById('f_sp_ars').value)||0,
+    tc_used: parseFloat(document.getElementById('f_tc').value)||currentTC,
+    sale_date: document.getElementById('f_date').value,
+    channel: document.getElementById('f_channel').value,
+    collected_by: document.getElementById('f_cob').value,
+    notes: document.getElementById('f_notes').value.trim(),
+  };
+}
+
+// ─── EXPENSES ─────────────────────────────────────────────────────────────────
+function renderExpenses(){
+  const exp = getExpenses();
+  const tc = currentTC;
+  const cats = ['IT','Courier','Productos','Varios'];
+
+  let filtered = exp.filter(e=>{
+    if(expFilter.category && e.category!==expFilter.category) return false;
+    if(expFilter.paid_by && e.paid_by!==expFilter.paid_by) return false;
+    return true;
+  }).sort((a,b)=>b.date.localeCompare(a.date));
+
+  const catTotals = {};
+  cats.forEach(c=>catTotals[c]=0);
+  let totalEquiv=0;
+  exp.forEach(e=>{ catTotals[e.category]=(catTotals[e.category]||0)+calcExpEquiv(e,tc); totalEquiv+=calcExpEquiv(e,tc); });
+
+  let filteredTotal=0;
+  const rows = filtered.map(e=>{
+    const equiv = calcExpEquiv(e,tc);
+    filteredTotal += equiv;
+    return `<tr>
+      <td style="max-width:200px;white-space:normal;min-width:140px">${e.description}</td>
+      <td><span class="badge badge-accent">${e.category}</span></td>
+      <td>${e.amount_usd>0?fUSD(e.amount_usd):'—'}</td>
+      <td>${e.amount_ars>0?fARS(e.amount_ars):'—'}</td>
+      <td class="text-bold">${equiv>0?fUSD(equiv):'—'}</td>
+      <td>${fDate(e.date)}</td>
+      <td>${e.paid_by}</td>
+      <td style="max-width:140px;white-space:normal;font-size:12px;color:var(--text-muted)">${e.notes||''}</td>
+      <td>
+        <div class="actions-cell">
+          <button class="btn btn-secondary btn-icon btn-sm" onclick="editExpense('${e.id}')">✏️</button>
+          <button class="btn btn-danger btn-icon btn-sm" onclick="deleteExpense('${e.id}')">🗑️</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('section-expenses').innerHTML = `
+    <div class="section-header">
+      <h2 class="section-title">Gastos</h2>
+      <button class="btn btn-primary btn-sm" onclick="addExpense()">+ Agregar</button>
+    </div>
+    <div class="grid-4" style="margin-bottom:20px">
+      ${cats.map(c=>`<div class="card card-sm">
+        <div class="card-title">${c}</div>
+        <div class="card-value" style="font-size:20px">${fUSD(catTotals[c])}</div>
+      </div>`).join('')}
+    </div>
+    <div class="filters">
+      <select class="filter-select" onchange="expFilter.category=this.value;renderExpenses()">
+        <option value="">Todas las categorías</option>
+        ${cats.map(c=>`<option value="${c}" ${expFilter.category===c?'selected':''}>${c}</option>`).join('')}
+      </select>
+      <select class="filter-select" onchange="expFilter.paid_by=this.value;renderExpenses()">
+        <option value="">Todos los socios</option>
+        ${['Frank','Santi','Ambos'].map(p=>`<option value="${p}" ${expFilter.paid_by===p?'selected':''}>${p}</option>`).join('')}
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th>Descripción</th><th>Categoría</th>
+          <th>Monto USD</th><th>Monto ARS</th><th>Equiv. USD</th>
+          <th>Fecha</th><th>Pagado por</th><th>Notas</th><th></th>
+        </tr></thead>
+        <tbody>${rows||'<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">Sin gastos</td></tr>'}</tbody>
+        ${filtered.length>0?`<tfoot><tr>
+          <td>Total (${filtered.length} registros)</td><td></td><td></td><td></td>
+          <td>${fUSD(filteredTotal)}</td>
+          <td colspan="4"></td>
+        </tr></tfoot>`:''}
+      </table>
+    </div>
+  `;
+}
+
+function addExpense(){
+  openPanel('Agregar Gasto', buildExpenseForm(null), (data)=>{
+    const exp = getExpenses();
+    const maxN = exp.reduce((mx,e)=>{ const n=parseInt(e.id.replace('EXP-',''))||0; return Math.max(mx,n); },0);
+    data.id = 'EXP-'+(maxN+1).toString().padStart(4,'0');
+    exp.push(data);
+    saveExpenses(exp);
+    renderExpenses();
+    closePanel();
+  });
+}
+
+function editExpense(id){
+  const exp = getExpenses();
+  const e = exp.find(x=>x.id===id);
+  if(!e) return;
+  openPanel('Editar Gasto', buildExpenseForm(e), (data)=>{
+    const idx = exp.findIndex(x=>x.id===id);
+    exp[idx] = {...e,...data,id:e.id};
+    saveExpenses(exp);
+    renderExpenses();
+    closePanel();
+  });
+}
+
+function deleteExpense(id){
+  confirmDelete(()=>{
+    saveExpenses(getExpenses().filter(e=>e.id!==id));
+    renderExpenses();
+  });
+}
+
+function buildExpenseForm(exp){
+  const v = exp||{};
+  const cats = ['IT','Courier','Productos','Varios'];
+  return `
+    <div class="form-group">
+      <label class="form-label">Descripción *</label>
+      <input class="form-control" id="f_desc" type="text" value="${esc(v.description||'')}" placeholder="Ej: Subscripción Vercel">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Categoría</label>
+        <select class="form-control" id="f_cat">
+          ${cats.map(c=>`<option value="${c}" ${v.category===c?'selected':''}>${c}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha</label>
+        <input class="form-control" id="f_date" type="date" value="${v.date||new Date().toISOString().split('T')[0]}">
+      </div>
+    </div>
+    <div class="form-section-title">Monto (completar al menos uno)</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Monto USD</label>
+        <input class="form-control" id="f_usd" type="number" step="0.01" value="${v.amount_usd||''}" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Monto ARS</label>
+        <input class="form-control" id="f_ars" type="number" step="1" value="${v.amount_ars||''}" placeholder="0">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Pagado por</label>
+      <select class="form-control" id="f_paid">
+        ${['Frank','Santi','Ambos'].map(p=>`<option value="${p}" ${v.paid_by===p?'selected':''}>${p}</option>`).join('')}
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notas</label>
+      <textarea class="form-control" id="f_notes" rows="2">${esc(v.notes||'')}</textarea>
+    </div>
+  `;
+}
+
+function collectExpenseForm(){
+  return {
+    description: document.getElementById('f_desc').value.trim(),
+    category: document.getElementById('f_cat').value,
+    amount_usd: parseFloat(document.getElementById('f_usd').value)||0,
+    amount_ars: parseFloat(document.getElementById('f_ars').value)||0,
+    date: document.getElementById('f_date').value,
+    paid_by: document.getElementById('f_paid').value,
+    notes: document.getElementById('f_notes').value.trim(),
+  };
+}
+
+// ─── PARTNERS ─────────────────────────────────────────────────────────────────
+function renderPartners(){
+  const movs = getPartners();
+  const frank = movs.filter(m=>m.partner==='Frank').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0);
+  const santi = movs.filter(m=>m.partner==='Santi').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0);
+  const total = frank+santi;
+  const diff = frank - santi;
+
+  const rows = [...movs].sort((a,b)=>b.date.localeCompare(a.date)).map(m=>`<tr>
+    <td>${fDate(m.date)}</td>
+    <td style="max-width:200px;white-space:normal;min-width:140px">${m.description}</td>
+    <td class="text-bold">${fUSD(m.amount_usd)}</td>
+    <td><span class="badge ${m.partner==='Frank'?'badge-accent':'badge-green'}">${m.partner}</span></td>
+    <td style="max-width:140px;white-space:normal;font-size:12px;color:var(--text-muted)">${m.notes||''}</td>
+    <td>
+      <div class="actions-cell">
+        <button class="btn btn-secondary btn-icon btn-sm" onclick="editMovement('${m.id}')">✏️</button>
+        <button class="btn btn-danger btn-icon btn-sm" onclick="deleteMovement('${m.id}')">🗑️</button>
+      </div>
+    </td>
+  </tr>`).join('');
+
+  document.getElementById('section-partners').innerHTML = `
+    <div class="section-header">
+      <h2 class="section-title">Socios</h2>
+      <button class="btn btn-primary btn-sm" onclick="addMovement()">+ Movimiento</button>
+    </div>
+
+    <div class="grid-3" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-title">Frank — Total Aportado</div>
+        <div class="card-value">${fUSD(frank)}</div>
+        <div class="card-sub">${total>0?(frank/total*100).toFixed(1):0}% participación</div>
+        <div class="partner-bar" style="width:100%;margin-top:10px"><div class="partner-bar-fill" style="width:${total>0?(frank/total*100).toFixed(1):50}%;background:var(--accent)"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Santi — Total Aportado</div>
+        <div class="card-value">${fUSD(santi)}</div>
+        <div class="card-sub">${total>0?(santi/total*100).toFixed(1):0}% participación</div>
+        <div class="partner-bar" style="width:100%;margin-top:10px"><div class="partner-bar-fill" style="width:${total>0?(santi/total*100).toFixed(1):50}%;background:#60A5FA"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Balance</div>
+        <div class="card-value ${diff>0?'text-red':diff<0?'text-green':''}">${diff>0?fUSD(diff):diff<0?fUSD(-diff):'Equilibrado'}</div>
+        <div class="card-sub">${diff>0?'Santi debe a Frank':diff<0?'Frank debe a Santi':'Sin diferencia'}</div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Fecha</th><th>Descripción</th><th>Monto USD</th><th>Socio</th><th>Notas</th><th></th></tr></thead>
+        <tbody>${rows||'<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">Sin movimientos</td></tr>'}</tbody>
+        ${movs.length>0?`<tfoot><tr>
+          <td colspan="2">Total</td>
+          <td>${fUSD(total)}</td><td colspan="3"></td>
+        </tr></tfoot>`:''}
+      </table>
+    </div>
+  `;
+}
+
+function addMovement(){
+  openPanel('Agregar Movimiento', buildMovementForm(null), (data)=>{
+    const movs = getPartners();
+    const maxN = movs.reduce((mx,m)=>{ const n=parseInt(m.id.replace('MOV-',''))||0; return Math.max(mx,n); },0);
+    data.id = 'MOV-'+(maxN+1).toString().padStart(4,'0');
+    movs.push(data);
+    savePartners(movs);
+    renderPartners();
+    closePanel();
+  });
+}
+
+function editMovement(id){
+  const movs = getPartners();
+  const m = movs.find(x=>x.id===id);
+  if(!m) return;
+  openPanel('Editar Movimiento', buildMovementForm(m), (data)=>{
+    const idx = movs.findIndex(x=>x.id===id);
+    movs[idx] = {...m,...data,id:m.id};
+    savePartners(movs);
+    renderPartners();
+    closePanel();
+  });
+}
+
+function deleteMovement(id){
+  confirmDelete(()=>{
+    savePartners(getPartners().filter(m=>m.id!==id));
+    renderPartners();
+  });
+}
+
+function buildMovementForm(mov){
+  const v = mov||{};
+  return `
+    <div class="form-group">
+      <label class="form-label">Descripción *</label>
+      <input class="form-control" id="f_desc" type="text" value="${esc(v.description||'')}" placeholder="Ej: Pedido Amazon">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Monto USD *</label>
+        <input class="form-control" id="f_usd" type="number" step="0.01" value="${v.amount_usd||''}" placeholder="0.00">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Fecha</label>
+        <input class="form-control" id="f_date" type="date" value="${v.date||new Date().toISOString().split('T')[0]}">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Socio</label>
+      <select class="form-control" id="f_partner">
+        <option value="Frank" ${v.partner==='Frank'?'selected':''}>Frank</option>
+        <option value="Santi" ${v.partner==='Santi'?'selected':''}>Santi</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Notas</label>
+      <textarea class="form-control" id="f_notes" rows="2">${esc(v.notes||'')}</textarea>
+    </div>
+  `;
+}
+
+function collectMovementForm(){
+  return {
+    description: document.getElementById('f_desc').value.trim(),
+    amount_usd: parseFloat(document.getElementById('f_usd').value)||0,
+    date: document.getElementById('f_date').value,
+    partner: document.getElementById('f_partner').value,
+    notes: document.getElementById('f_notes').value.trim(),
+  };
+}
+
+// ─── SETTINGS ─────────────────────────────────────────────────────────────────
+function renderSettings(){
+  const s = getSettings();
+  document.getElementById('section-settings').innerHTML = `
+    <div class="section-header">
+      <h2 class="section-title">Configuración</h2>
+    </div>
+    <div style="max-width:600px">
+      <div class="settings-group">
+        <div class="settings-group-title">Tipo de Cambio</div>
+        <div class="card">
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-label">USD Oficial (venta)</div>
+              <div class="settings-desc">Valor actual: ${fARS(s.tc||1000)} · ${s.tc_date ? 'Actualizado '+new Date(s.tc_date).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : 'Sin actualizar'}</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <input id="tcManual" type="number" step="0.01" value="${s.tc||1000}" class="form-control" style="width:120px">
+              <button class="btn btn-secondary btn-sm" onclick="saveManualTC()">Guardar</button>
+            </div>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-label">Actualizar desde dolarapi.com</div>
+              <div class="settings-desc">Trae el valor oficial en tiempo real</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="refreshTC()">↻ Actualizar TC</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">Datos</div>
+        <div class="card">
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-label">Exportar backup (JSON)</div>
+              <div class="settings-desc">Descarga todos los datos de la app</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="exportJSON()">⬇️ Exportar</button>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-label">Importar datos (JSON)</div>
+              <div class="settings-desc">Restaura un backup previamente exportado</div>
+            </div>
+            <label class="btn btn-secondary btn-sm" style="cursor:pointer">⬆️ Importar <input type="file" accept=".json" onchange="importJSON(event)" style="display:none"></label>
+          </div>
+          <div class="settings-row">
+            <div class="settings-row-info">
+              <div class="settings-label" style="color:var(--red)">Reset Completo</div>
+              <div class="settings-desc">Borra todos los datos. Acción irreversible.</div>
+            </div>
+            <button class="btn btn-danger btn-sm" onclick="resetAll()">⚠️ Reset</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="settings-group">
+        <div class="settings-group-title">Info</div>
+        <div class="card">
+          <div style="font-size:13px;color:var(--text-secondary);line-height:1.8">
+            <div><strong>Inventario:</strong> ${getInventory().length} productos</div>
+            <div><strong>Ventas:</strong> ${getSales().length} registros</div>
+            <div><strong>Gastos:</strong> ${getExpenses().length} registros</div>
+            <div><strong>Movimientos socios:</strong> ${getPartners().length} registros</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function saveManualTC(){
+  const val = parseFloat(document.getElementById('tcManual').value);
+  if(!val||val<=0) return;
+  const s = getSettings();
+  s.tc = val;
+  s.tc_date = new Date().toISOString();
+  saveSettings(s);
+  currentTC = val;
+  updateTCDisplay();
+  renderSettings();
+  renderCurrentSection();
+}
+
+async function refreshTC(){
+  const btn = event.target;
+  btn.textContent = 'Actualizando…';
+  btn.disabled = true;
+  const ok = await fetchTC();
+  btn.textContent = ok ? '✓ Actualizado' : '✗ Error';
+  setTimeout(()=>{ renderSettings(); },1500);
+}
+
+function exportJSON(){
+  const data = {
+    inventory: getInventory(),
+    sales: getSales(),
+    expenses: getExpenses(),
+    partners: getPartners(),
+    settings: getSettings(),
+    exported_at: new Date().toISOString()
+  };
+  dlFile('amplify-backup-'+new Date().toISOString().split('T')[0]+'.json', JSON.stringify(data,null,2), 'application/json');
+}
+
+function importJSON(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try{
+      const data = JSON.parse(e.target.result);
+      if(!confirm('¿Importar datos? Esto reemplazará todos los registros actuales.')) return;
+      if(data.inventory) saveInventory(data.inventory);
+      if(data.sales) saveSales(data.sales);
+      if(data.expenses) saveExpenses(data.expenses);
+      if(data.partners) savePartners(data.partners);
+      if(data.settings) saveSettings(data.settings);
+      updateTCDisplay();
+      renderCurrentSection();
+      alert('Datos importados correctamente.');
+    }catch(err){
+      alert('Error al leer el archivo JSON.');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function resetAll(){
+  if(!confirm('¿Eliminar TODOS los datos? Esta acción es irreversible.')) return;
+  if(!confirm('Segunda confirmación: ¿Estás seguro? Se perderán todos los registros.')) return;
+  [K.inv,K.sales,K.exp,K.partners,K.settings,K.init].forEach(k=>localStorage.removeItem(k));
+  initApp();
+}
+
+// ─── PANEL ────────────────────────────────────────────────────────────────────
+let currentFormSection = null;
+
+function openPanel(title, bodyHTML, callback){
+  document.getElementById('panelTitle').textContent = title;
+  document.getElementById('panelBody').innerHTML = bodyHTML;
+  document.getElementById('panelFooter').innerHTML = `
+    <button class="btn btn-secondary" onclick="closePanel()">Cancelar</button>
+    <button class="btn btn-primary" onclick="submitPanel()">Guardar</button>
+  `;
+  panelCallback = callback;
+  // figure out section from title
+  if(title.includes('Producto')) currentFormSection='inventory';
+  else if(title.includes('Venta')) currentFormSection='sales';
+  else if(title.includes('Gasto')) currentFormSection='expenses';
+  else if(title.includes('Movimiento')) currentFormSection='partners';
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('slidePanel').classList.add('open');
+}
+
+function closePanel(){
+  document.getElementById('panelOverlay').classList.remove('open');
+  document.getElementById('slidePanel').classList.remove('open');
+  panelCallback = null;
+}
+
+function submitPanel(){
+  let data;
+  if(currentFormSection==='inventory') data = collectInventoryForm();
+  else if(currentFormSection==='sales') data = collectSaleForm();
+  else if(currentFormSection==='expenses') data = collectExpenseForm();
+  else if(currentFormSection==='partners') data = collectMovementForm();
+  if(data && panelCallback) panelCallback(data);
+}
+
+// ─── MODAL ────────────────────────────────────────────────────────────────────
+function confirmDelete(callback){
+  deleteCallback = callback;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('modalOverlay').classList.remove('open');
+  deleteCallback = null;
+}
+
+document.getElementById('modalConfirmBtn').addEventListener('click', ()=>{
+  if(deleteCallback) deleteCallback();
+  closeModal();
+});
+
+document.getElementById('modalOverlay').addEventListener('click', e=>{
+  if(e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+// ─── UTILITIES ────────────────────────────────────────────────────────────────
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function dlFile(filename, content, type){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content],{type}));
+  a.download = filename;
+  a.click();
+}
+
+// ─── THEME ────────────────────────────────────────────────────────────────────
+function applyTheme(theme){
+  const isLight = theme === 'light';
+  if(isLight){
+    document.documentElement.setAttribute('data-theme','light');
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  document.getElementById('themeIcon').textContent = isLight ? '🌙' : '☀️';
+  document.getElementById('themeLabel').textContent = isLight ? 'Modo oscuro' : 'Modo claro';
+  document.getElementById('toggleTrack').classList.toggle('on', isLight);
+  document.getElementById('toggleThumb').classList.toggle('on', isLight);
+  localStorage.setItem('amp_theme', theme);
+}
+
+function toggleTheme(){
+  const current = localStorage.getItem('amp_theme') || 'dark';
+  applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+
+function initTheme(){
+  applyTheme(localStorage.getItem('amp_theme') || 'dark');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function initApp(){
+  initTheme();
+  if(!localStorage.getItem(K.init)){
+    saveInventory(INIT_INVENTORY);
+    saveSales(INIT_SALES);
+    saveExpenses(INIT_EXPENSES);
+    savePartners(INIT_PARTNERS);
+    save(K.init,'1');
+    // set a reasonable default TC
+    const s = getSettings();
+    if(!s.tc){ s.tc=1000; saveSettings(s); }
+  }
+  updateTCDisplay();
+  renderDashboard();
+  // fetch TC in background
+  fetchTC(true).then(()=>{ if(currentSection==='dashboard') renderDashboard(); });
+}
+
+// Keyboard: close panel with Escape
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closePanel(); closeModal(); } });
+
+initApp();
+</script>
+</body>
+</html>
