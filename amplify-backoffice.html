@@ -233,6 +233,14 @@ label.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-s
 /* MOBILE OVERLAY */
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:49}
 
+/* ARRIVED BADGE-SELECT */
+.arrived-select{appearance:none;-webkit-appearance:none;border:none;border-radius:100px;font-size:11px;font-weight:600;font-family:inherit;padding:3px 10px;cursor:pointer;outline:none;white-space:nowrap}
+.arrived-select.arrived-pending{background:var(--badge-gray-bg);color:var(--badge-gray-color)}
+.arrived-select.arrived-si{background:rgba(34,197,94,.15);color:var(--green)}
+.arrived-select.arrived-no{background:rgba(239,68,68,.15);color:var(--red)}
+[data-theme="light"] .arrived-select.arrived-si{background:rgba(21,128,61,.12)}
+[data-theme="light"] .arrived-select.arrived-no{background:rgba(185,28,28,.12)}
+
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -723,7 +731,7 @@ function renderInventory(){
       <td>${fARS(c.totalARS)}</td>
       <td>${fDate(item.purchase_date)}</td>
       <td>${statusBadge(item.status)}</td>
-      <td>${arrivedArgBadge(item.id, item.arrived_arg||'')}</td>
+      <td>${arrivedArgSelect(item.id, item.arrived_arg||'')}</td>
       <td>${c.sp>0?fUSD(c.sp):'—'}</td>
       <td>${c.spARS>0?fARS(c.spARS):'—'}</td>
       <td class="${mc}">${c.margin!==null?fUSD(c.margin):'—'}</td>
@@ -801,20 +809,24 @@ function editInventory(id){
   });
 }
 
-function arrivedArgBadge(id, value){
-  if(value==='Si') return `<span class="badge badge-green" style="cursor:pointer;user-select:none" onclick="cycleArrivedArg('${id}')" title="Click para cambiar">✓ Llegó</span>`;
-  if(value==='No') return `<span class="badge badge-red" style="cursor:pointer;user-select:none" onclick="cycleArrivedArg('${id}')" title="Click para cambiar">✗ No llegó</span>`;
-  return `<span class="badge badge-gray" style="cursor:pointer;user-select:none" onclick="cycleArrivedArg('${id}')" title="Click para cambiar">— Pendiente</span>`;
+function arrivedArgSelect(id, value){
+  const cls = value==='Si'?'arrived-si':value==='No'?'arrived-no':'arrived-pending';
+  return `<select class="arrived-select ${cls}" onchange="setArrivedArg('${id}',this.value)">
+    <option value="" ${!value?'selected':''}>— Pendiente</option>
+    <option value="Si" ${value==='Si'?'selected':''}>✓ Llegó</option>
+    <option value="No" ${value==='No'?'selected':''}>✗ No llegó</option>
+  </select>`;
 }
 
-function cycleArrivedArg(id){
+function setArrivedArg(id, value){
   const inv = getInventory();
   const idx = inv.findIndex(i=>i.id===id);
   if(idx<0) return;
-  const cur = inv[idx].arrived_arg||'';
-  inv[idx].arrived_arg = cur===''?'Si':cur==='Si'?'No':'';
+  inv[idx].arrived_arg = value;
   saveInventory(inv);
-  renderInventory();
+  // update color class without full re-render
+  const cls = value==='Si'?'arrived-si':value==='No'?'arrived-no':'arrived-pending';
+  event.target.className = 'arrived-select '+cls;
 }
 
 function deleteInventory(id){
