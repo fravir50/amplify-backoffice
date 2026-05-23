@@ -782,6 +782,7 @@ function renderInventory(){
       </table>
     </div>
   `;
+  requestAnimationFrame(()=>document.querySelectorAll('.arrived-select').forEach(fitSelect));
 }
 
 function addInventory(){
@@ -818,15 +819,25 @@ function arrivedArgSelect(id, value){
   </select>`;
 }
 
+function fitSelect(el){
+  const span = document.createElement('span');
+  span.style.cssText = 'position:absolute;visibility:hidden;font-size:11px;font-weight:600;font-family:inherit;white-space:nowrap;pointer-events:none';
+  span.textContent = el.options[el.selectedIndex]?.text || '';
+  document.body.appendChild(span);
+  el.style.width = (span.offsetWidth + 22) + 'px';
+  document.body.removeChild(span);
+}
+
 function setArrivedArg(id, value){
   const inv = getInventory();
   const idx = inv.findIndex(i=>i.id===id);
   if(idx<0) return;
   inv[idx].arrived_arg = value;
   saveInventory(inv);
-  // update color class without full re-render
   const cls = value==='Si'?'arrived-si':value==='No'?'arrived-no':'arrived-pending';
-  event.target.className = 'arrived-select '+cls;
+  const sel = event.target;
+  sel.className = 'arrived-select '+cls;
+  fitSelect(sel);
 }
 
 function deleteInventory(id){
