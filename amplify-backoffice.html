@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Amplify — Backoffice</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="icon" type="image/png" href="data:image/png;base64,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">
 <style>
 :root {
   --bg-base: #0C0C0C;
@@ -288,7 +286,7 @@ label.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-s
     <div class="nav-item" onclick="navigate('sales')" id="nav-sales"><span class="icon">💰</span> Ventas</div>
     <div class="nav-item" onclick="navigate('senas')" id="nav-senas"><span class="icon">🤝</span> Señas</div>
     <div class="nav-item" onclick="navigate('expenses')" id="nav-expenses"><span class="icon">💸</span> Gastos</div>
-    <div class="nav-item" onclick="navigate('partners')" id="nav-partners"><span class="icon">⚖️</span> Compras</div>
+    <div class="nav-item" onclick="navigate('partners')" id="nav-partners"><span class="icon">⚖️</span> Socios</div>
     <div class="nav-item" onclick="navigate('settings')" id="nav-settings"><span class="icon">⚙️</span> Configuración</div>
   </nav>
   <div class="sidebar-bottom">
@@ -338,42 +336,42 @@ label.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-s
 <script>
 // ─── INITIAL DATA ────────────────────────────────────────────────────────────
 const INIT_INVENTORY = [
-  {id:'AMP-0001',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:27,purchase_date:'2025-11-01',status:'Vendido',sale_price_usd:1600,sale_price_ars:0,collected_by:'Frank',notes:''},
-  {id:'AMP-0002',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:27,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0003',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:27,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0004',description:'WiiM Ultra',category:'Streamer',cost_usd:263,tax_usd:19,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0005',description:'WiiM Ultra',category:'Streamer',cost_usd:263,tax_usd:19,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:'SANTI DEBE $20'},
-  {id:'AMP-0006',description:'WiiM Pro Plus',category:'Streamer',cost_usd:175,tax_usd:12,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0007',description:'WiiM Pro Plus',category:'Streamer',cost_usd:175,tax_usd:12,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0008',description:'WiiM Amp Ultra',category:'Amplificador',cost_usd:423,tax_usd:30,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0009',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:20,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0010',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:20,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0011',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:20,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0012',description:'FM3 Mark II Turbo',category:'Amplificador',cost_usd:1030,tax_usd:222,purchase_date:'2025-11-01',status:'Vendido',sale_price_usd:1600,sale_price_ars:0,collected_by:'Ambos',notes:'tax $102 + envío Fractal $120'},
-  {id:'AMP-0013',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:23.03,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0014',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:23.03,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0015',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:23.03,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0016',description:'WiiM Pro Plus',category:'Streamer',cost_usd:219,tax_usd:15.33,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0017',description:'WiiM Pro Plus',category:'Streamer',cost_usd:219,tax_usd:15.33,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0018',description:'Music Hall mmf-1.3',category:'Tocadiscos',cost_usd:349,tax_usd:24.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0019',description:'Music Hall mmf-1.3',category:'Tocadiscos',cost_usd:349,tax_usd:24.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0020',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:10.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0021',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:10.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0022',description:'KEF Q1 Meta (bookshelf, negro)',category:'Speakers',cost_usd:399.99,tax_usd:28,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0023',description:'Denon PMA-600NE (integrado)',category:'Amplificador',cost_usd:599,tax_usd:41.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0024',description:'Pro-Ject Debut EVO 2 (negro satinado)',category:'Tocadiscos',cost_usd:799,tax_usd:55.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0025',description:'Pro-Ject Debut EVO 2 (vino satinado)',category:'Tocadiscos',cost_usd:799,tax_usd:55.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0026',description:'Kanto YU6MB (powered, negro mate)',category:'Speakers',cost_usd:579.99,tax_usd:40.60,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0027',description:'ELAC Debut 3.0 DB63-WN (nogal)',category:'Speakers',cost_usd:499,tax_usd:34.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0028',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:10.43,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0029',description:'Cambridge Audio AXA35 (integrado)',category:'Amplificador',cost_usd:449,tax_usd:31.43,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0030',description:'Fluance RT85 (tocadiscos, nogal)',category:'Tocadiscos',cost_usd:549.99,tax_usd:38.50,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0031',description:'Fluance RT85 (tocadiscos, nogal)',category:'Tocadiscos',cost_usd:549.99,tax_usd:38.50,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0032',description:'Kanto YU6MB (powered, negro mate)',category:'Speakers',cost_usd:579.99,tax_usd:40.60,purchase_date:'2026-03-20',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0001',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:407,purchase_date:'2025-11-01',status:'Vendido',sale_price_usd:1600,sale_price_ars:0,collected_by:'Frank',notes:''},
+  {id:'AMP-0002',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:407,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0003',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:407,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0004',description:'WiiM Ultra',category:'Streamer',cost_usd:263,tax_usd:282,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0005',description:'WiiM Ultra',category:'Streamer',cost_usd:263,tax_usd:282,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:'SANTI DEBE $20'},
+  {id:'AMP-0006',description:'WiiM Pro Plus',category:'Streamer',cost_usd:175,tax_usd:187,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0007',description:'WiiM Pro Plus',category:'Streamer',cost_usd:175,tax_usd:187,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0008',description:'WiiM Amp Ultra',category:'Amplificador',cost_usd:423,tax_usd:453,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0009',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:306,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0010',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:306,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0011',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:306,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0012',description:'FM3 Mark II Turbo',category:'Amplificador',cost_usd:1030,tax_usd:1252,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:'tax $102 + envío Fractal $1150'},
+  {id:'AMP-0013',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:352.03,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0014',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:352.03,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0015',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:352.03,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0016',description:'WiiM Pro Plus',category:'Streamer',cost_usd:219,tax_usd:234.33,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0017',description:'WiiM Pro Plus',category:'Streamer',cost_usd:219,tax_usd:234.33,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0018',description:'Music Hall mmf-1.3',category:'Tocadiscos',cost_usd:349,tax_usd:373.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0019',description:'Music Hall mmf-1.3',category:'Tocadiscos',cost_usd:349,tax_usd:373.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0020',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:159.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0021',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:159.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0022',description:'KEF Q1 Meta (bookshelf, negro)',category:'Speakers',cost_usd:399.99,tax_usd:427.99,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0023',description:'Denon PMA-600NE (integrado)',category:'Amplificador',cost_usd:599,tax_usd:640.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0024',description:'Pro-Ject Debut EVO 2 (negro satinado)',category:'Tocadiscos',cost_usd:799,tax_usd:854.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0025',description:'Pro-Ject Debut EVO 2 (vino satinado)',category:'Tocadiscos',cost_usd:799,tax_usd:854.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0026',description:'Kanto YU6MB (powered, negro mate)',category:'Speakers',cost_usd:579.99,tax_usd:620.59,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0027',description:'ELAC Debut 3.0 DB63-WN (nogal)',category:'Speakers',cost_usd:499,tax_usd:533.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0028',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:159.43,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0029',description:'Cambridge Audio AXA35 (integrado)',category:'Amplificador',cost_usd:449,tax_usd:480.43,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0030',description:'Fluance RT85 (tocadiscos, nogal)',category:'Tocadiscos',cost_usd:549.99,tax_usd:588.49,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0031',description:'Fluance RT85 (tocadiscos, nogal)',category:'Tocadiscos',cost_usd:549.99,tax_usd:588.49,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0032',description:'Kanto YU6MB (powered, negro mate)',category:'Speakers',cost_usd:579.99,tax_usd:620.59,purchase_date:'2026-03-20',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
 ];
 
 const INIT_SALES = [
-  {id:'VTA-0002',inventory_id:'AMP-0012',sale_price_usd:1600,sale_price_ars:0,tc_used:1000,sale_date:'2026-05-06',channel:'Fractal',collected_by:'Ambos',frank_collected_usd:1120,santi_collected_usd:480,notes:''},
+  {id:'VTA-0001',inventory_id:'AMP-0001',sale_price_usd:1600,sale_price_ars:0,tc_used:1000,sale_date:'2025-11-01',channel:'Fractal',collected_by:'Frank',notes:''},
 ];
 
 const INIT_EXPENSES = [
@@ -381,6 +379,8 @@ const INIT_EXPENSES = [
   {id:'EXP-0002',description:'Dominio 2',category:'IT',amount_usd:2.99,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
   {id:'EXP-0003',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
   {id:'EXP-0004',description:'VPN',category:'IT',amount_usd:11.19,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0005',description:'Pedido Fractal',category:'Productos',amount_usd:1150,amount_ars:0,date:'2025-11-01',paid_by:'Santi',notes:'Pedido + envío Nati a Miami'},
+  {id:'EXP-0006',description:'Pedido Amazon',category:'Productos',amount_usd:3529,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
   {id:'EXP-0007',description:'Courier Fractal',category:'Courier',amount_usd:189.20,amount_ars:0,date:'2025-12-01',paid_by:'Frank',notes:''},
   {id:'EXP-0008',description:'Courier Amazon',category:'Courier',amount_usd:905,amount_ars:0,date:'2025-12-01',paid_by:'Santi',notes:''},
   {id:'EXP-0009',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2025-12-01',paid_by:'Frank',notes:''},
@@ -389,121 +389,31 @@ const INIT_EXPENSES = [
   {id:'EXP-0012',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2026-01-01',paid_by:'Frank',notes:''},
   {id:'EXP-0013',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2026-02-01',paid_by:'Frank',notes:''},
   {id:'EXP-0014',description:'VPN',category:'IT',amount_usd:11.19,amount_ars:0,date:'2026-02-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0015',description:'Pedido Amazon',category:'Productos',amount_usd:2590.47,amount_ars:0,date:'2026-02-01',paid_by:'Frank',notes:''},
   {id:'EXP-0016',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
   {id:'EXP-0017',description:'VPN',category:'IT',amount_usd:19.56,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0018',description:'Pedido Amazon',category:'Productos',amount_usd:3933.30,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0019',description:'Pedido Amazon',category:'Productos',amount_usd:4999,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0020',description:'Pedido Amazon',category:'Productos',amount_usd:1816.84,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0021',description:'Pedido Amazon',category:'Productos',amount_usd:620.59,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
   {id:'EXP-0022',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2026-04-01',paid_by:'Frank',notes:''},
   {id:'EXP-0023',description:'VPN',category:'IT',amount_usd:18.97,amount_ars:0,date:'2026-04-01',paid_by:'Frank',notes:''},
   {id:'EXP-0024',description:'Recarga Movistar',category:'Varios',amount_usd:0,amount_ars:0,date:'2026-04-01',paid_by:'Frank',notes:'Monto pendiente'},
 ];
 
 const INIT_PARTNERS = [
-  {id:'MOV-0001',date:'2025-11-01',description:'Pedido Amazon batch 1',amount_usd:3529,partner:'Frank',type:'compra',notes:''},
-  {id:'MOV-0002',date:'2025-11-01',description:'Pedido Fractal',amount_usd:1150,partner:'Santi',type:'compra',notes:''},
-  {id:'MOV-0003',date:'2025-12-01',description:'Courier Amazon',amount_usd:905,partner:'Santi',type:'compra',notes:''},
-  {id:'MOV-0004',date:'2025-12-01',description:'Courier Fractal',amount_usd:189.20,partner:'Frank',type:'compra',notes:''},
-  {id:'MOV-0005',date:'2026-02-01',description:'Pedido Amazon batch 2',amount_usd:2590.47,partner:'Frank',type:'compra',notes:''},
-  {id:'MOV-0006',date:'2026-03-01',description:'Pedido Amazon batch 3 (múltiples)',amount_usd:11369.73,partner:'Frank',type:'compra',notes:''},
-  {id:'MOV-0007',date:'2026-05-06',description:'Pago neto — mitad pedido Amazon',amount_usd:1764.50,partner:'Santi',type:'pago',notes:''},
+  {id:'MOV-0001',date:'2025-11-01',description:'Pedido Amazon batch 1',amount_usd:3529,partner:'Frank',notes:''},
+  {id:'MOV-0002',date:'2025-11-01',description:'Pedido Fractal',amount_usd:1150,partner:'Santi',notes:''},
+  {id:'MOV-0003',date:'2025-12-01',description:'Courier Amazon',amount_usd:905,partner:'Santi',notes:''},
+  {id:'MOV-0004',date:'2025-12-01',description:'Courier Fractal',amount_usd:189.20,partner:'Frank',notes:''},
+  {id:'MOV-0005',date:'2026-02-01',description:'Pedido Amazon batch 2',amount_usd:2590.47,partner:'Frank',notes:''},
+  {id:'MOV-0006',date:'2026-03-01',description:'Pedido Amazon batch 3 (múltiples)',amount_usd:11369.73,partner:'Frank',notes:''},
 ];
 
-// ─── SUPABASE ─────────────────────────────────────────────────────────────────
-const SUPA_URL = 'https://fpavgpllxsbyuwimckse.supabase.co';
-const SUPA_KEY = 'sb_publishable_OTXJ8VjUQeisvxppCKy3oQ_lGL3svV0';
-const _sb = window.supabase.createClient(SUPA_URL, SUPA_KEY);
-
-function mergeArrayData(local, cloud){
-  // Preserva items locales con IDs que no existen en cloud (entradas nuevas sin sync)
-  if(!Array.isArray(local) || !Array.isArray(cloud)) return cloud;
-  const cloudIds = new Set(cloud.map(i=>i.id).filter(Boolean));
-  const localOnly = local.filter(i=>i.id && !cloudIds.has(i.id));
-  return localOnly.length > 0 ? [...cloud, ...localOnly] : cloud;
-}
-
-async function syncFromCloud(){
-  const COLL_KEYS = ['amp_inv','amp_sales','amp_exp','amp_partners','amp_settings','amp_init','amp_senas','amp_combos'];
-  const ALL_KEYS  = ['amp_tombstones', ...COLL_KEYS];
-  try {
-    const {data,error} = await _sb.from('app_state').select('key,value,updated_at');
-    if(error) throw error;
-
-    if(data && data.length){
-      const cloudMap = Object.fromEntries(data.map(r=>[r.key, r]));
-      const toPush = [];
-
-      // ── 1. Tombstones: siempre union-merge (nunca se pierden borrados) ──
-      const localTombRaw = localStorage.getItem('amp_tombstones');
-      const localTombs   = localTombRaw ? JSON.parse(localTombRaw) : [];
-      const cloudTombRow = cloudMap['amp_tombstones'];
-      const cloudTombs   = cloudTombRow ? (cloudTombRow.value || []) : [];
-      const mergedTombs  = unionTombstones(localTombs, cloudTombs);
-      localStorage.setItem('amp_tombstones', JSON.stringify(mergedTombs));
-      localStorage.setItem('amp_tombstones_ts', new Date().toISOString());
-      if(JSON.stringify(mergedTombs) !== JSON.stringify(cloudTombs)) toPush.push('amp_tombstones');
-
-      // ── 2. Colecciones: timestamp gana, pero siempre se aplican tombstones ──
-      for(const k of COLL_KEYS){
-        const localTs  = localStorage.getItem(k+'_ts');
-        const cloudRow = cloudMap[k];
-
-        if(!cloudRow){
-          if(localStorage.getItem(k)) toPush.push(k);
-        } else if(localTs && localTs > cloudRow.updated_at){
-          // Local más nuevo — subir tal cual (ya no tiene los borrados)
-          toPush.push(k);
-        } else if(!localTs){
-          // Bootstrap: cloud gana pero preservamos items locales nuevos, luego aplicamos tombstones
-          const localRaw = localStorage.getItem(k);
-          if(localRaw){
-            const localVal = JSON.parse(localRaw);
-            let merged = mergeArrayData(localVal, cloudRow.value);
-            merged = applyTombstones(merged);
-            localStorage.setItem(k, JSON.stringify(merged));
-            if(JSON.stringify(merged) !== JSON.stringify(cloudRow.value)) toPush.push(k);
-          } else {
-            localStorage.setItem(k, JSON.stringify(applyTombstones(cloudRow.value)));
-          }
-          localStorage.setItem(k+'_ts', cloudRow.updated_at);
-        } else {
-          // Nube más nueva — bajar y aplicar tombstones antes de guardar
-          localStorage.setItem(k, JSON.stringify(applyTombstones(cloudRow.value)));
-          localStorage.setItem(k+'_ts', cloudRow.updated_at);
-        }
-      }
-
-      for(const k of toPush){
-        const raw = localStorage.getItem(k);
-        const ts  = new Date().toISOString();
-        if(raw){
-          const {error:e} = await _sb.from('app_state').upsert({key:k, value:JSON.parse(raw), updated_at:ts});
-          if(e) console.warn('Supabase push failed:', k, e.message);
-          else localStorage.setItem(k+'_ts', ts);
-        }
-      }
-    } else {
-      // Cloud vacío — subir todos los datos locales
-      for(const k of ALL_KEYS){
-        const raw = localStorage.getItem(k);
-        if(raw){
-          const ts = new Date().toISOString();
-          const {error:e} = await _sb.from('app_state').upsert({key:k, value:JSON.parse(raw), updated_at:ts});
-          if(!e) localStorage.setItem(k+'_ts', ts);
-        }
-      }
-    }
-  } catch(e){ console.warn('Cloud sync failed:',e.message); }
-}
-
 // ─── STORAGE ──────────────────────────────────────────────────────────────────
-const K = {inv:'amp_inv',sales:'amp_sales',exp:'amp_exp',partners:'amp_partners',settings:'amp_settings',init:'amp_init',senas:'amp_senas',combos:'amp_combos',tombs:'amp_tombstones'};
+const K = {inv:'amp_inv',sales:'amp_sales',exp:'amp_exp',partners:'amp_partners',settings:'amp_settings',init:'amp_init',senas:'amp_senas'};
 const load = k => JSON.parse(localStorage.getItem(k) || 'null');
-const save = (k,v) => {
-  const ts = new Date().toISOString();
-  localStorage.setItem(k, JSON.stringify(v));
-  localStorage.setItem(k+'_ts', ts);
-  _sb.from('app_state').upsert({key:k, value:v, updated_at:ts}).then(({error})=>{
-    if(error) console.warn('Supabase save error:', k, error.message);
-  });
-};
+const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
 
 function getInventory(){ return load(K.inv) || []; }
 function getSales(){ return load(K.sales) || []; }
@@ -517,26 +427,6 @@ function savePartners(d){ save(K.partners,d); }
 function saveSettings(d){ save(K.settings,d); }
 function getSenas(){ return load(K.senas) || []; }
 function saveSenas(d){ save(K.senas,d); }
-function getCombos(){ return load(K.combos) || []; }
-function saveCombos(d){ save(K.combos,d); }
-
-// ─── TOMBSTONES ───────────────────────────────────────────────────────────────
-function getTombstones(){ return load(K.tombs) || []; }
-function saveTombstones(d){ save(K.tombs,d); }
-function addTombstone(id){
-  const t = getTombstones();
-  if(!t.find(x=>x.id===id)){ t.push({id, deleted_at:new Date().toISOString()}); saveTombstones(t); }
-}
-function unionTombstones(a,b){
-  const m={};
-  [...(a||[]),...(b||[])].forEach(t=>{ if(!m[t.id]||t.deleted_at>m[t.id].deleted_at) m[t.id]=t; });
-  return Object.values(m);
-}
-function applyTombstones(items){
-  if(!Array.isArray(items)) return items;
-  const ids = new Set(getTombstones().map(t=>t.id));
-  return items.filter(i=>!ids.has(i.id));
-}
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let currentSection = 'dashboard';
@@ -544,10 +434,8 @@ let currentTC = 1000;
 let panelCallback = null;
 let deleteCallback = null;
 let invFilter = {status:'', category:''};
-let inventoryTab = 'items';
 let salesFilter = {channel:''};
 let expFilter = {category:'', paid_by:''};
-let partnersFilter = {partner:'', type:''};
 let senaFilter = {status:'Activa'};
 
 // ─── FORMATTING ───────────────────────────────────────────────────────────────
@@ -555,8 +443,7 @@ function fUSD(n){ n=parseFloat(n)||0; return '$'+n.toLocaleString('en-US',{minim
 function fARS(n){ n=Math.round(parseFloat(n)||0); return '$'+n.toLocaleString('es-AR'); }
 function fPct(n){ if(n===null||n===undefined||isNaN(n)) return '—'; return (parseFloat(n)||0).toFixed(1)+'%'; }
 function fDate(d){ if(!d) return '—'; try{ const [y,m,day]=d.split('-'); return `${day}/${m}/${y}`; }catch(e){ return d; } }
-function colorMargin(pct){ if(pct===null||pct===undefined||isNaN(pct)) return ''; if(pct<0) return 'text-red'; if(pct>0) return 'text-green'; return ''; }
-function getSaleName(s){ if(s.combo_id){ const c=getCombos().find(x=>x.id===s.combo_id); return c?c.name:s.combo_id; } const item=getInventory().find(i=>i.id===s.inventory_id); return item?item.description:(s.inventory_id||'—'); }
+function colorMargin(pct){ if(pct===null||pct===undefined||isNaN(pct)) return ''; if(pct<0) return 'text-red'; if(pct>=30) return 'text-green'; return ''; }
 
 function statusBadge(s){
   if(s==='En Stock') return '<span class="badge badge-green">En Stock</span>';
@@ -649,22 +536,6 @@ function calcExpEquiv(exp, tc){
   return 0;
 }
 
-// ─── PARTNER BALANCE ──────────────────────────────────────────────────────────
-function calcPartnerBalance(){
-  const movs  = getPartners();
-  const sales = getSales();
-  const ambos_inv  = movs.filter(m=>m.partner==='Ambos'&&(m.type||'compra')==='compra').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0);
-  const frank_inv  = movs.filter(m=>m.partner==='Frank'&&(m.type||'compra')==='compra').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0) + ambos_inv/2;
-  const santi_inv  = movs.filter(m=>m.partner==='Santi'&&(m.type||'compra')==='compra').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0) + ambos_inv/2;
-  const frank_cob  = sales.reduce((a,s)=>a+(parseFloat(s.frank_collected_usd)||0),0);
-  const santi_cob  = sales.reduce((a,s)=>a+(parseFloat(s.santi_collected_usd)||0),0);
-  const santi_pago = movs.filter(m=>m.partner==='Santi'&&m.type==='pago').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0);
-  const frank_pago = movs.filter(m=>m.partner==='Frank'&&m.type==='pago').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0);
-  const raw    = ((frank_inv - santi_inv) - (frank_cob - santi_cob)) / 2;
-  const balance= raw - santi_pago + frank_pago;
-  return { frank_inv, santi_inv, frank_cob, santi_cob, santi_pago, frank_pago, balance };
-}
-
 // ─── DASHBOARD ────────────────────────────────────────────────────────────────
 function renderDashboard(){
   const inv = getInventory();
@@ -690,30 +561,24 @@ function renderDashboard(){
 
   const capitalTotal = inv.reduce((a,i)=>{ const c=calcItem(i,tc); return a+c.total; },0);
 
-  const combos = getCombos();
   let ingresos=0, costoVentas=0;
   sales.forEach(s=>{
     ingresos += parseFloat(s.sale_price_usd)||0;
-    if(s.combo_id){
-      const combo = combos.find(c=>c.id===s.combo_id);
-      if(combo) costoVentas += (combo.items||[]).reduce((a,ci)=>{ const it=inv.find(i=>i.id===ci.inventory_id); return a+(it?calcItem(it,tc).total:0); },0);
-    } else {
-      const item = inv.find(i=>i.id===s.inventory_id);
-      if(item){ costoVentas += calcItem(item,tc).total; }
-    }
+    const item = inv.find(i=>i.id===s.inventory_id);
+    if(item){ const c=calcItem(item,tc); costoVentas+=c.total; }
   });
   const margenBruto = ingresos - costoVentas;
   const margenPct = ingresos>0 ? (margenBruto/costoVentas*100) : 0;
 
   // Gastos por categoría
-  const cats = {IT:0,Courier:0,Varios:0};
-  exp.forEach(e=>{ if(e.category in cats) cats[e.category] += calcExpEquiv(e,tc); });
+  const cats = {IT:0,Courier:0,Productos:0,Varios:0};
+  exp.forEach(e=>{ cats[e.category] = (cats[e.category]||0) + calcExpEquiv(e,tc); });
   const maxCat = Math.max(...Object.values(cats), 0.01);
 
   // Balance socios
-  const pb = calcPartnerBalance();
-  const { frank_inv: frank, santi_inv: santi, balance: pb_balance } = pb;
-  const total = frank + santi;
+  const frank = partners.filter(m=>m.partner==='Frank').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0);
+  const santi = partners.filter(m=>m.partner==='Santi').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0);
+  const total = frank+santi;
 
   // Reciente
   const recentSales = [...sales].sort((a,b)=>b.sale_date.localeCompare(a.sale_date)).slice(0,5);
@@ -803,9 +668,9 @@ function renderDashboard(){
             <div class="text-muted" style="font-size:12px">${total>0?(santi/total*100).toFixed(1):0}%</div>
           </div>
         </div>
-        ${Math.abs(pb_balance)>=0.01 ? `<div style="margin-top:12px;padding:10px;background:rgba(${pb_balance>0?'239,68,68':'34,197,94'},.08);border-radius:8px;border:1px solid rgba(${pb_balance>0?'239,68,68':'34,197,94'},.2);font-size:13px">
-          <span class="text-secondary">${pb_balance>0?'Santi debe a Frank':'Frank debe a Santi'}</span>
-          <span class="${pb_balance>0?'text-red':'text-green'} text-bold" style="float:right">${fUSD(Math.abs(pb_balance))}</span>
+        ${frank>santi ? `<div style="margin-top:12px;padding:10px;background:rgba(239,68,68,.08);border-radius:8px;border:1px solid rgba(239,68,68,.2);font-size:13px">
+          <span class="text-secondary">Santi debe a Frank</span>
+          <span class="text-red text-bold" style="float:right">${fUSD(frank-santi)}</span>
         </div>` : ''}
       </div>
     </div>
@@ -815,8 +680,9 @@ function renderDashboard(){
         <div class="card-title" style="margin-bottom:12px">Últimas Ventas</div>
         ${recentSales.length===0 ? '<p class="text-muted" style="font-size:13px;padding:16px 0">Sin ventas registradas</p>' :
           recentSales.map(s=>{
+            const item = inv.find(i=>i.id===s.inventory_id);
             return `<div class="recent-item">
-              <div><div class="recent-name">${getSaleName(s)}</div><div class="recent-meta">${s.id} · ${fDate(s.sale_date)} · ${s.channel}</div></div>
+              <div><div class="recent-name">${item?item.description:s.inventory_id}</div><div class="recent-meta">${s.id} · ${fDate(s.sale_date)} · ${s.channel}</div></div>
               <div style="text-align:right"><div style="font-weight:600">${fUSD(s.sale_price_usd)}</div><div class="recent-meta">${s.collected_by}</div></div>
             </div>`;
           }).join('')
@@ -879,32 +745,14 @@ function renderInventory(){
     </tr>`;
   }).join('');
 
-  const tabBar = `<div style="display:flex;gap:2px;margin-bottom:20px;border-bottom:1px solid var(--border)">
-    <button class="btn btn-sm" style="border-radius:6px 6px 0 0;border-bottom:none;${inventoryTab==='items'?'background:var(--accent);color:#fff;':'background:transparent;color:var(--text-muted);'}" onclick="inventoryTab='items';renderInventory()">Items (${inv.length})</button>
-    <button class="btn btn-sm" style="border-radius:6px 6px 0 0;border-bottom:none;${inventoryTab==='combos'?'background:var(--accent);color:#fff;':'background:transparent;color:var(--text-muted);'}" onclick="inventoryTab='combos';renderInventory()">Combos (${getCombos().length})</button>
-  </div>`;
-
-  if(inventoryTab === 'combos'){
-    document.getElementById('section-inventory').innerHTML = `
-      <div class="section-header">
-        <h2 class="section-title">Inventario</h2>
-        <button class="btn btn-primary btn-sm" onclick="addCombo()">+ Nuevo Combo</button>
-      </div>
-      ${tabBar}
-      ${renderCombosHTML()}
-    `;
-    return;
-  }
-
   document.getElementById('section-inventory').innerHTML = `
     <div class="section-header">
-      <h2 class="section-title">Inventario</h2>
+      <h2 class="section-title">Inventario <span style="color:var(--text-muted);font-size:16px;font-weight:400">(${inv.length} productos)</span></h2>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn btn-secondary btn-sm" onclick="exportInvCSV()">⬇️ CSV</button>
         <button class="btn btn-primary btn-sm" onclick="addInventory()">+ Agregar</button>
       </div>
     </div>
-    ${tabBar}
     <div class="filters">
       <select class="filter-select" onchange="invFilter.status=this.value;renderInventory()">
         <option value="">Todos los estados</option>
@@ -969,231 +817,12 @@ function setArrivedArg(id, value){
 
 function deleteInventory(id){
   confirmDelete(()=>{
-    addTombstone(id);
-    saveInventory(getInventory().filter(i=>i.id!==id));
-    const allSales = getSales();
-    allSales.filter(s=>s.inventory_id===id).forEach(s=>addTombstone(s.id));
-    saveSales(allSales.filter(s=>s.inventory_id!==id));
-    renderInventory();
-  });
-}
-
-// ─── COMBOS ───────────────────────────────────────────────────────────────────
-function renderCombosHTML(){
-  const combos = getCombos();
-  const inv = getInventory();
-  const tc = currentTC;
-  if(combos.length === 0) return '<div style="text-align:center;padding:60px;color:var(--text-muted)">Sin combos definidos. Creá uno con "+ Nuevo Combo".</div>';
-  return `<div class="table-wrap"><table>
-    <thead><tr><th>Código</th><th>Nombre</th><th>Componentes</th><th>Precio Combo</th><th>Suma Ind.</th><th>Ahorro</th><th>Estado</th><th></th></tr></thead>
-    <tbody>${combos.map(combo=>{
-      const items = (combo.items||[]).map(ci=>inv.find(i=>i.id===ci.inventory_id)).filter(Boolean);
-      const sumInd = items.reduce((a,it)=>a+calcItem(it,tc).total,0);
-      const saving = sumInd - (combo.combo_price_usd||0);
-      const allAvail = items.length>0 && items.every(it=>it.status==='En Stock'||it.status==='Reservado');
-      const pills = items.map(it=>`<span class="badge ${it.status==='En Stock'||it.status==='Reservado'?'badge-green':'badge-gray'}" style="font-size:10px">${it.id}</span>`).join(' ');
-      return `<tr>
-        <td><span class="badge badge-accent" style="font-size:11px;font-weight:700">${combo.id}</span></td>
-        <td style="font-weight:600">${esc(combo.name)}${combo.description?`<div style="font-weight:400;font-size:11px;color:var(--text-muted)">${esc(combo.description)}</div>`:''}</td>
-        <td style="white-space:nowrap">${pills||'—'}</td>
-        <td class="text-bold" style="color:var(--accent)">${fUSD(combo.combo_price_usd||0)}</td>
-        <td style="text-decoration:line-through;color:var(--text-muted)">${fUSD(sumInd)}</td>
-        <td style="color:var(--green)">${saving>0?fUSD(saving):'—'}</td>
-        <td>${allAvail?'<span class="badge badge-green">Disponible</span>':'<span class="badge badge-gray">No disponible</span>'}</td>
-        <td><div class="actions-cell">
-          ${allAvail?`<button class="btn btn-primary btn-sm" onclick="sellCombo('${combo.id}')">Vender</button>`:''}
-          <button class="btn btn-secondary btn-icon btn-sm" onclick="editCombo('${combo.id}')">✏️</button>
-          <button class="btn btn-danger btn-icon btn-sm" onclick="deleteCombo('${combo.id}')">🗑️</button>
-        </div></td>
-      </tr>`;
-    }).join('')}</tbody>
-  </table></div>`;
-}
-
-function buildComboForm(combo){
-  const v = combo||{};
-  const inv = getInventory().filter(i=>i.status==='En Stock'||i.status==='Reservado');
-  const selectedIds = (v.items||[]).map(ci=>ci.inventory_id);
-  return `
-    <div class="form-group">
-      <label class="form-label">Nombre del combo *</label>
-      <input class="form-control" id="f_combo_name" type="text" value="${esc(v.name||'')}" placeholder="Ej: Starter Pack HiFi">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Descripción</label>
-      <input class="form-control" id="f_combo_desc" type="text" value="${esc(v.description||'')}" placeholder="Opcional">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Precio combo USD *</label>
-      <input class="form-control" id="f_combo_price" type="number" step="0.01" value="${v.combo_price_usd||''}" placeholder="0.00">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Productos incluidos *</label>
-      <div style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px">
-        ${inv.length===0
-          ? '<div style="color:var(--text-muted);font-size:13px;padding:8px">No hay productos en stock</div>'
-          : inv.map(item=>`<label style="display:flex;align-items:center;gap:8px;padding:6px 4px;cursor:pointer;font-size:13px">
-              <input type="checkbox" id="chk_${item.id}" ${selectedIds.includes(item.id)?'checked':''} style="width:14px;height:14px">
-              <span>${item.id} — ${esc(item.description)} <span style="color:var(--text-muted)">(${item.status})</span></span>
-            </label>`).join('')}
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Notas</label>
-      <textarea class="form-control" id="f_combo_notes" rows="2">${esc(v.notes||'')}</textarea>
-    </div>
-  `;
-}
-
-function collectComboForm(){
-  const inv = getInventory();
-  const items = inv.filter(item=>{
-    const chk = document.getElementById('chk_'+item.id);
-    return chk && chk.checked;
-  }).map(item=>({inventory_id:item.id}));
-  return {
-    name: document.getElementById('f_combo_name').value.trim(),
-    description: document.getElementById('f_combo_desc').value.trim(),
-    combo_price_usd: parseFloat(document.getElementById('f_combo_price').value)||0,
-    items,
-    notes: document.getElementById('f_combo_notes').value.trim(),
-  };
-}
-
-function addCombo(){
-  openPanel('Nuevo Combo', buildComboForm(null), (data)=>{
-    if(!data.name || data.items.length < 2){ alert('El combo necesita un nombre y al menos 2 productos.'); return; }
-    const combos = getCombos();
-    const maxN = combos.reduce((mx,c)=>{ const n=parseInt(c.id.replace('CMB-',''))||0; return Math.max(mx,n); },0);
-    data.id = 'CMB-'+(maxN+1).toString().padStart(4,'0');
-    combos.push(data);
-    saveCombos(combos);
-    renderInventory();
-    closePanel();
-  });
-}
-
-function editCombo(id){
-  const combos = getCombos();
-  const combo = combos.find(c=>c.id===id);
-  if(!combo) return;
-  openPanel('Editar Combo: '+combo.id, buildComboForm(combo), (data)=>{
-    const idx = combos.findIndex(c=>c.id===id);
-    combos[idx] = {...combo,...data,id:combo.id};
-    saveCombos(combos);
-    renderInventory();
-    closePanel();
-  });
-}
-
-function deleteCombo(id){
-  confirmDelete(()=>{
-    addTombstone(id);
-    saveCombos(getCombos().filter(c=>c.id!==id));
-    renderInventory();
-  });
-}
-
-function sellCombo(id){
-  const combo = getCombos().find(c=>c.id===id);
-  if(!combo) return;
-  const inv = getInventory();
-  const items = (combo.items||[]).map(ci=>inv.find(i=>i.id===ci.inventory_id)).filter(Boolean);
-  const unavailable = items.filter(i=>i.status!=='En Stock'&&i.status!=='Reservado');
-  if(unavailable.length>0){
-    alert('Los siguientes productos ya no están disponibles:\n'+unavailable.map(i=>i.id+' — '+i.description).join('\n'));
-    return;
-  }
-  const tc = currentTC;
-  const costTotal = items.reduce((a,item)=>a+calcItem(item,tc).total,0);
-  openPanel('Vender Combo: '+combo.name, buildComboSaleForm(combo, costTotal), (data)=>{
-    // Marcar todos los items como vendidos
-    const invUpd = getInventory();
-    items.forEach(item=>{
-      const idx = invUpd.findIndex(i=>i.id===item.id);
-      if(idx>=0){ invUpd[idx].status='Vendido'; invUpd[idx].sale_price_usd=0; }
-    });
-    saveInventory(invUpd);
-    // Crear venta con combo_id
-    const sales = getSales();
-    const maxN = sales.reduce((mx,s)=>{ const n=parseInt(s.id.replace('VTA-',''))||0; return Math.max(mx,n); },0);
-    data.id = 'VTA-'+(maxN+1).toString().padStart(4,'0');
-    data.combo_id = combo.id;
-    data.inventory_id = null;
-    sales.push(data);
+    const inv = getInventory().filter(i=>i.id!==id);
+    saveInventory(inv);
+    const sales = getSales().filter(s=>s.inventory_id!==id);
     saveSales(sales);
-    renderSales();
-    closePanel();
-    inventoryTab='items';
     renderInventory();
   });
-}
-
-function buildComboSaleForm(combo, costTotal){
-  const tc = currentTC;
-  return `
-    <div class="form-group readonly">
-      <label class="form-label">Combo</label>
-      <input class="form-control" readonly value="${esc(combo.name)} (${(combo.items||[]).map(ci=>ci.inventory_id).join(' + ')})">
-    </div>
-    <div class="form-group readonly">
-      <label class="form-label">Costo Total USD (auto)</label>
-      <input class="form-control" readonly value="${fUSD(costTotal)}">
-    </div>
-    <div class="form-section-title">Precio de Venta</div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Precio USD</label>
-        <input class="form-control" id="f_sp_usd" type="number" step="0.01" value="${combo.combo_price_usd||''}" placeholder="0.00">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Precio ARS</label>
-        <input class="form-control" id="f_sp_ars" type="number" step="1" value="0" placeholder="0">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">TC Usado</label>
-        <input class="form-control" id="f_tc" type="number" step="0.01" value="${tc}">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Fecha Venta</label>
-        <input class="form-control" id="f_date" type="date" value="${new Date().toISOString().split('T')[0]}">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Canal</label>
-        <select class="form-control" id="f_channel">
-          ${['MercadoLibre','Fractal','Directo','Otro'].map(c=>`<option value="${c}">${c}</option>`).join('')}
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Cobrado por</label>
-        <select class="form-control" id="f_cob" onchange="toggleCobroSplit()">
-          <option value="Frank">Frank</option>
-          <option value="Santi">Santi</option>
-          <option value="Ambos">Ambos</option>
-        </select>
-      </div>
-    </div>
-    <div id="cobro_split" style="display:none">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Frank cobró USD</label>
-          <input class="form-control" id="f_frank_cob" type="number" step="0.01" value="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Santi cobró USD</label>
-          <input class="form-control" id="f_santi_cob" type="number" step="0.01" value="0">
-        </div>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Notas</label>
-      <textarea class="form-control" id="f_notes" rows="2"></textarea>
-    </div>
-  `;
 }
 
 function buildInventoryForm(item){
@@ -1325,33 +954,19 @@ function renderSales(){
 
   let totalIngresos=0, totalMargen=0;
 
-  const combos = getCombos();
   const rows = filtered.map(s=>{
-    const isCombo = !!s.combo_id;
-    const combo = isCombo ? combos.find(c=>c.id===s.combo_id) : null;
-    const item = !isCombo ? inv.find(i=>i.id===s.inventory_id) : null;
-    let costTotal = 0;
-    if(isCombo && combo){
-      costTotal = (combo.items||[]).reduce((a,ci)=>{ const it=inv.find(i=>i.id===ci.inventory_id); return a+(it?calcItem(it,tc).total:0); },0);
-    } else if(item){
-      costTotal = calcItem(item,tc).total;
-    }
+    const item = inv.find(i=>i.id===s.inventory_id);
+    const costTotal = item ? calcItem(item,tc).total : 0;
     const spUSD = parseFloat(s.sale_price_usd)||0;
     const margin = spUSD - costTotal;
     const marginPct = costTotal>0 ? (margin/costTotal*100) : null;
     const mc = colorMargin(marginPct);
     totalIngresos += spUSD;
     totalMargen += margin;
-    const prodCell = isCombo
-      ? `<span class="badge" style="background:#7c3aed22;color:#a78bfa;font-size:10px;margin-right:4px">COMBO</span>${combo?esc(combo.name):'—'}`
-      : (s.inventory_id||'—');
-    const descCell = isCombo
-      ? (combo?(combo.items||[]).map(ci=>ci.inventory_id).join(' + '):'—')
-      : (item?item.description:'—');
     return `<tr>
       <td>${s.id}</td>
-      <td style="white-space:nowrap">${prodCell}</td>
-      <td style="max-width:180px;white-space:normal;min-width:140px">${descCell}</td>
+      <td>${s.inventory_id}</td>
+      <td style="max-width:180px;white-space:normal;min-width:140px">${item?item.description:'—'}</td>
       <td>${fUSD(costTotal)}</td>
       <td class="text-bold">${fUSD(spUSD)}</td>
       <td>${s.sale_price_ars>0?fARS(s.sale_price_ars):'—'}</td>
@@ -1410,17 +1025,7 @@ function addSale(){
     sales.push(data);
     saveSales(sales);
     // Update inventory status
-    if(data.combo_id){
-      const combo = getCombos().find(c=>c.id===data.combo_id);
-      if(combo){
-        const inv = getInventory();
-        (combo.items||[]).forEach(ci=>{
-          const idx = inv.findIndex(i=>i.id===ci.inventory_id);
-          if(idx>=0) inv[idx].status='Vendido';
-        });
-        saveInventory(inv);
-      }
-    } else if(data.inventory_id){
+    if(data.inventory_id){
       const inv = getInventory();
       const idx = inv.findIndex(i=>i.id===data.inventory_id);
       if(idx>=0){ inv[idx].status='Vendido'; if(data.sale_price_usd) inv[idx].sale_price_usd=data.sale_price_usd; if(data.sale_price_ars) inv[idx].sale_price_ars=data.sale_price_ars; if(data.collected_by) inv[idx].collected_by=data.collected_by; saveInventory(inv); }
@@ -1434,7 +1039,7 @@ function editSale(id){
   const sales = getSales();
   const s = sales.find(x=>x.id===id);
   if(!s) return;
-  openPanel('Editar Venta: '+s.id, buildSaleForm(s), (data)=>{
+  openPanel('Editar: '+s.id, buildSaleForm(s), (data)=>{
     const idx = sales.findIndex(x=>x.id===id);
     sales[idx] = {...s,...data,id:s.id};
     saveSales(sales);
@@ -1445,78 +1050,30 @@ function editSale(id){
 
 function deleteSale(id){
   confirmDelete(()=>{
-    const sale = getSales().find(s=>s.id===id);
-    if(sale && sale.combo_id){
-      const combo = getCombos().find(c=>c.id===sale.combo_id);
-      if(combo){
-        const inv = getInventory();
-        (combo.items||[]).forEach(ci=>{
-          const idx = inv.findIndex(i=>i.id===ci.inventory_id);
-          if(idx>=0 && inv[idx].status==='Vendido') inv[idx].status='En Stock';
-        });
-        saveInventory(inv);
-      }
-    }
-    addTombstone(id);
-    saveSales(getSales().filter(s=>s.id!==id));
+    const sales = getSales().filter(s=>s.id!==id);
+    saveSales(sales);
     renderSales();
   });
 }
 
 function buildSaleForm(sale){
-  const allInv = getInventory();
-  const inv = allInv.filter(i=>!sale?(i.status==='En Stock'||i.status==='Reservado'):true);
-  const combos = getCombos();
+  const inv = getInventory().filter(i=>!sale?(i.status==='En Stock'||i.status==='Reservado'):true);
   const v = sale||{};
-  const isCombo = !!v.combo_id;
-  const tc = currentTC;
-
-  const initDesc = !isCombo && v.inventory_id ? (allInv.find(i=>i.id===v.inventory_id)||{}).description||'' : '';
-  const initCosto = !isCombo && v.inventory_id ? (()=>{const it=allInv.find(i=>i.id===v.inventory_id);return it?fUSD(calcItem(it,tc).total):'';})() : '';
-  const initComboDesc = isCombo && v.combo_id ? (()=>{const c=combos.find(x=>x.id===v.combo_id);return c?c.name:'';})() : '';
-  const initComboCosto = isCombo && v.combo_id ? (()=>{const c=combos.find(x=>x.id===v.combo_id);if(!c)return'';const cost=(c.items||[]).reduce((a,ci)=>{const it=allInv.find(i=>i.id===ci.inventory_id);return a+(it?calcItem(it,tc).total:0);},0);return fUSD(cost);})() : '';
-
   return `
     <div class="form-group">
-      <label class="form-label">Tipo de venta</label>
-      <div style="display:flex;gap:8px">
-        <button type="button" id="btn_type_ind" class="btn btn-sm ${!isCombo?'btn-primary':'btn-secondary'}" onclick="setSaleType('individual')">Producto individual</button>
-        <button type="button" id="btn_type_combo" class="btn btn-sm ${isCombo?'btn-primary':'btn-secondary'}" onclick="setSaleType('combo')">Combo</button>
-      </div>
+      <label class="form-label">Producto *</label>
+      <select class="form-control" id="f_inv_id" onchange="onSaleInvChange()">
+        <option value="">Seleccionar…</option>
+        ${inv.map(i=>`<option value="${i.id}" ${v.inventory_id===i.id?'selected':''}>${i.id} — ${i.description}</option>`).join('')}
+      </select>
     </div>
-    <div id="sale_individual_block" style="display:${isCombo?'none':'block'}">
-      <div class="form-group">
-        <label class="form-label">Producto *</label>
-        <select class="form-control" id="f_inv_id" onchange="onSaleInvChange()">
-          <option value="">Seleccionar…</option>
-          ${inv.map(i=>`<option value="${i.id}" ${v.inventory_id===i.id?'selected':''}>${i.id} — ${i.description}</option>`).join('')}
-        </select>
-      </div>
-      <div class="form-group readonly">
-        <label class="form-label">Descripción (auto)</label>
-        <input class="form-control" id="f_inv_desc" readonly value="${initDesc}">
-      </div>
-      <div class="form-group readonly">
-        <label class="form-label">Costo Total USD (auto)</label>
-        <input class="form-control" id="f_costo" readonly value="${initCosto}">
-      </div>
+    <div class="form-group readonly">
+      <label class="form-label">Descripción (auto)</label>
+      <input class="form-control" id="f_inv_desc" readonly value="${sale ? (getInventory().find(i=>i.id===sale.inventory_id)||{}).description||'' : ''}">
     </div>
-    <div id="sale_combo_block" style="display:${isCombo?'block':'none'}">
-      <div class="form-group">
-        <label class="form-label">Combo *</label>
-        <select class="form-control" id="f_combo_id" onchange="onSaleComboChange()">
-          <option value="">Seleccionar combo…</option>
-          ${combos.map(c=>`<option value="${c.id}" ${v.combo_id===c.id?'selected':''}>${c.id} — ${esc(c.name)}</option>`).join('')}
-        </select>
-      </div>
-      <div class="form-group readonly">
-        <label class="form-label">Componentes (auto)</label>
-        <input class="form-control" id="f_combo_desc" readonly value="${initComboDesc}">
-      </div>
-      <div class="form-group readonly">
-        <label class="form-label">Costo Total USD (auto)</label>
-        <input class="form-control" id="f_costo" readonly value="${initComboCosto}">
-      </div>
+    <div class="form-group readonly">
+      <label class="form-label">Costo Total USD (auto)</label>
+      <input class="form-control" id="f_costo" readonly value="${sale ? (()=>{const it=getInventory().find(i=>i.id===sale.inventory_id);return it?fUSD(calcItem(it,currentTC).total):'';})() : ''}">
     </div>
     <div class="form-section-title">Precio de Venta</div>
     <div class="form-row">
@@ -1548,23 +1105,11 @@ function buildSaleForm(sale){
       </div>
       <div class="form-group">
         <label class="form-label">Cobrado por</label>
-        <select class="form-control" id="f_cob" onchange="toggleCobroSplit()">
+        <select class="form-control" id="f_cob">
           <option value="Frank" ${v.collected_by==='Frank'?'selected':''}>Frank</option>
           <option value="Santi" ${v.collected_by==='Santi'?'selected':''}>Santi</option>
           <option value="Ambos" ${v.collected_by==='Ambos'?'selected':''}>Ambos</option>
         </select>
-      </div>
-    </div>
-    <div id="cobro_split" style="display:${v.collected_by==='Ambos'?'block':'none'}">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Frank cobró USD</label>
-          <input class="form-control" id="f_frank_cob" type="number" step="0.01" value="${v.frank_collected_usd||0}">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Santi cobró USD</label>
-          <input class="form-control" id="f_santi_cob" type="number" step="0.01" value="${v.santi_collected_usd||0}">
-        </div>
       </div>
     </div>
     <div class="form-group">
@@ -1572,20 +1117,6 @@ function buildSaleForm(sale){
       <textarea class="form-control" id="f_notes" rows="2">${esc(v.notes||'')}</textarea>
     </div>
   `;
-}
-
-function toggleCobroSplit(){
-  const cob = document.getElementById('f_cob');
-  const split = document.getElementById('cobro_split');
-  if(cob && split) split.style.display = cob.value==='Ambos' ? 'block' : 'none';
-}
-
-function setSaleType(type){
-  const isCombo = type === 'combo';
-  document.getElementById('sale_individual_block').style.display = isCombo ? 'none' : 'block';
-  document.getElementById('sale_combo_block').style.display = isCombo ? 'block' : 'none';
-  document.getElementById('btn_type_ind').className = 'btn btn-sm ' + (isCombo ? 'btn-secondary' : 'btn-primary');
-  document.getElementById('btn_type_combo').className = 'btn btn-sm ' + (isCombo ? 'btn-primary' : 'btn-secondary');
 }
 
 function onSaleInvChange(){
@@ -1600,45 +1131,15 @@ function onSaleInvChange(){
   }
 }
 
-function onSaleComboChange(){
-  const id = document.getElementById('f_combo_id').value;
-  const combo = getCombos().find(c=>c.id===id);
-  const inv = getInventory();
-  const tc = currentTC;
-  if(combo){
-    document.getElementById('f_combo_desc').value = combo.name || '';
-    const cost = (combo.items||[]).reduce((a,ci)=>{ const it=inv.find(i=>i.id===ci.inventory_id); return a+(it?calcItem(it,tc).total:0); }, 0);
-    document.getElementById('f_costo').value = fUSD(cost);
-    const priceEl = document.getElementById('f_sp_usd');
-    if(priceEl && !priceEl.value) priceEl.value = combo.combo_price_usd||'';
-  } else {
-    document.getElementById('f_combo_desc').value = '';
-    document.getElementById('f_costo').value = '';
-  }
-}
-
 function collectSaleForm(){
-  const cob = document.getElementById('f_cob').value;
-  const sp = parseFloat(document.getElementById('f_sp_usd').value)||0;
-  let frank_collected_usd, santi_collected_usd;
-  if(cob==='Frank'){ frank_collected_usd=sp; santi_collected_usd=0; }
-  else if(cob==='Santi'){ frank_collected_usd=0; santi_collected_usd=sp; }
-  else { frank_collected_usd=parseFloat(document.getElementById('f_frank_cob').value)||0; santi_collected_usd=parseFloat(document.getElementById('f_santi_cob').value)||0; }
-  const comboBlock = document.getElementById('sale_combo_block');
-  const isComboSale = comboBlock && comboBlock.style.display !== 'none';
-  const comboIdEl = document.getElementById('f_combo_id');
-  const invIdEl = document.getElementById('f_inv_id');
   return {
-    inventory_id: (!isComboSale && invIdEl) ? (invIdEl.value||null) : null,
-    combo_id: (isComboSale && comboIdEl) ? (comboIdEl.value||null) : null,
-    sale_price_usd: sp,
+    inventory_id: document.getElementById('f_inv_id').value,
+    sale_price_usd: parseFloat(document.getElementById('f_sp_usd').value)||0,
     sale_price_ars: parseFloat(document.getElementById('f_sp_ars').value)||0,
     tc_used: parseFloat(document.getElementById('f_tc').value)||currentTC,
     sale_date: document.getElementById('f_date').value,
     channel: document.getElementById('f_channel').value,
-    collected_by: cob,
-    frank_collected_usd,
-    santi_collected_usd,
+    collected_by: document.getElementById('f_cob').value,
     notes: document.getElementById('f_notes').value.trim(),
   };
 }
@@ -1647,7 +1148,7 @@ function collectSaleForm(){
 function renderExpenses(){
   const exp = getExpenses();
   const tc = currentTC;
-  const cats = ['IT','Courier','Varios'];
+  const cats = ['IT','Courier','Productos','Varios'];
 
   let filtered = exp.filter(e=>{
     if(expFilter.category && e.category!==expFilter.category) return false;
@@ -1748,7 +1249,6 @@ function editExpense(id){
 
 function deleteExpense(id){
   confirmDelete(()=>{
-    addTombstone(id);
     saveExpenses(getExpenses().filter(e=>e.id!==id));
     renderExpenses();
   });
@@ -1756,7 +1256,7 @@ function deleteExpense(id){
 
 function buildExpenseForm(exp){
   const v = exp||{};
-  const cats = ['IT','Courier','Varios'];
+  const cats = ['IT','Courier','Productos','Varios'];
   return `
     <div class="form-group">
       <label class="form-label">Descripción *</label>
@@ -1813,23 +1313,16 @@ function collectExpenseForm(){
 // ─── PARTNERS ─────────────────────────────────────────────────────────────────
 function renderPartners(){
   const movs = getPartners();
-  const { frank_inv, santi_inv, frank_cob, santi_cob, santi_pago, frank_pago, balance } = calcPartnerBalance();
-  const total_inv = frank_inv + santi_inv;
+  const frank = movs.filter(m=>m.partner==='Frank').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0);
+  const santi = movs.filter(m=>m.partner==='Santi').reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0);
+  const total = frank+santi;
+  const diff = frank - santi;
 
-  const filtered = movs.filter(m=>{
-    if(partnersFilter.partner && m.partner!==partnersFilter.partner) return false;
-    if(partnersFilter.type && (m.type||'compra')!==partnersFilter.type) return false;
-    return true;
-  }).sort((a,b)=>b.date.localeCompare(a.date));
-
-  const rows = filtered.map(m=>`<tr>
+  const rows = [...movs].sort((a,b)=>b.date.localeCompare(a.date)).map(m=>`<tr>
     <td>${fDate(m.date)}</td>
     <td style="max-width:200px;white-space:normal;min-width:140px">${m.description}</td>
     <td class="text-bold">${fUSD(m.amount_usd)}</td>
-    <td>
-      <span class="badge ${m.partner==='Frank'?'badge-accent':m.partner==='Ambos'?'badge-yellow':'badge-green'}">${m.partner}</span>
-      <span class="badge" style="margin-left:4px;background:${(m.type||'compra')==='compra'?'var(--bg-card)':'#7c3aed22'};color:${(m.type||'compra')==='compra'?'var(--text-muted)':'#a78bfa'};font-size:10px">${(m.type||'compra')==='compra'?'compra':'pago neto'}</span>
-    </td>
+    <td><span class="badge ${m.partner==='Frank'?'badge-accent':'badge-green'}">${m.partner}</span></td>
     <td style="max-width:140px;white-space:normal;font-size:12px;color:var(--text-muted)">${m.notes||''}</td>
     <td>
       <div class="actions-cell">
@@ -1841,67 +1334,37 @@ function renderPartners(){
 
   document.getElementById('section-partners').innerHTML = `
     <div class="section-header">
-      <h2 class="section-title">Compras</h2>
+      <h2 class="section-title">Socios</h2>
       <button class="btn btn-primary btn-sm" onclick="addMovement()">+ Movimiento</button>
     </div>
 
-    <div class="grid-3" style="margin-bottom:12px">
-      <div class="card">
-        <div class="card-title">Frank — Invertido</div>
-        <div class="card-value">${fUSD(frank_inv)}</div>
-        <div class="card-sub">${total_inv>0?(frank_inv/total_inv*100).toFixed(1):0}% del total</div>
-        <div class="partner-bar" style="width:100%;margin-top:10px"><div class="partner-bar-fill" style="width:${total_inv>0?(frank_inv/total_inv*100).toFixed(1):50}%;background:var(--accent)"></div></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Santi — Invertido</div>
-        <div class="card-value">${fUSD(santi_inv)}</div>
-        <div class="card-sub">${total_inv>0?(santi_inv/total_inv*100).toFixed(1):0}% del total</div>
-        <div class="partner-bar" style="width:100%;margin-top:10px"><div class="partner-bar-fill" style="width:${total_inv>0?(santi_inv/total_inv*100).toFixed(1):50}%;background:#60A5FA"></div></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Total Invertido</div>
-        <div class="card-value">${fUSD(total_inv)}</div>
-        <div class="card-sub">Entre ambos socios</div>
-      </div>
-    </div>
     <div class="grid-3" style="margin-bottom:20px">
       <div class="card">
-        <div class="card-title">Frank — Cobrado en ventas</div>
-        <div class="card-value">${fUSD(frank_cob)}</div>
-        <div class="card-sub">${santi_pago>0?`+ pagos recibidos de Santi ${fUSD(santi_pago)}`:''}</div>
+        <div class="card-title">Frank — Total Aportado</div>
+        <div class="card-value">${fUSD(frank)}</div>
+        <div class="card-sub">${total>0?(frank/total*100).toFixed(1):0}% participación</div>
+        <div class="partner-bar" style="width:100%;margin-top:10px"><div class="partner-bar-fill" style="width:${total>0?(frank/total*100).toFixed(1):50}%;background:var(--accent)"></div></div>
       </div>
       <div class="card">
-        <div class="card-title">Santi — Cobrado en ventas</div>
-        <div class="card-value">${fUSD(santi_cob)}</div>
-        <div class="card-sub">${santi_pago>0?`Pagos netos realizados: ${fUSD(santi_pago)}`:''}</div>
+        <div class="card-title">Santi — Total Aportado</div>
+        <div class="card-value">${fUSD(santi)}</div>
+        <div class="card-sub">${total>0?(santi/total*100).toFixed(1):0}% participación</div>
+        <div class="partner-bar" style="width:100%;margin-top:10px"><div class="partner-bar-fill" style="width:${total>0?(santi/total*100).toFixed(1):50}%;background:#60A5FA"></div></div>
       </div>
       <div class="card">
-        <div class="card-title">Balance Neto</div>
-        <div class="card-value ${balance>0?'text-red':balance<0?'text-green':''}">${Math.abs(balance)<0.01?'Equilibrado':fUSD(Math.abs(balance))}</div>
-        <div class="card-sub">${balance>0.01?'Santi debe a Frank':balance<-0.01?'Frank debe a Santi':'Sin diferencia'}</div>
+        <div class="card-title">Balance</div>
+        <div class="card-value ${diff>0?'text-red':diff<0?'text-green':''}">${diff>0?fUSD(diff):diff<0?fUSD(-diff):'Equilibrado'}</div>
+        <div class="card-sub">${diff>0?'Santi debe a Frank':diff<0?'Frank debe a Santi':'Sin diferencia'}</div>
       </div>
     </div>
 
-    <div class="filters">
-      <select class="filter-select" onchange="partnersFilter.partner=this.value;renderPartners()">
-        <option value="">Todos los socios</option>
-        <option value="Frank" ${partnersFilter.partner==='Frank'?'selected':''}>Frank</option>
-        <option value="Santi" ${partnersFilter.partner==='Santi'?'selected':''}>Santi</option>
-        <option value="Ambos" ${partnersFilter.partner==='Ambos'?'selected':''}>Ambos</option>
-      </select>
-      <select class="filter-select" onchange="partnersFilter.type=this.value;renderPartners()">
-        <option value="">Todos los tipos</option>
-        <option value="compra" ${partnersFilter.type==='compra'?'selected':''}>Compra / Inversión</option>
-        <option value="pago" ${partnersFilter.type==='pago'?'selected':''}>Pago neto</option>
-      </select>
-    </div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Fecha</th><th>Descripción</th><th>Monto USD</th><th>Socio / Tipo</th><th>Notas</th><th></th></tr></thead>
+        <thead><tr><th>Fecha</th><th>Descripción</th><th>Monto USD</th><th>Socio</th><th>Notas</th><th></th></tr></thead>
         <tbody>${rows||'<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted)">Sin movimientos</td></tr>'}</tbody>
-        ${filtered.length>0?`<tfoot><tr>
-          <td colspan="2">Total (${filtered.length} registros)</td>
-          <td>${fUSD(filtered.reduce((a,m)=>a+(parseFloat(m.amount_usd)||0),0))}</td><td colspan="3"></td>
+        ${movs.length>0?`<tfoot><tr>
+          <td colspan="2">Total</td>
+          <td>${fUSD(total)}</td><td colspan="3"></td>
         </tr></tfoot>`:''}
       </table>
     </div>
@@ -1935,7 +1398,6 @@ function editMovement(id){
 
 function deleteMovement(id){
   confirmDelete(()=>{
-    addTombstone(id);
     savePartners(getPartners().filter(m=>m.id!==id));
     renderPartners();
   });
@@ -1958,22 +1420,12 @@ function buildMovementForm(mov){
         <input class="form-control" id="f_date" type="date" value="${v.date||new Date().toISOString().split('T')[0]}">
       </div>
     </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">Tipo</label>
-        <select class="form-control" id="f_type" onchange="onMovTypeChange()">
-          <option value="compra" ${(v.type||'compra')==='compra'?'selected':''}>Compra / Inversión</option>
-          <option value="pago" ${v.type==='pago'?'selected':''}>Pago neto entre socios</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Socio</label>
-        <select class="form-control" id="f_partner">
-          <option value="Frank" ${v.partner==='Frank'?'selected':''}>Frank</option>
-          <option value="Santi" ${v.partner==='Santi'?'selected':''}>Santi</option>
-          <option value="Ambos" ${v.partner==='Ambos'?'selected':''} id="f_partner_ambos">Ambos (50/50)</option>
-        </select>
-      </div>
+    <div class="form-group">
+      <label class="form-label">Socio</label>
+      <select class="form-control" id="f_partner">
+        <option value="Frank" ${v.partner==='Frank'?'selected':''}>Frank</option>
+        <option value="Santi" ${v.partner==='Santi'?'selected':''}>Santi</option>
+      </select>
     </div>
     <div class="form-group">
       <label class="form-label">Notas</label>
@@ -1982,28 +1434,12 @@ function buildMovementForm(mov){
   `;
 }
 
-function onMovTypeChange(){
-  const type = document.getElementById('f_type').value;
-  const ambosOpt = document.getElementById('f_partner_ambos');
-  if(!ambosOpt) return;
-  if(type === 'pago'){
-    ambosOpt.disabled = true;
-    ambosOpt.style.display = 'none';
-    const partnerSel = document.getElementById('f_partner');
-    if(partnerSel.value === 'Ambos') partnerSel.value = 'Frank';
-  } else {
-    ambosOpt.disabled = false;
-    ambosOpt.style.display = '';
-  }
-}
-
 function collectMovementForm(){
   return {
     description: document.getElementById('f_desc').value.trim(),
     amount_usd: parseFloat(document.getElementById('f_usd').value)||0,
     date: document.getElementById('f_date').value,
     partner: document.getElementById('f_partner').value,
-    type: document.getElementById('f_type').value,
     notes: document.getElementById('f_notes').value.trim(),
   };
 }
@@ -2143,7 +1579,7 @@ function importJSON(event){
 function resetAll(){
   if(!confirm('¿Eliminar TODOS los datos? Esta acción es irreversible.')) return;
   if(!confirm('Segunda confirmación: ¿Estás seguro? Se perderán todos los registros.')) return;
-  [K.inv,K.sales,K.exp,K.partners,K.settings,K.init,K.senas,K.combos,K.tombs,'amp_mig_v1','amp_mig_v2','amp_mig_v3'].forEach(k=>localStorage.removeItem(k));
+  [K.inv,K.sales,K.exp,K.partners,K.settings,K.init,K.senas].forEach(k=>localStorage.removeItem(k));
   initApp();
 }
 
@@ -2162,8 +1598,6 @@ function openPanel(title, bodyHTML, callback){
   if(title.includes('Producto')) currentFormSection='inventory';
   else if(title.startsWith('Completar seña')) currentFormSection='complete-sena';
   else if(title.includes('Seña') || title.startsWith('SEN-')) currentFormSection='senas';
-  else if(title.startsWith('Vender Combo')) currentFormSection='combo-sale';
-  else if(title.startsWith('Nuevo Combo') || title.startsWith('Editar Combo')) currentFormSection='combo';
   else if(title.includes('Venta')) currentFormSection='sales';
   else if(title.includes('Gasto')) currentFormSection='expenses';
   else if(title.includes('Movimiento')) currentFormSection='partners';
@@ -2180,8 +1614,7 @@ function closePanel(){
 function submitPanel(){
   let data;
   if(currentFormSection==='inventory') data = collectInventoryForm();
-  else if(currentFormSection==='combo') data = collectComboForm();
-  else if(currentFormSection==='sales'||currentFormSection==='combo-sale') data = collectSaleForm();
+  else if(currentFormSection==='sales') data = collectSaleForm();
   else if(currentFormSection==='expenses') data = collectExpenseForm();
   else if(currentFormSection==='partners') data = collectMovementForm();
   else if(currentFormSection==='senas') data = collectSenaForm();
@@ -2365,7 +1798,6 @@ function cancelSena(id){
 
 function deleteSena(id){
   confirmDelete(()=>{
-    addTombstone(id);
     saveSenas(getSenas().filter(s=>s.id!==id));
     renderSenas();
   });
@@ -2715,89 +2147,26 @@ function initTheme(){
   applyTheme(localStorage.getItem('amp_theme') || 'dark');
 }
 
-// ─── MIGRATIONS ───────────────────────────────────────────────────────────────
-function runMigrations(){
-  if(localStorage.getItem('amp_mig_v1')) return;
-
-  // a) Fix tax_usd: restar cost_usd donde tax_usd > cost_usd
-  const inv = getInventory();
-  let invChanged = false;
-  inv.forEach(item => {
-    if((parseFloat(item.tax_usd)||0) > (parseFloat(item.cost_usd)||0)){
-      item.tax_usd = parseFloat((item.tax_usd - item.cost_usd).toFixed(2));
-      invChanged = true;
-    }
-  });
-  if(invChanged) saveInventory(inv);
-
-  // b) Agregar frank/santi_collected_usd a ventas existentes
-  const sales = getSales();
-  let salesChanged = false;
-  sales.forEach(s => {
-    if(!('frank_collected_usd' in s)){
-      const sp = parseFloat(s.sale_price_usd)||0;
-      if(s.collected_by==='Frank'){ s.frank_collected_usd=sp; s.santi_collected_usd=0; }
-      else if(s.collected_by==='Santi'){ s.frank_collected_usd=0; s.santi_collected_usd=sp; }
-      else { s.frank_collected_usd=0; s.santi_collected_usd=0; }
-      salesChanged = true;
-    }
-  });
-  if(salesChanged) saveSales(sales);
-
-  // c) Agregar type='compra' a movimientos existentes
-  const movs = getPartners();
-  let movsChanged = false;
-  movs.forEach(m => { if(!m.type){ m.type='compra'; movsChanged=true; } });
-  if(movsChanged) savePartners(movs);
-
-  localStorage.setItem('amp_mig_v1','1');
-}
-
-function runMigrationsV2(){
-  if(localStorage.getItem('amp_mig_v2')) return;
-  // Remove VTA-0001 (deleted by user; sync kept restoring it from cloud)
-  const sales = getSales();
-  const cleaned = sales.filter(s=>s.id!=='VTA-0001');
-  if(cleaned.length !== sales.length) saveSales(cleaned);
-  localStorage.setItem('amp_mig_v2','1');
-}
-
-function runMigrationsV3(){
-  if(localStorage.getItem('amp_mig_v3')) return;
-  // Eliminar gastos de categoría 'Productos' — ya están duplicados en Compras
-  const exp = getExpenses().filter(e=>e.category!=='Productos');
-  saveExpenses(exp);
-  localStorage.setItem('amp_mig_v3','1');
-}
-
-function runMigrationsV4(){
-  if(localStorage.getItem('amp_mig_v4')) return;
-  // Add arrived_arg field to inventory items
-  const invData = getInventory();
-  invData.forEach(item=>{ if(item.arrived_arg===undefined) item.arrived_arg=''; });
-  saveInventory(invData);
-  localStorage.setItem('amp_mig_v4','1');
-}
-
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-async function initApp(){
+function initApp(){
   initTheme();
-  await syncFromCloud();
-  runMigrations();
-  runMigrationsV2();
-  runMigrationsV3();
-  runMigrationsV4();
   if(!localStorage.getItem(K.init)){
     saveInventory(INIT_INVENTORY);
     saveSales(INIT_SALES);
     saveExpenses(INIT_EXPENSES);
     savePartners(INIT_PARTNERS);
-    saveCombos([]);
     save(K.init,'1');
     // set a reasonable default TC
     const s = getSettings();
     if(!s.tc){ s.tc=1000; saveSettings(s); }
   }
+  // Migrate: add arrived_arg field if missing
+  (function(){
+    const invData = getInventory();
+    let migrated = false;
+    invData.forEach(item=>{ if(item.arrived_arg===undefined){ item.arrived_arg=''; migrated=true; } });
+    if(migrated) saveInventory(invData);
+  })();
   updateTCDisplay();
   renderDashboard();
   // fetch TC in background
