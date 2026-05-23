@@ -233,12 +233,6 @@ label.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-s
 /* MOBILE OVERLAY */
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:49}
 
-/* ARRIVED SELECT */
-.arrived-select{background:var(--bg-input);border:1px solid var(--border);border-radius:6px;color:var(--text-primary);font-size:12px;font-family:inherit;padding:3px 8px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;text-align:center}
-.arrived-select:focus{border-color:var(--border-focus)}
-.arrived-select.arrived-si{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.3);color:var(--green)}
-.arrived-select.arrived-no{background:rgba(239,68,68,.10);border-color:rgba(239,68,68,.25);color:var(--red)}
-
 /* SCROLLBAR */
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
@@ -729,7 +723,7 @@ function renderInventory(){
       <td>${fARS(c.totalARS)}</td>
       <td>${fDate(item.purchase_date)}</td>
       <td>${statusBadge(item.status)}</td>
-      <td><select class="arrived-select${item.arrived_arg==='Si'?' arrived-si':item.arrived_arg==='No'?' arrived-no':''}" onchange="setArrivedArg('${item.id}',this.value)"><option value="" ${!item.arrived_arg?'selected':''}>—</option><option value="Si" ${item.arrived_arg==='Si'?'selected':''}>✓ Sí</option><option value="No" ${item.arrived_arg==='No'?'selected':''}>✗ No</option></select></td>
+      <td>${arrivedArgBadge(item.id, item.arrived_arg||'')}</td>
       <td>${c.sp>0?fUSD(c.sp):'—'}</td>
       <td>${c.spARS>0?fARS(c.spARS):'—'}</td>
       <td class="${mc}">${c.margin!==null?fUSD(c.margin):'—'}</td>
@@ -807,12 +801,20 @@ function editInventory(id){
   });
 }
 
-function setArrivedArg(id, value){
+function arrivedArgBadge(id, value){
+  if(value==='Si') return `<span class="badge badge-green" style="cursor:pointer;user-select:none" onclick="cycleArrivedArg('${id}')" title="Click para cambiar">✓ Llegó</span>`;
+  if(value==='No') return `<span class="badge badge-red" style="cursor:pointer;user-select:none" onclick="cycleArrivedArg('${id}')" title="Click para cambiar">✗ No llegó</span>`;
+  return `<span class="badge badge-gray" style="cursor:pointer;user-select:none" onclick="cycleArrivedArg('${id}')" title="Click para cambiar">— Pendiente</span>`;
+}
+
+function cycleArrivedArg(id){
   const inv = getInventory();
   const idx = inv.findIndex(i=>i.id===id);
   if(idx<0) return;
-  inv[idx].arrived_arg = value;
+  const cur = inv[idx].arrived_arg||'';
+  inv[idx].arrived_arg = cur===''?'Si':cur==='Si'?'No':'';
   saveInventory(inv);
+  renderInventory();
 }
 
 function deleteInventory(id){
