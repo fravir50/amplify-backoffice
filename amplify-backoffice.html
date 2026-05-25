@@ -754,9 +754,9 @@ function renderDashboard(){
     </div>
     <div class="grid-2" style="margin-bottom:20px">
       <div class="card">
-        <div class="card-title" style="margin-bottom:4px">Ingresos por Canal</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Distribución mensual de ventas según origen</div>
-        <div style="position:relative;height:200px"><canvas id="chart-channel"></canvas></div>
+        <div class="card-title" style="margin-bottom:4px">P&amp;L Mensual Desglosado</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Ingresos vs costo de producto vendido vs gasto operativo</div>
+        <div style="position:relative;height:200px"><canvas id="chart-pnl"></canvas></div>
       </div>
       <div class="card">
         <div class="card-title" style="margin-bottom:4px">Cashflow Acumulado</div>
@@ -848,12 +848,12 @@ function renderDashCharts(n){
     }}}});}
 
   // ── Chart 3: Ingresos por Canal ──
-  const c3 = document.getElementById('chart-channel');
-  const channels = ['MercadoLibre','Directo','Fractal','Otro'];
-  const chColors = ['#3B82F6','#E8622C','#A78BFA','#6B7280'];
-  if(c3){ Chart.getChart(c3)?.destroy(); new Chart(c3,{type:'bar',data:{labels,datasets:
-    channels.map((ch,i)=>({label:ch,data:data.map(m=>m.por_canal[ch]||0),backgroundColor:chColors[i]+'99',borderColor:chColors[i],borderWidth:1,borderRadius:3}))
-  },options:{...baseOpts,scales:{x:{...baseOpts.scales.x,stacked:true},y:{...baseOpts.scales.y,stacked:true,ticks:{...baseOpts.scales.y.ticks,callback:v=>'$'+Math.round(v)}}}}});}
+  const c3 = document.getElementById('chart-pnl');
+  if(c3){ Chart.getChart(c3)?.destroy(); new Chart(c3,{type:'bar',data:{labels,datasets:[
+    {label:'Ingresos',data:data.map(m=>m.ingresos),backgroundColor:'rgba(59,130,246,0.5)',borderColor:'#3B82F6',borderWidth:1.5,borderRadius:3},
+    {label:'Costo producto',data:data.map(m=>m.cogs),backgroundColor:'rgba(232,98,44,0.45)',borderColor:'#E8622C',borderWidth:1.5,borderRadius:3},
+    {label:'Gasto op',data:data.map(m=>m.gastos_op),backgroundColor:'rgba(107,114,128,0.4)',borderColor:'#6B7280',borderWidth:1.5,borderRadius:3}
+  ]},options:{...baseOpts}});}
 
   // ── Chart 4: Cashflow Acumulado ──
   const c4 = document.getElementById('chart-cashflow');
