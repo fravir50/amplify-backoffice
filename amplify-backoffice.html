@@ -266,6 +266,7 @@ label.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-s
   .grid-3,.grid-4{grid-template-columns:1fr}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 </head>
 <body>
 
@@ -439,6 +440,7 @@ let invFilter = {status:'', category:''};
 let salesFilter = {channel:''};
 let expFilter = {category:'', paid_by:''};
 let senaFilter = {status:'Activa'};
+let dashPeriod = 6; // months for trend charts
 
 // ─── FORMATTING ───────────────────────────────────────────────────────────────
 function fUSD(n){ n=parseFloat(n)||0; return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
@@ -536,6 +538,59 @@ function calcExpEquiv(exp, tc){
   if(usd>0) return usd;
   if(ars>0) return ars/tc;
   return 0;
+}
+
+// ─── MONTHLY DATA HELPER ──────────────────────────────────────────────────────
+function buildMonthlyData(n=6){
+  const inv = getInventory();
+  const sales = getSales();
+  const exp = getExpenses();
+  const tc = currentTC;
+
+  // Generate last n month keys: "2025-03"
+  const months = [];
+  const now = new Date();
+  for(let i=n-1; i>=0; i--){
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const label = d.toLocaleString('es-AR',{month:'short',year:'2-digit'}).replace('. ','\'');
+    months.push({key, label, gastos_op:0, ingresos:0, cogs:0, margen_bruto:0, margen_neto:0,
+      por_canal:{MercadoLibre:0, Directo:0, Fractal:0, Otro:0}});
+  }
+  const idx = {};
+  months.forEach((m,i)=>idx[m.key]=i);
+
+  // Aggregate expenses (excl. "Productos" category = operational only)
+  exp.forEach(e=>{
+    if(e.category==='Productos') return;
+    const mk = (e.date||'').substring(0,7);
+    if(idx[mk]===undefined) return;
+    months[idx[mk]].gastos_op += calcExpEquiv(e, tc);
+  });
+
+  // Aggregate sales
+  sales.forEach(s=>{
+    const mk = (s.sale_date||'').substring(0,7);
+    if(idx[mk]===undefined) return;
+    const m = months[idx[mk]];
+    const sp = parseFloat(s.sale_price_usd)||0;
+    m.ingresos += sp;
+    const item = inv.find(i=>i.id===s.inventory_id);
+    if(item) m.cogs += calcItem(item, tc).total;
+    const ch = s.channel||'Otro';
+    if(m.por_canal[ch]!==undefined) m.por_canal[ch]+=sp; else m.por_canal['Otro']+=sp;
+  });
+
+  // Compute derived
+  let cumulative = 0;
+  months.forEach(m=>{
+    m.margen_bruto = m.ingresos - m.cogs;
+    m.margen_neto  = m.margen_bruto - m.gastos_op;
+    cumulative += m.margen_neto;
+    m.cashflow_acum = cumulative;
+  });
+
+  return months;
 }
 
 // ─── DASHBOARD ────────────────────────────────────────────────────────────────
@@ -677,6 +732,39 @@ function renderDashboard(){
       </div>
     </div>
 
+    <!-- TREND CHARTS -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="font-size:15px;font-weight:600;color:var(--text-primary);margin:0">Tendencias financieras</h3>
+      <div style="display:flex;gap:6px">
+        ${[3,6,12].map(n=>`<button class="btn btn-sm" style="border-radius:6px;padding:4px 12px;font-size:12px;${dashPeriod===n?'background:var(--accent);color:#fff;border-color:var(--accent)':'background:transparent;color:var(--text-muted);border:1px solid var(--border)'}" onclick="changeDashPeriod(${n})">${n}M</button>`).join('')}
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:4px">Costo Operativo vs Margen Bruto</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Gastos (IT/Courier/Varios) vs ganancia sobre productos vendidos</div>
+        <div style="position:relative;height:200px"><canvas id="chart-op-margin"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:4px">Margen Neto Mensual</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Margen bruto − costos operativos: lo que queda en el bolsillo</div>
+        <div style="position:relative;height:200px"><canvas id="chart-net-margin"></canvas></div>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card">
+        <div class="card-title" style="margin-bottom:4px">Ingresos por Canal</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Distribución mensual de ventas según origen</div>
+        <div style="position:relative;height:200px"><canvas id="chart-channel"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title" style="margin-bottom:4px">Cashflow Acumulado</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Suma corriente del margen neto — ¿el negocio suma o resta?</div>
+        <div style="position:relative;height:200px"><canvas id="chart-cashflow"></canvas></div>
+      </div>
+    </div>
+
     <div class="grid-2">
       <div class="card">
         <div class="card-title" style="margin-bottom:12px">Últimas Ventas</div>
@@ -704,6 +792,80 @@ function renderDashboard(){
       </div>
     </div>
   `;
+  requestAnimationFrame(()=>renderDashCharts(dashPeriod));
+}
+
+function changeDashPeriod(n){
+  dashPeriod = n;
+  renderDashboard();
+}
+
+function renderDashCharts(n){
+  if(typeof Chart==='undefined') return;
+  const data = buildMonthlyData(n);
+  const labels = data.map(m=>m.label);
+  const isDark = document.documentElement.getAttribute('data-theme')!=='light';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  const tickColor = isDark ? '#888' : '#999';
+  const tooltipBg = isDark ? '#1A1A1A' : '#fff';
+  const tooltipBorder = isDark ? '#2C2C2C' : '#e5e7eb';
+
+  const baseOpts = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:true,labels:{color:tickColor,font:{size:11},boxWidth:12,padding:12}},
+      tooltip:{backgroundColor:tooltipBg,borderColor:tooltipBorder,borderWidth:1,titleColor:isDark?'#fff':'#111',bodyColor:tickColor,callbacks:{label:ctx=>' '+fUSD(ctx.parsed.y)}}},
+    scales:{
+      x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}},
+      y:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11},callback:v=>'$'+Math.round(v)}}
+    }
+  };
+
+  // ── Chart 1: Costo Operativo vs Margen Bruto ──
+  const c1 = document.getElementById('chart-op-margin');
+  if(c1){ Chart.getChart(c1)?.destroy(); new Chart(c1,{type:'bar',data:{labels,datasets:[
+    {label:'Costo operativo',data:data.map(m=>m.gastos_op),backgroundColor:'rgba(232,98,44,0.35)',borderColor:'#E8622C',borderWidth:1.5,borderRadius:4,order:2},
+    {label:'Margen bruto',data:data.map(m=>m.margen_bruto),type:'line',borderColor:'#22C55E',backgroundColor:'rgba(34,197,94,0.1)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#22C55E',fill:false,tension:0.3,order:1}
+  ]},options:{...baseOpts,plugins:{...baseOpts.plugins,tooltip:{...baseOpts.plugins.tooltip,
+    callbacks:{label:ctx=>' '+fUSD(ctx.parsed.y),afterBody:(items)=>{
+      const i = items[0]?.dataIndex;
+      if(i===undefined) return;
+      return [`  Diferencia: ${fUSD(data[i].margen_bruto - data[i].gastos_op)}`];
+    }}}}}});}
+
+  // ── Chart 2: Margen Neto ──
+  const c2 = document.getElementById('chart-net-margin');
+  if(c2){ Chart.getChart(c2)?.destroy(); new Chart(c2,{type:'line',data:{labels,datasets:[{
+    label:'Margen neto',
+    data:data.map(m=>m.margen_neto),
+    borderColor:ctx=>(ctx.raw>=0?'#22C55E':'#EF4444'),
+    segment:{borderColor:ctx=>ctx.p1.parsed.y>=0?'#22C55E':'#EF4444',backgroundColor:ctx=>ctx.p1.parsed.y>=0?'rgba(34,197,94,0.1)':'rgba(239,68,68,0.1)'},
+    backgroundColor:'rgba(34,197,94,0.1)',borderWidth:2,pointRadius:3,
+    pointBackgroundColor:data.map(m=>m.margen_neto>=0?'#22C55E':'#EF4444'),fill:true,tension:0.3
+  }]},options:{...baseOpts,plugins:{...baseOpts.plugins,legend:{display:false}},
+    scales:{...baseOpts.scales,y:{...baseOpts.scales.y,
+      ticks:{...baseOpts.scales.y.ticks,callback:v=>'$'+Math.round(v)},
+      grid:{...baseOpts.scales.y.grid,color:ctx=>ctx.tick.value===0?'rgba(255,255,255,0.2)':gridColor}
+    }}}});}
+
+  // ── Chart 3: Ingresos por Canal ──
+  const c3 = document.getElementById('chart-channel');
+  const channels = ['MercadoLibre','Directo','Fractal','Otro'];
+  const chColors = ['#3B82F6','#E8622C','#A78BFA','#6B7280'];
+  if(c3){ Chart.getChart(c3)?.destroy(); new Chart(c3,{type:'bar',data:{labels,datasets:
+    channels.map((ch,i)=>({label:ch,data:data.map(m=>m.por_canal[ch]||0),backgroundColor:chColors[i]+'99',borderColor:chColors[i],borderWidth:1,borderRadius:3}))
+  },options:{...baseOpts,scales:{x:{...baseOpts.scales.x,stacked:true},y:{...baseOpts.scales.y,stacked:true,ticks:{...baseOpts.scales.y.ticks,callback:v=>'$'+Math.round(v)}}}}});}
+
+  // ── Chart 4: Cashflow Acumulado ──
+  const c4 = document.getElementById('chart-cashflow');
+  if(c4){ Chart.getChart(c4)?.destroy(); new Chart(c4,{type:'line',data:{labels,datasets:[{
+    label:'Cashflow acumulado',
+    data:data.map(m=>m.cashflow_acum),
+    borderColor:data[data.length-1]?.cashflow_acum>=0?'#22C55E':'#EF4444',
+    backgroundColor:data[data.length-1]?.cashflow_acum>=0?'rgba(34,197,94,0.12)':'rgba(239,68,68,0.12)',
+    borderWidth:2,pointRadius:3,fill:true,tension:0.4,
+    pointBackgroundColor:data.map(m=>m.cashflow_acum>=0?'#22C55E':'#EF4444')
+  }]},options:{...baseOpts,plugins:{...baseOpts.plugins,legend:{display:false}},
+    scales:{...baseOpts.scales,y:{...baseOpts.scales.y,ticks:{...baseOpts.scales.y.ticks,callback:v=>'$'+Math.round(v)}}}}});}
 }
 
 // ─── INVENTORY ────────────────────────────────────────────────────────────────
