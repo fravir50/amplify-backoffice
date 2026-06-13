@@ -382,8 +382,8 @@ const INIT_EXPENSES = [
   {id:'EXP-0002',description:'Dominio 2',category:'IT',amount_usd:2.99,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
   {id:'EXP-0003',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
   {id:'EXP-0004',description:'VPN',category:'IT',amount_usd:11.19,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
-  {id:'EXP-0005',description:'Pedido Fractal',category:'Productos',amount_usd:1150,amount_ars:0,date:'2025-11-01',paid_by:'Santi',notes:'Pedido + envío Nati a Miami'},
-  {id:'EXP-0006',description:'Pedido Amazon',category:'Productos',amount_usd:3529,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0005',description:'Pedido Fractal',category:'Varios',amount_usd:1150,amount_ars:0,date:'2025-11-01',paid_by:'Santi',notes:'Pedido + envío Nati a Miami'},
+  {id:'EXP-0006',description:'Pedido Amazon',category:'Varios',amount_usd:3529,amount_ars:0,date:'2025-11-01',paid_by:'Frank',notes:''},
   {id:'EXP-0007',description:'Courier Fractal',category:'Courier',amount_usd:189.20,amount_ars:0,date:'2025-12-01',paid_by:'Frank',notes:''},
   {id:'EXP-0008',description:'Courier Amazon',category:'Courier',amount_usd:905,amount_ars:0,date:'2025-12-01',paid_by:'Santi',notes:''},
   {id:'EXP-0009',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2025-12-01',paid_by:'Frank',notes:''},
@@ -392,13 +392,13 @@ const INIT_EXPENSES = [
   {id:'EXP-0012',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2026-01-01',paid_by:'Frank',notes:''},
   {id:'EXP-0013',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2026-02-01',paid_by:'Frank',notes:''},
   {id:'EXP-0014',description:'VPN',category:'IT',amount_usd:11.19,amount_ars:0,date:'2026-02-01',paid_by:'Frank',notes:''},
-  {id:'EXP-0015',description:'Pedido Amazon',category:'Productos',amount_usd:2590.47,amount_ars:0,date:'2026-02-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0015',description:'Pedido Amazon',category:'Varios',amount_usd:2590.47,amount_ars:0,date:'2026-02-01',paid_by:'Frank',notes:''},
   {id:'EXP-0016',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
   {id:'EXP-0017',description:'VPN',category:'IT',amount_usd:19.56,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
-  {id:'EXP-0018',description:'Pedido Amazon',category:'Productos',amount_usd:3933.30,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
-  {id:'EXP-0019',description:'Pedido Amazon',category:'Productos',amount_usd:4999,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
-  {id:'EXP-0020',description:'Pedido Amazon',category:'Productos',amount_usd:1816.84,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
-  {id:'EXP-0021',description:'Pedido Amazon',category:'Productos',amount_usd:620.59,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0018',description:'Pedido Amazon',category:'Varios',amount_usd:3933.30,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0019',description:'Pedido Amazon',category:'Varios',amount_usd:4999,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0020',description:'Pedido Amazon',category:'Varios',amount_usd:1816.84,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
+  {id:'EXP-0021',description:'Pedido Amazon',category:'Varios',amount_usd:620.59,amount_ars:0,date:'2026-03-01',paid_by:'Frank',notes:''},
   {id:'EXP-0022',description:'Subscripción Vercel',category:'IT',amount_usd:20,amount_ars:0,date:'2026-04-01',paid_by:'Frank',notes:''},
   {id:'EXP-0023',description:'VPN',category:'IT',amount_usd:18.97,amount_ars:0,date:'2026-04-01',paid_by:'Frank',notes:''},
   {id:'EXP-0024',description:'Recarga Movistar',category:'Varios',amount_usd:0,amount_ars:0,date:'2026-04-01',paid_by:'Frank',notes:'Monto pendiente'},
@@ -560,9 +560,8 @@ function buildMonthlyData(n=6){
   const idx = {};
   months.forEach((m,i)=>idx[m.key]=i);
 
-  // Aggregate expenses (excl. "Productos" category = operational only)
+  // Aggregate expenses (all categories are operational)
   exp.forEach(e=>{
-    if(e.category==='Productos') return;
     const mk = (e.date||'').substring(0,7);
     if(idx[mk]===undefined) return;
     months[idx[mk]].gastos_op += calcExpEquiv(e, tc);
@@ -628,7 +627,7 @@ function renderDashboard(){
   const margenPct = ingresos>0 ? (margenBruto/costoVentas*100) : 0;
 
   // Gastos por categoría
-  const cats = {IT:0,Courier:0,Productos:0,Varios:0};
+  const cats = {IT:0,Courier:0,Pauta:0,CM:0,Varios:0};
   exp.forEach(e=>{ cats[e.category] = (cats[e.category]||0) + calcExpEquiv(e,tc); });
   const maxCat = Math.max(...Object.values(cats), 0.01);
 
@@ -743,7 +742,7 @@ function renderDashboard(){
     <div class="grid-2" style="margin-bottom:20px">
       <div class="card">
         <div class="card-title" style="margin-bottom:4px">Costo Operativo vs Margen Bruto</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Gastos (IT/Courier/Varios) vs ganancia sobre productos vendidos</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Gastos (IT/Courier/Pauta/CM/Varios) vs ganancia sobre productos vendidos</div>
         <div style="position:relative;height:200px"><canvas id="chart-op-margin"></canvas></div>
       </div>
       <div class="card">
@@ -1335,7 +1334,7 @@ function collectSaleForm(){
 function renderExpenses(){
   const exp = getExpenses();
   const tc = currentTC;
-  const cats = ['IT','Courier','Productos','Varios'];
+  const cats = ['IT','Courier','Pauta','CM','Varios'];
 
   let filtered = exp.filter(e=>{
     if(expFilter.category && e.category!==expFilter.category) return false;
@@ -1443,7 +1442,7 @@ function deleteExpense(id){
 
 function buildExpenseForm(exp){
   const v = exp||{};
-  const cats = ['IT','Courier','Productos','Varios'];
+  const cats = ['IT','Courier','Pauta','CM','Varios'];
   return `
     <div class="form-group">
       <label class="form-label">Descripción *</label>
