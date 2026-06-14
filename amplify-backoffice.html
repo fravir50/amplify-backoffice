@@ -784,9 +784,15 @@ function buildCashLedger(){
       amount_usd:sp, ref:s.id, desc:`Venta ${s.id}`});
   });
 
-  // SALIDAS: productos y courier desde INIT_PARTNERS (type:'compra')
+  // APORTES IMPLÍCITOS + SALIDAS: cada compra representa capital puesto por el socio
+  // que inmediatamente sale como pago al proveedor (neto = 0 por compra)
   const courierFromPartners = partners.filter(p=>p.type==='compra' && /courier/i.test(p.description||''));
   const productFromPartners = partners.filter(p=>p.type==='compra' && !/courier/i.test(p.description||''));
+  [...courierFromPartners, ...productFromPartners].forEach(p=>{
+    const amt = parseFloat(p.amount_usd)||0;
+    movements.push({date:p.date, tipo:'aporte_socio', dir:'in',
+      amount_usd:amt, ref:p.id, desc:`Aporte ${p.partner} — ${p.description}`});
+  });
   courierFromPartners.forEach(p=>{
     movements.push({date:p.date, tipo:'courier', dir:'out',
       amount_usd:parseFloat(p.amount_usd)||0, ref:p.id, desc:p.description});
@@ -854,6 +860,12 @@ function getCapitalCongelado(){
   const tc  = currentTC;
   return inv.filter(i=>i.status!=='Vendido')
     .reduce((a,i)=>a+calcItem(i,tc).total, 0);
+}
+
+function getCapitalInvertidoTotal(){
+  return getPartners()
+    .filter(p=>p.type==='compra')
+    .reduce((a,p)=>a+(parseFloat(p.amount_usd)||0), 0);
 }
 
 function getSellThrough(){
@@ -1206,10 +1218,12 @@ function renderFinanzas(){
   const margenNetoPct= ingresos>0 ? (margenNeto/ingresos*100)  : 0;
 
   // ── Capital ──
-  const capitalTotal    = inv.reduce((a,i)=>a+calcItem(i,tc).total,0);
+  const capitalTotal    = getCapitalInvertidoTotal();
   const capitalCongelado= getCapitalCongelado();
+  const vendidos        = inv.filter(i=>i.status==='Vendido').length;
+  const enStock         = inv.filter(i=>i.status==='En Stock').length;
+  const reservados      = inv.filter(i=>i.status==='Reservado').length;
   const sellThrough     = getSellThrough();
-  const aging           = getAgingInventario();
 
   // ── Planificación ──
   const breakEven = getBreakEven();
@@ -1283,7 +1297,7 @@ function renderFinanzas(){
           <div class="card-value" style="font-size:1.6rem;${margenNeto<0?'color:#EF4444':'color:#22C55E'}">${fUSD(margenNeto)}</div>
           <div style="font-size:1.1rem;${margenNetoPct<0?'color:#EF4444':'color:#22C55E'}">${margenNetoPct.toFixed(1)}%</div>
         </div>
-        <div class="card-sub">Margen bruto − todos los gastos</div>
+        <div class="card-sub">Acumulado histórico (desde inicio)</div>
       </div>
       <div class="card"><div class="card-title" style="margin-bottom:12px">Margen Neto Acumulado</div>
         <div style="position:relative;height:120px"><canvas id="chart-fin-margen-acum"></canvas></div>
@@ -1305,24 +1319,10 @@ function renderFinanzas(){
     <!-- CAPITAL E INVENTARIO -->
     <div class="section-subtitle" style="margin:20px 0 12px">Capital e inventario</div>
     <div class="grid-4" style="margin-bottom:16px">
-      <div class="card card-sm"><div class="card-title">Capital Invertido</div><div class="card-value" style="font-size:1.3rem">${fUSD(capitalTotal)}</div><div class="card-sub">Todos los ítems</div></div>
+      <div class="card card-sm"><div class="card-title">Capital Invertido</div><div class="card-value" style="font-size:1.3rem">${fUSD(capitalTotal)}</div><div class="card-sub">Total desembolsado a proveedores</div></div>
       <div class="card card-sm"><div class="card-title">Capital Congelado</div><div class="card-value" style="font-size:1.3rem;color:#F59E0B">${fUSD(capitalCongelado)}</div><div class="card-sub">Stock sin vender</div></div>
-      <div class="card card-sm"><div class="card-title">Sell-Through</div><div class="card-value" style="font-size:1.3rem">${(sellThrough*100).toFixed(0)}%</div><div class="card-sub">${inv.filter(i=>i.status==='Vendido').length} vendidos / ${inv.filter(i=>i.status==='Vendido'||i.status==='En Stock'||i.status==='Reservado').length} totales</div></div>
-      <div class="card card-sm"><div class="card-title">Ítems en Stock</div><div class="card-value" style="font-size:1.3rem">${inv.filter(i=>i.status==='En Stock').length}</div><div class="card-sub">${inv.filter(i=>i.status==='Reservado').length} reservados</div></div>
-    </div>
-    <div class="card" style="margin-bottom:20px">
-      <div class="card-title" style="margin-bottom:12px">Aging de Inventario <span style="font-size:12px;color:var(--text-muted);font-weight:400">(días en stock, sin vender)</span></div>
-      <div style="overflow-x:auto">
-        <table class="table"><thead><tr><th>ID</th><th>Descripción</th><th>Categoría</th><th>Estado</th><th>Días en stock</th><th>Capital</th></tr></thead>
-        <tbody>${aging.slice(0,15).map(a=>`<tr>
-          <td><span class="badge">${a.item.id}</span></td>
-          <td>${a.item.description}</td>
-          <td>${a.item.category}</td>
-          <td><span class="badge badge-${a.item.status==='En Stock'?'blue':'yellow'}">${a.item.status}</span></td>
-          <td style="${a.dias>180?'color:#EF4444':a.dias>90?'color:#F59E0B':''}">${a.dias}d</td>
-          <td>${fUSD(a.capital)}</td>
-        </tr>`).join('')}</tbody></table>
-      </div>
+      <div class="card card-sm"><div class="card-title">Sell-Through</div><div class="card-value" style="font-size:1.3rem">${(sellThrough*100).toFixed(0)}%</div><div class="card-sub">${vendidos} vendidos · ${enStock} stock · ${reservados} reservados</div></div>
+      <div class="card card-sm"><div class="card-title">Ítems en Stock</div><div class="card-value" style="font-size:1.3rem">${enStock}</div><div class="card-sub">${reservados} reservados</div></div>
     </div>
 
     <!-- PLANIFICACIÓN -->
