@@ -689,7 +689,6 @@ function buildMonthlyData(n=6){
   months.forEach((m,i)=>idx[m.key]=i);
 
   exp.forEach(e=>{
-    if(e.category==='Productos') return;
     const mk = (e.date||'').substring(0,7);
     if(idx[mk]===undefined) return;
     months[idx[mk]].gastos_op += calcExpEquiv(e, tc);
@@ -759,7 +758,7 @@ function renderDashboard(){
   const margenPct = ingresos>0 ? (margenBruto/costoVentas*100) : 0;
 
   // Gastos por categoría
-  const cats = {IT:0,Courier:0,Varios:0};
+  const cats = {IT:0,Courier:0,Pauta:0,CM:0,Varios:0};
   exp.forEach(e=>{ if(e.category in cats) cats[e.category] += calcExpEquiv(e,tc); });
   const maxCat = Math.max(...Object.values(cats), 0.01);
 
@@ -874,7 +873,7 @@ function renderDashboard(){
     <div class="grid-2" style="margin-bottom:20px">
       <div class="card">
         <div class="card-title" style="margin-bottom:4px">Costo Operativo vs Margen Bruto</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Gastos (IT/Courier/Varios) vs ganancia sobre productos vendidos</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Gastos (IT/Courier/Pauta/CM/Varios) vs ganancia sobre productos vendidos</div>
         <div style="position:relative;height:200px"><canvas id="chart-op-margin"></canvas></div>
       </div>
       <div class="card">
@@ -1826,7 +1825,7 @@ function collectSaleForm(){
 function renderExpenses(){
   const exp = getExpenses();
   const tc = currentTC;
-  const cats = ['IT','Courier','Varios'];
+  const cats = ['IT','Courier','Pauta','CM','Varios'];
 
   let filtered = exp.filter(e=>{
     if(expFilter.category && e.category!==expFilter.category) return false;
@@ -1935,7 +1934,7 @@ function deleteExpense(id){
 
 function buildExpenseForm(exp){
   const v = exp||{};
-  const cats = ['IT','Courier','Varios'];
+  const cats = ['IT','Courier','Pauta','CM','Varios'];
   return `
     <div class="form-group">
       <label class="form-label">Descripción *</label>
