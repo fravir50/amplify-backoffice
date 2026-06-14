@@ -638,6 +638,21 @@ function toggleSidebar(force){
 }
 
 // ─── CALC HELPERS ─────────────────────────────────────────────────────────────
+
+// Costo de una venta (simple o combo). Único lugar donde se resuelve esto.
+function getSaleCogs(sale, inv, combos, tc){
+  if(sale.combo_id){
+    const combo = combos.find(c=>c.id===sale.combo_id);
+    if(!combo) return 0;
+    return (combo.items||[]).reduce((a,ci)=>{
+      const it = inv.find(i=>i.id===ci.inventory_id);
+      return a + (it ? calcItem(it,tc).total : 0);
+    }, 0);
+  }
+  const item = inv.find(i=>i.id===sale.inventory_id);
+  return item ? calcItem(item,tc).total : 0;
+}
+
 function calcItem(item, tc){
   const total = (parseFloat(item.cost_usd)||0) + (parseFloat(item.tax_usd)||0);
   const totalARS = total * tc;
@@ -682,6 +697,7 @@ function buildMonthlyData(n=6){
   const inv = getInventory();
   const sales = getSales();
   const exp = getExpenses();
+  const combos = getCombos();
   const tc = currentTC;
 
   const months = [];
@@ -711,8 +727,7 @@ function buildMonthlyData(n=6){
     m.ventas_count++;
     const sp = parseFloat(s.sale_price_usd)||0;
     m.ingresos += sp;
-    const item = inv.find(i=>i.id===s.inventory_id);
-    if(item) m.cogs += calcItem(item, tc).total;
+    m.cogs += getSaleCogs(s, inv, combos, tc);
     const ch = s.channel||'Otro';
     if(m.por_canal[ch]!==undefined) m.por_canal[ch]+=sp; else m.por_canal['Otro']+=sp;
   });
@@ -1164,6 +1179,7 @@ let finPeriod = 6;
 
 function renderFinanzas(){
   const inv     = getInventory();
+  const combos  = getCombos();
   const sales   = getSales().filter(s=>s.estado==='entregado');
   const exp     = getExpenses();
   const tc      = currentTC;
@@ -1180,8 +1196,7 @@ function renderFinanzas(){
   let ingresos=0, cogs=0;
   sales.forEach(s=>{
     ingresos += parseFloat(s.sale_price_usd)||0;
-    const item = inv.find(i=>i.id===s.inventory_id);
-    if(item) cogs += calcItem(item,tc).total;
+    cogs += getSaleCogs(s, inv, combos, tc);
   });
   const margenBruto  = ingresos - cogs;
   const margenNeto   = margenBruto - exp.filter(e=>e.category!=='Courier').reduce((a,e)=>a+calcExpEquiv(e,tc),0)
