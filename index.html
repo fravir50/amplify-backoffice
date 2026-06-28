@@ -3842,7 +3842,7 @@ function renderValLibreria(){
       <td>${p.peso} kg</td>
       <td>${r.canal}</td>
       <td>${fUSD(r.costo)}</td>
-      <td>${r.precio_recomendado!==null?fUSD(r.precio_recomendado):'—'}</td>
+      <td style="color:${r.precio_recomendado===null&&r.precio_si_match!==null?'#EF4444':''}">${r.precio_recomendado!==null?fUSD(r.precio_recomendado):r.precio_si_match!==null?fUSD(r.precio_si_match):'—'}</td>
       <td style="color:${r.margen_pct!==null&&r.margen_pct<0?'#EF4444':''}">${r.margen_pct!==null?fPct(r.margen_pct):'—'}</td>
       <td style="color:${r.margen_abs!==null&&r.margen_abs<0?'#EF4444':''}">${r.margen_abs!==null?fUSD(r.margen_abs):'—'}</td>
       <td>${p.precio_encontrado!=null?fUSD(p.precio_encontrado):'—'}</td>
