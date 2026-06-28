@@ -98,6 +98,7 @@ a{color:inherit;text-decoration:none}
 .section.active{display:block}
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:16px;flex-wrap:wrap}
 .section-title{font-size:22px;font-weight:700}
+.section-subtitle{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;padding-bottom:6px;border-bottom:1px solid var(--border)}
 
 /* CARDS */
 .card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px}
@@ -292,6 +293,8 @@ label.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-s
     <div class="nav-item" onclick="navigate('senas')" id="nav-senas"><span class="icon">🤝</span> Señas</div>
     <div class="nav-item" onclick="navigate('expenses')" id="nav-expenses"><span class="icon">💸</span> Gastos</div>
     <div class="nav-item" onclick="navigate('partners')" id="nav-partners"><span class="icon">⚖️</span> Compras</div>
+    <div class="nav-item" onclick="navigate('finanzas')" id="nav-finanzas"><span class="icon">📈</span> Finanzas</div>
+    <div class="nav-item" onclick="navigate('validador')" id="nav-validador"><span class="icon">🔬</span> Validador</div>
     <div class="nav-item" onclick="navigate('settings')" id="nav-settings"><span class="icon">⚙️</span> Configuración</div>
   </nav>
   <div class="sidebar-bottom">
@@ -311,6 +314,8 @@ label.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-s
     <div class="section" id="section-senas"></div>
     <div class="section" id="section-expenses"></div>
     <div class="section" id="section-partners"></div>
+    <div class="section" id="section-finanzas"></div>
+    <div class="section" id="section-validador"></div>
     <div class="section" id="section-settings"></div>
   </div>
 </main>
@@ -341,42 +346,42 @@ label.form-label{display:block;font-size:12px;font-weight:500;color:var(--text-s
 <script>
 // ─── INITIAL DATA ────────────────────────────────────────────────────────────
 const INIT_INVENTORY = [
-  {id:'AMP-0001',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:27,purchase_date:'2025-11-01',status:'Vendido',sale_price_usd:1600,sale_price_ars:0,collected_by:'Frank',notes:''},
-  {id:'AMP-0002',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:27,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0003',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:27,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0004',description:'WiiM Ultra',category:'Streamer',cost_usd:263,tax_usd:19,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0005',description:'WiiM Ultra',category:'Streamer',cost_usd:263,tax_usd:19,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:'SANTI DEBE $20'},
-  {id:'AMP-0006',description:'WiiM Pro Plus',category:'Streamer',cost_usd:175,tax_usd:12,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0007',description:'WiiM Pro Plus',category:'Streamer',cost_usd:175,tax_usd:12,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0008',description:'WiiM Amp Ultra',category:'Amplificador',cost_usd:423,tax_usd:30,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0009',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:20,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0010',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:20,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0011',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:20,purchase_date:'2025-11-01',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0012',description:'FM3 Mark II Turbo',category:'Amplificador',cost_usd:1030,tax_usd:222,purchase_date:'2025-11-01',status:'Vendido',sale_price_usd:1600,sale_price_ars:0,collected_by:'Ambos',notes:'tax $102 + envío Fractal $120'},
-  {id:'AMP-0013',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:23.03,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0014',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:23.03,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0015',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:23.03,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0016',description:'WiiM Pro Plus',category:'Streamer',cost_usd:219,tax_usd:15.33,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0017',description:'WiiM Pro Plus',category:'Streamer',cost_usd:219,tax_usd:15.33,purchase_date:'2026-02-27',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0018',description:'Music Hall mmf-1.3',category:'Tocadiscos',cost_usd:349,tax_usd:24.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0019',description:'Music Hall mmf-1.3',category:'Tocadiscos',cost_usd:349,tax_usd:24.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0020',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:10.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0021',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:10.43,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0022',description:'KEF Q1 Meta (bookshelf, negro)',category:'Speakers',cost_usd:399.99,tax_usd:28,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0023',description:'Denon PMA-600NE (integrado)',category:'Amplificador',cost_usd:599,tax_usd:41.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0024',description:'Pro-Ject Debut EVO 2 (negro satinado)',category:'Tocadiscos',cost_usd:799,tax_usd:55.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0025',description:'Pro-Ject Debut EVO 2 (vino satinado)',category:'Tocadiscos',cost_usd:799,tax_usd:55.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0026',description:'Kanto YU6MB (powered, negro mate)',category:'Speakers',cost_usd:579.99,tax_usd:40.60,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0027',description:'ELAC Debut 3.0 DB63-WN (nogal)',category:'Speakers',cost_usd:499,tax_usd:34.93,purchase_date:'2026-03-10',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0028',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:10.43,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0029',description:'Cambridge Audio AXA35 (integrado)',category:'Amplificador',cost_usd:449,tax_usd:31.43,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0030',description:'Fluance RT85 (tocadiscos, nogal)',category:'Tocadiscos',cost_usd:549.99,tax_usd:38.50,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0031',description:'Fluance RT85 (tocadiscos, nogal)',category:'Tocadiscos',cost_usd:549.99,tax_usd:38.50,purchase_date:'2026-03-16',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
-  {id:'AMP-0032',description:'Kanto YU6MB (powered, negro mate)',category:'Speakers',cost_usd:579.99,tax_usd:40.60,purchase_date:'2026-03-20',status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0001',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:27,purchase_date:'2025-11-01',tc_at_date:1000,tc_estimado:true,status:'Vendido',sale_price_usd:1600,sale_price_ars:0,collected_by:'Frank',notes:''},
+  {id:'AMP-0002',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:27,purchase_date:'2025-11-01',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0003',description:'Sennheiser HD 650',category:'Headphones',cost_usd:380,tax_usd:27,purchase_date:'2025-11-01',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0004',description:'WiiM Ultra',category:'Streamer',cost_usd:263,tax_usd:19,purchase_date:'2025-11-01',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0005',description:'WiiM Ultra',category:'Streamer',cost_usd:263,tax_usd:19,purchase_date:'2025-11-01',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:'SANTI DEBE $20'},
+  {id:'AMP-0006',description:'WiiM Pro Plus',category:'Streamer',cost_usd:175,tax_usd:12,purchase_date:'2025-11-01',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0007',description:'WiiM Pro Plus',category:'Streamer',cost_usd:175,tax_usd:12,purchase_date:'2025-11-01',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0008',description:'WiiM Amp Ultra',category:'Amplificador',cost_usd:423,tax_usd:30,purchase_date:'2025-11-01',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0009',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:20,purchase_date:'2025-11-01',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0010',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:20,purchase_date:'2025-11-01',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0011',description:'Sennheiser HD 600',category:'Headphones',cost_usd:286,tax_usd:20,purchase_date:'2025-11-01',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0012',description:'FM3 Mark II Turbo',category:'Amplificador',cost_usd:1030,tax_usd:222,purchase_date:'2025-11-01',tc_at_date:1000,tc_estimado:true,status:'Vendido',sale_price_usd:1600,sale_price_ars:0,collected_by:'Ambos',notes:'tax $102 + envío Fractal $120'},
+  {id:'AMP-0013',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:23.03,purchase_date:'2026-02-27',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0014',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:23.03,purchase_date:'2026-02-27',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0015',description:'WiiM Ultra Music Streamer',category:'Streamer',cost_usd:329,tax_usd:23.03,purchase_date:'2026-02-27',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0016',description:'WiiM Pro Plus',category:'Streamer',cost_usd:219,tax_usd:15.33,purchase_date:'2026-02-27',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0017',description:'WiiM Pro Plus',category:'Streamer',cost_usd:219,tax_usd:15.33,purchase_date:'2026-02-27',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0018',description:'Music Hall mmf-1.3',category:'Tocadiscos',cost_usd:349,tax_usd:24.43,purchase_date:'2026-03-10',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0019',description:'Music Hall mmf-1.3',category:'Tocadiscos',cost_usd:349,tax_usd:24.43,purchase_date:'2026-03-10',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0020',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:10.43,purchase_date:'2026-03-10',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0021',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:10.43,purchase_date:'2026-03-10',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0022',description:'KEF Q1 Meta (bookshelf, negro)',category:'Speakers',cost_usd:399.99,tax_usd:28,purchase_date:'2026-03-10',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0023',description:'Denon PMA-600NE (integrado)',category:'Amplificador',cost_usd:599,tax_usd:41.93,purchase_date:'2026-03-10',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0024',description:'Pro-Ject Debut EVO 2 (negro satinado)',category:'Tocadiscos',cost_usd:799,tax_usd:55.93,purchase_date:'2026-03-10',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0025',description:'Pro-Ject Debut EVO 2 (vino satinado)',category:'Tocadiscos',cost_usd:799,tax_usd:55.93,purchase_date:'2026-03-10',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0026',description:'Kanto YU6MB (powered, negro mate)',category:'Speakers',cost_usd:579.99,tax_usd:40.60,purchase_date:'2026-03-10',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0027',description:'ELAC Debut 3.0 DB63-WN (nogal)',category:'Speakers',cost_usd:499,tax_usd:34.93,purchase_date:'2026-03-10',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0028',description:'iFi hip-dac3',category:'DAC',cost_usd:149,tax_usd:10.43,purchase_date:'2026-03-16',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0029',description:'Cambridge Audio AXA35 (integrado)',category:'Amplificador',cost_usd:449,tax_usd:31.43,purchase_date:'2026-03-16',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0030',description:'Fluance RT85 (tocadiscos, nogal)',category:'Tocadiscos',cost_usd:549.99,tax_usd:38.50,purchase_date:'2026-03-16',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0031',description:'Fluance RT85 (tocadiscos, nogal)',category:'Tocadiscos',cost_usd:549.99,tax_usd:38.50,purchase_date:'2026-03-16',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
+  {id:'AMP-0032',description:'Kanto YU6MB (powered, negro mate)',category:'Speakers',cost_usd:579.99,tax_usd:40.60,purchase_date:'2026-03-20',tc_at_date:1000,tc_estimado:true,status:'En Stock',sale_price_usd:0,sale_price_ars:0,collected_by:'',notes:''},
 ];
 
 const INIT_SALES = [
-  {id:'VTA-0002',inventory_id:'AMP-0012',sale_price_usd:1600,sale_price_ars:0,tc_used:1000,sale_date:'2026-05-06',channel:'Fractal',collected_by:'Ambos',frank_collected_usd:1120,santi_collected_usd:480,notes:''},
+  {id:'VTA-0002',inventory_id:'AMP-0012',sale_price_usd:1600,sale_price_ars:0,tc_used:1000,tc_at_date:1000,sale_date:'2026-05-06',estado:'entregado',entrega_date:'2026-05-06',channel:'Fractal',collected_by:'Ambos',frank_collected_usd:1120,santi_collected_usd:480,notes:''},
 ];
 
 const INIT_EXPENSES = [
@@ -400,13 +405,13 @@ const INIT_EXPENSES = [
 ];
 
 const INIT_PARTNERS = [
-  {id:'MOV-0001',date:'2025-11-01',description:'Pedido Amazon batch 1',amount_usd:3529,partner:'Frank',type:'compra',notes:''},
-  {id:'MOV-0002',date:'2025-11-01',description:'Pedido Fractal',amount_usd:1150,partner:'Santi',type:'compra',notes:''},
-  {id:'MOV-0003',date:'2025-12-01',description:'Courier Amazon',amount_usd:905,partner:'Santi',type:'compra',notes:''},
-  {id:'MOV-0004',date:'2025-12-01',description:'Courier Fractal',amount_usd:189.20,partner:'Frank',type:'compra',notes:''},
-  {id:'MOV-0005',date:'2026-02-01',description:'Pedido Amazon batch 2',amount_usd:2590.47,partner:'Frank',type:'compra',notes:''},
-  {id:'MOV-0006',date:'2026-03-01',description:'Pedido Amazon batch 3 (múltiples)',amount_usd:11369.73,partner:'Frank',type:'compra',notes:''},
-  {id:'MOV-0007',date:'2026-05-06',description:'Pago neto — mitad pedido Amazon',amount_usd:1764.50,partner:'Santi',type:'pago',notes:''},
+  {id:'MOV-0001',date:'2025-11-01',description:'Pedido Amazon batch 1',amount_usd:3529,partner:'Frank',type:'compra',tc_at_date:1000,tc_estimado:true,notes:''},
+  {id:'MOV-0002',date:'2025-11-01',description:'Pedido Fractal',amount_usd:1150,partner:'Santi',type:'compra',tc_at_date:1000,tc_estimado:true,notes:''},
+  {id:'MOV-0003',date:'2025-12-01',description:'Courier Amazon',amount_usd:905,partner:'Santi',type:'compra',tc_at_date:1000,tc_estimado:true,notes:''},
+  {id:'MOV-0004',date:'2025-12-01',description:'Courier Fractal',amount_usd:189.20,partner:'Frank',type:'compra',tc_at_date:1000,tc_estimado:true,notes:''},
+  {id:'MOV-0005',date:'2026-02-01',description:'Pedido Amazon batch 2',amount_usd:2590.47,partner:'Frank',type:'compra',tc_at_date:1000,tc_estimado:true,notes:''},
+  {id:'MOV-0006',date:'2026-03-01',description:'Pedido Amazon batch 3 (múltiples)',amount_usd:11369.73,partner:'Frank',type:'compra',tc_at_date:1000,tc_estimado:true,notes:''},
+  {id:'MOV-0007',date:'2026-05-06',description:'Pago neto — mitad pedido Amazon',amount_usd:1764.50,partner:'Santi',type:'pago',tc_at_date:1000,tc_estimado:true,notes:''},
 ];
 
 // ─── SUPABASE ─────────────────────────────────────────────────────────────────
@@ -621,7 +626,9 @@ function renderCurrentSection(){
   else if(currentSection==='senas') renderSenas();
   else if(currentSection==='expenses') renderExpenses();
   else if(currentSection==='partners') renderPartners();
+  else if(currentSection==='finanzas') renderFinanzas();
   else if(currentSection==='settings') renderSettings();
+  else if(currentSection==='validador') renderValidador();
 }
 
 function toggleSidebar(force){
@@ -634,22 +641,41 @@ function toggleSidebar(force){
 }
 
 // ─── CALC HELPERS ─────────────────────────────────────────────────────────────
+
+// Costo de una venta (simple o combo). Único lugar donde se resuelve esto.
+function getSaleCogs(sale, inv, combos, tc){
+  if(sale.combo_id){
+    const combo = combos.find(c=>c.id===sale.combo_id);
+    if(!combo) return 0;
+    return (combo.items||[]).reduce((a,ci)=>{
+      const it = inv.find(i=>i.id===ci.inventory_id);
+      return a + (it ? calcItem(it,tc).total : 0);
+    }, 0);
+  }
+  const item = inv.find(i=>i.id===sale.inventory_id);
+  return item ? calcItem(item,tc).total : 0;
+}
+
 function calcItem(item, tc){
   const total = (parseFloat(item.cost_usd)||0) + (parseFloat(item.tax_usd)||0);
   const totalARS = total * tc;
   const sp = parseFloat(item.sale_price_usd)||0;
   const spARS = parseFloat(item.sale_price_ars)||0;
-  const effectiveSP = sp > 0 ? sp : (spARS > 0 ? spARS/tc : 0);
+  // Para precio de venta: usar tc histórico del item si existe, sino tc actual
+  const saleTc = item.tc_at_date || tc;
+  const effectiveSP = sp > 0 ? sp : (spARS > 0 ? spARS/saleTc : 0);
   const margin = effectiveSP > 0 ? effectiveSP - total : null;
   const marginPct = effectiveSP > 0 ? (margin/total*100) : null;
-  return {total, totalARS, sp, spARS, effectiveSP, margin, marginPct};
+  const marginPctIngresos = effectiveSP > 0 ? (margin/effectiveSP*100) : null;
+  return {total, totalARS, sp, spARS, effectiveSP, margin, marginPct, marginPctIngresos};
 }
 
 function calcExpEquiv(exp, tc){
+  const localTc = exp.tc_at_date || tc;
   const usd = parseFloat(exp.amount_usd)||0;
   const ars = parseFloat(exp.amount_ars)||0;
   if(usd>0) return usd;
-  if(ars>0) return ars/tc;
+  if(ars>0) return ars/localTc;
   return 0;
 }
 
@@ -674,6 +700,7 @@ function buildMonthlyData(n=6){
   const inv = getInventory();
   const sales = getSales();
   const exp = getExpenses();
+  const combos = getCombos();
   const tc = currentTC;
 
   const months = [];
@@ -682,27 +709,28 @@ function buildMonthlyData(n=6){
     const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
     const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
     const label = d.toLocaleString('es-AR',{month:'short',year:'2-digit'}).replace('. ','\'');
-    months.push({key, label, gastos_op:0, ingresos:0, cogs:0, margen_bruto:0, margen_neto:0,
+    months.push({key, label, gastos_op:0, ingresos:0, cogs:0, margen_bruto:0, margen_neto:0, ventas_count:0,
       por_canal:{MercadoLibre:0, Directo:0, Fractal:0, Otro:0}});
   }
   const idx = {};
   months.forEach((m,i)=>idx[m.key]=i);
 
+  // Gastos operativos: usar tc_at_date propio de cada gasto
   exp.forEach(e=>{
-    if(e.category==='Productos') return;
     const mk = (e.date||'').substring(0,7);
     if(idx[mk]===undefined) return;
     months[idx[mk]].gastos_op += calcExpEquiv(e, tc);
   });
 
-  sales.forEach(s=>{
-    const mk = (s.sale_date||'').substring(0,7);
+  // Ingresos y COGS: solo ventas entregadas, fechadas por entrega_date
+  sales.filter(s=>s.estado==='entregado').forEach(s=>{
+    const mk = (s.entrega_date||s.sale_date||'').substring(0,7);
     if(idx[mk]===undefined) return;
     const m = months[idx[mk]];
+    m.ventas_count++;
     const sp = parseFloat(s.sale_price_usd)||0;
     m.ingresos += sp;
-    const item = inv.find(i=>i.id===s.inventory_id);
-    if(item) m.cogs += calcItem(item, tc).total;
+    m.cogs += getSaleCogs(s, inv, combos, tc);
     const ch = s.channel||'Otro';
     if(m.por_canal[ch]!==undefined) m.por_canal[ch]+=sp; else m.por_canal['Otro']+=sp;
   });
@@ -712,19 +740,206 @@ function buildMonthlyData(n=6){
     m.margen_bruto = m.ingresos - m.cogs;
     m.margen_neto  = m.margen_bruto - m.gastos_op;
     cumulative += m.margen_neto;
-    m.cashflow_acum = cumulative;
+    m.margen_neto_acum = cumulative;
   });
 
   return months;
 }
 
+// ─── CASH LEDGER & FINANCIAL METRICS ─────────────────────────────────────────
+
+// Reconcilia courier: fuente primaria = INIT_PARTNERS. Si hay un gasto Courier en
+// INIT_EXPENSES sin match exacto (monto+fecha) en PARTNERS, también se suma a la caja.
+function buildCashLedger(){
+  const inv      = getInventory();
+  const sales    = getSales();
+  const exp      = getExpenses();
+  const partners = getPartners();
+  const senas    = getSenas();
+  const tc       = currentTC;
+  const movements = [];
+
+  // ENTRADAS: aportes de socios (type:'pago' en PARTNERS)
+  partners.filter(p=>p.type==='pago').forEach(p=>{
+    movements.push({date:p.date, tipo:'aporte', dir:'in',
+      amount_usd:parseFloat(p.amount_usd)||0, ref:p.id, desc:p.description});
+  });
+
+  // ENTRADAS: señas cobradas (status !== 'Cancelada')
+  senas.forEach(s=>{
+    if(s.status==='Cancelada') return;
+    const senaAmt = parseFloat(s.sena_amount_usd)||0;
+    if(senaAmt>0) movements.push({date:s.date, tipo:'seña_cobrada', dir:'in',
+      amount_usd:senaAmt, ref:s.id, desc:`Seña — ${s.customer_name||''}`});
+    if(s.status==='Completada' && s.completed_date){
+      const totalPactado = (s.products||[]).reduce((a,p)=>a+(parseFloat(p.agreed_price_usd)||0),0);
+      const saldo = totalPactado - senaAmt;
+      if(saldo>0) movements.push({date:s.completed_date, tipo:'saldo_cobrado', dir:'in',
+        amount_usd:saldo, ref:s.id, desc:`Saldo — ${s.customer_name||''}`});
+    }
+  });
+
+  // ENTRADAS: cobros de ventas directas (sin seña vinculada, estado='entregado')
+  const saleIdsFromSenas = new Set(senas.flatMap(s=>s.sale_ids||[]));
+  sales.filter(s=>s.estado==='entregado' && !saleIdsFromSenas.has(s.id)).forEach(s=>{
+    const sp = parseFloat(s.sale_price_usd)||0;
+    if(sp>0) movements.push({date:s.entrega_date||s.sale_date, tipo:'cobro_venta', dir:'in',
+      amount_usd:sp, ref:s.id, desc:`Venta ${s.id}`});
+  });
+
+  // APORTES IMPLÍCITOS + SALIDAS: cada compra representa capital puesto por el socio
+  // que inmediatamente sale como pago al proveedor (neto = 0 por compra)
+  const courierFromPartners = partners.filter(p=>p.type==='compra' && /courier/i.test(p.description||''));
+  const productFromPartners = partners.filter(p=>p.type==='compra' && !/courier/i.test(p.description||''));
+  [...courierFromPartners, ...productFromPartners].forEach(p=>{
+    const amt = parseFloat(p.amount_usd)||0;
+    movements.push({date:p.date, tipo:'aporte_socio', dir:'in',
+      amount_usd:amt, ref:p.id, desc:`Aporte ${p.partner} — ${p.description}`});
+  });
+  courierFromPartners.forEach(p=>{
+    movements.push({date:p.date, tipo:'courier', dir:'out',
+      amount_usd:parseFloat(p.amount_usd)||0, ref:p.id, desc:p.description});
+  });
+  productFromPartners.forEach(p=>{
+    movements.push({date:p.date, tipo:'compra_producto', dir:'out',
+      amount_usd:parseFloat(p.amount_usd)||0, ref:p.id, desc:p.description});
+  });
+
+  // SALIDAS: courier de INIT_EXPENSES sin match exacto en PARTNERS (reconciliación)
+  exp.filter(e=>e.category==='Courier').forEach(e=>{
+    const amt = calcExpEquiv(e, tc);
+    const alreadyCounted = courierFromPartners.some(p=>
+      Math.abs(parseFloat(p.amount_usd)-amt)<0.01 && p.date===e.date
+    );
+    if(!alreadyCounted) movements.push({date:e.date, tipo:'courier_extra', dir:'out',
+      amount_usd:amt, ref:e.id, desc:e.description});
+  });
+
+  // SALIDAS: opex (IT, Pauta, CM, Varios — excluyendo Courier ya contado desde PARTNERS)
+  exp.filter(e=>e.category!=='Courier').forEach(e=>{
+    const amt = calcExpEquiv(e, tc);
+    if(amt>0) movements.push({date:e.date, tipo:'gasto_op', dir:'out',
+      amount_usd:amt, ref:e.id, desc:e.description});
+  });
+
+  movements.sort((a,b)=>a.date.localeCompare(b.date));
+  let saldo = 0;
+  movements.forEach(m=>{
+    saldo += m.dir==='in' ? m.amount_usd : -m.amount_usd;
+    m.saldo_usd = saldo;
+  });
+  return movements;
+}
+
+function getCajaActual(){
+  const ledger = buildCashLedger();
+  return ledger.length>0 ? ledger[ledger.length-1].saldo_usd : 0;
+}
+
+// Burn operativo promedio mensual (últimos n meses).
+// Excluye pagos a proveedor porque escalan con ventas; solo IT + Pauta + CM + Varios.
+function getGastoOpPromMensual(n=3){
+  const exp = getExpenses();
+  const tc  = currentTC;
+  const now = new Date();
+  let total = 0;
+  exp.forEach(e=>{
+    if(e.category==='Courier') return;
+    const d = new Date(e.date+'T00:00:00');
+    const diffMonths = (now.getFullYear()-d.getFullYear())*12 + (now.getMonth()-d.getMonth());
+    if(diffMonths>=0 && diffMonths<n) total += calcExpEquiv(e, tc);
+  });
+  return n>0 ? total/n : 0;
+}
+
+function getRunway(){
+  const burn = getGastoOpPromMensual();
+  if(burn<=0) return Infinity;
+  return getCajaActual()/burn;
+}
+
+function getCapitalCongelado(){
+  const inv = getInventory();
+  const tc  = currentTC;
+  return inv.filter(i=>i.status!=='Vendido')
+    .reduce((a,i)=>a+calcItem(i,tc).total, 0);
+}
+
+function getCapitalInvertidoTotal(){
+  return getPartners()
+    .filter(p=>p.type==='compra')
+    .reduce((a,p)=>a+(parseFloat(p.amount_usd)||0), 0);
+}
+
+function getSellThrough(){
+  const inv = getInventory();
+  const vendidos = inv.filter(i=>i.status==='Vendido').length;
+  const total    = inv.filter(i=>i.status==='Vendido'||i.status==='En Stock'||i.status==='Reservado').length;
+  return total>0 ? vendidos/total : 0;
+}
+
+function getAgingInventario(){
+  const inv = getInventory();
+  const hoy = new Date();
+  return inv.filter(i=>i.status!=='Vendido').map(i=>{
+    const d = new Date((i.purchase_date||'2025-01-01')+'T00:00:00');
+    const dias = Math.floor((hoy-d)/(1000*60*60*24));
+    return {item:i, dias, capital:calcItem(i,currentTC).total};
+  }).sort((a,b)=>b.dias-a.dias);
+}
+
+function getAnticiposClientes(){
+  const senas = getSenas();
+  return senas.filter(s=>s.status==='Activa').reduce((a,s)=>{
+    return a+(parseFloat(s.sena_amount_usd)||0);
+  },0);
+}
+
+function getBreakEven(){
+  const burn = getGastoOpPromMensual();
+  const sales = getSales().filter(s=>s.estado==='entregado');
+  if(sales.length===0) return null;
+  const inv = getInventory();
+  const tc  = currentTC;
+  let totalMargin = 0;
+  sales.forEach(s=>{
+    const item = inv.find(i=>i.id===s.inventory_id);
+    if(item){ const c=calcItem(item,tc); if(c.margin) totalMargin+=c.margin; }
+  });
+  const avgMargin = totalMargin/sales.length;
+  return avgMargin>0 ? burn/avgMargin : null;
+}
+
+function getCAC(){
+  // Atribución combinada: gasto total Pauta+CM / total ventas del período.
+  // Limitación: no distingue ventas orgánicas de pagas — usar como referencia orientativa.
+  const exp   = getExpenses();
+  const sales = getSales().filter(s=>s.estado==='entregado');
+  const tc    = currentTC;
+  const mktSpend = exp.filter(e=>e.category==='Pauta'||e.category==='CM')
+    .reduce((a,e)=>a+calcExpEquiv(e,tc),0);
+  return sales.length>0 ? mktSpend/sales.length : 0;
+}
+
+function getROAS(){
+  // Ingresos totales de ventas entregadas / gasto total en Pauta+CM.
+  // Misma limitación de atribución que getCAC.
+  const exp   = getExpenses();
+  const sales = getSales().filter(s=>s.estado==='entregado');
+  const tc    = currentTC;
+  const mktSpend = exp.filter(e=>e.category==='Pauta'||e.category==='CM')
+    .reduce((a,e)=>a+calcExpEquiv(e,tc),0);
+  const ingresos = sales.reduce((a,s)=>a+(parseFloat(s.sale_price_usd)||0),0);
+  return mktSpend>0 ? ingresos/mktSpend : 0;
+}
+
 // ─── DASHBOARD ────────────────────────────────────────────────────────────────
 function renderDashboard(){
-  const inv = getInventory();
-  const sales = getSales();
-  const exp = getExpenses();
-  const partners = getPartners();
-  const tc = currentTC;
+  const inv  = getInventory();
+  const allSales = getSales();
+  const sales = allSales.filter(s=>s.estado==='entregado');
+  const exp  = getExpenses();
+  const tc   = currentTC;
 
   const senas = getSenas();
   const senasActivas = senas.filter(s=>s.status==='Activa');
@@ -733,6 +948,14 @@ function renderDashboard(){
     return a + (total - (parseFloat(s.sena_amount_usd)||0));
   },0);
 
+  // Caja y Runway
+  const caja      = getCajaActual();
+  const cajaARS   = caja * tc;
+  const runway    = getRunway();
+  const runwayColor = runway===Infinity||runway>=6 ? '#22C55E' : runway>=2 ? '#F59E0B' : '#EF4444';
+  const runwayLabel = runway===Infinity ? '∞' : isNaN(runway)||runway<0 ? '—' : runway.toFixed(1);
+
+  // Stock
   const counts = {stock:0,sold:0,reserved:0,ordered:0};
   inv.forEach(i=>{
     if(i.status==='En Stock') counts.stock++;
@@ -741,64 +964,69 @@ function renderDashboard(){
     else if(i.status==='En Pedido') counts.ordered++;
   });
 
-  const capitalTotal = inv.reduce((a,i)=>{ const c=calcItem(i,tc); return a+c.total; },0);
+  // Sell-through
+  const sellThrough = getSellThrough();
+  const capitalCongelado = getCapitalCongelado();
+  const breakEven = getBreakEven();
 
-  const combos = getCombos();
-  let ingresos=0, costoVentas=0;
-  sales.forEach(s=>{
-    ingresos += parseFloat(s.sale_price_usd)||0;
-    if(s.combo_id){
-      const combo = combos.find(c=>c.id===s.combo_id);
-      if(combo) costoVentas += (combo.items||[]).reduce((a,ci)=>{ const it=inv.find(i=>i.id===ci.inventory_id); return a+(it?calcItem(it,tc).total:0); },0);
-    } else {
-      const item = inv.find(i=>i.id===s.inventory_id);
-      if(item){ costoVentas += calcItem(item,tc).total; }
-    }
-  });
-  const margenBruto = ingresos - costoVentas;
-  const margenPct = ingresos>0 ? (margenBruto/costoVentas*100) : 0;
+  // Margen neto del mes actual
+  const hoy = new Date();
+  const mk  = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}`;
+  const monthData = buildMonthlyData(1)[0];
+  const margenNetoMes    = monthData ? monthData.margen_neto : 0;
+  const ingresosMes      = monthData ? monthData.ingresos    : 0;
+  const margenNetoPctMes = ingresosMes>0 ? (margenNetoMes/ingresosMes*100) : 0;
+  const ventasEsteMes    = sales.filter(s=>(s.entrega_date||s.sale_date||'').startsWith(mk)).length;
 
-  // Gastos por categoría
-  const cats = {IT:0,Courier:0,Varios:0};
-  exp.forEach(e=>{ if(e.category in cats) cats[e.category] += calcExpEquiv(e,tc); });
-  const maxCat = Math.max(...Object.values(cats), 0.01);
-
-  // Balance socios
-  const pb = calcPartnerBalance();
-  const { frank_inv: frank, santi_inv: santi, balance: pb_balance } = pb;
-  const total = frank + santi;
-
-  // Reciente
-  const recentSales = [...sales].sort((a,b)=>b.sale_date.localeCompare(a.sale_date)).slice(0,5);
-  const recentExp = [...exp].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
-
-  const margenClass = margenBruto < 0 ? 'text-red' : margenBruto > 0 ? 'text-green' : '';
+  // Recientes
+  const recentSales = [...allSales].sort((a,b)=>(b.entrega_date||b.sale_date).localeCompare(a.entrega_date||a.sale_date)).slice(0,5);
+  const recentExp   = [...exp].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
 
   document.getElementById('section-dashboard').innerHTML = `
     <div class="section-header">
       <h2 class="section-title">Dashboard</h2>
     </div>
 
-    <div class="grid-4">
+    <!-- FILA 1: Liquidez + Stock -->
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="card" style="grid-column:span 2">
+        <div class="card-title">Caja actual</div>
+        <div class="card-value" style="font-size:1.8rem">${fUSD(caja)}</div>
+        <div class="card-sub">${fARS(cajaARS)} al TC de hoy</div>
+      </div>
+      <div class="card card-sm">
+        <div class="card-title">Runway</div>
+        <div class="card-value" style="color:${runwayColor}">${runwayLabel} <span style="font-size:0.9rem;font-weight:400">meses</span></div>
+        <div class="card-sub">Burn ≈ ${fUSD(getGastoOpPromMensual())}/mes</div>
+      </div>
       <div class="card card-sm">
         <div class="card-title">En Stock</div>
         <div class="card-value text-green">${counts.stock}</div>
-        <div class="card-sub">${counts.sold} vendidas · ${counts.reserved} reservadas${counts.ordered>0?' · '+counts.ordered+' en pedido':''}</div>
+        <div class="card-sub">${counts.sold} vendidos · ${counts.reserved} reservados</div>
+      </div>
+    </div>
+
+    <!-- FILA 2: Rentabilidad + Inventario -->
+    <div class="grid-4" style="margin-bottom:20px">
+      <div class="card card-sm" style="grid-column:span 1">
+        <div class="card-title">Margen Neto (mes)</div>
+        <div class="card-value" style="font-size:1.3rem;${margenNetoMes<0?'color:#EF4444':'color:#22C55E'}">${fUSD(margenNetoMes)}</div>
+        <div class="card-sub" style="${margenNetoPctMes<0?'color:#EF4444':'color:#22C55E'}">${margenNetoPctMes.toFixed(1)}% s/ ingresos</div>
       </div>
       <div class="card card-sm">
-        <div class="card-title">Capital Invertido</div>
-        <div class="card-value">${fUSD(capitalTotal)}</div>
-        <div class="card-sub">${fARS(capitalTotal*tc)} ARS</div>
+        <div class="card-title">Capital Congelado</div>
+        <div class="card-value" style="font-size:1.3rem;color:#F59E0B">${fUSD(capitalCongelado)}</div>
+        <div class="card-sub">Stock sin vender</div>
       </div>
       <div class="card card-sm">
-        <div class="card-title">Ingresos Ventas</div>
-        <div class="card-value">${fUSD(ingresos)}</div>
-        <div class="card-sub">${sales.length} venta${sales.length!==1?'s':''}</div>
+        <div class="card-title">Sell-Through</div>
+        <div class="card-value" style="font-size:1.3rem">${(sellThrough*100).toFixed(0)}%</div>
+        <div class="card-sub">${counts.sold} de ${counts.sold+counts.stock+counts.reserved} unidades</div>
       </div>
       <div class="card card-sm">
-        <div class="card-title">Margen Bruto</div>
-        <div class="card-value ${margenClass}">${fUSD(margenBruto)}</div>
-        <div class="card-sub ${margenClass}">${fPct(margenPct)} sobre costo</div>
+        <div class="card-title">Break-Even</div>
+        <div class="card-value" style="font-size:1.3rem">${breakEven!=null ? Math.ceil(breakEven) : '—'} <span style="font-size:0.8rem;font-weight:400">u/mes</span></div>
+        <div class="card-sub" style="${ventasEsteMes>=(breakEven||Infinity)?'color:#22C55E':'color:#F59E0B'}">${ventasEsteMes} realizadas este mes</div>
       </div>
     </div>
 
@@ -818,94 +1046,42 @@ function renderDashboard(){
       </div>
     </div>` : ''}
 
-    <div class="grid-2">
-      <div class="card">
-        <div class="card-title" style="margin-bottom:16px">Gastos por Categoría</div>
-        ${Object.entries(cats).map(([cat,val])=>`
-          <div class="cat-row">
-            <span class="cat-label">${cat}</span>
-            <div class="cat-track"><div class="cat-fill" style="width:${(val/maxCat*100).toFixed(1)}%"></div></div>
-            <span class="cat-val">${fUSD(val)}</span>
-          </div>
-        `).join('')}
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px">
-          <span class="text-secondary">Total gastos</span>
-          <span class="text-bold">${fUSD(Object.values(cats).reduce((a,b)=>a+b,0))}</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title" style="margin-bottom:16px">Balance Socios</div>
-        <div class="partner-row">
-          <div>
-            <div style="font-weight:600">Frank</div>
-            <div class="partner-bar"><div class="partner-bar-fill" style="width:${total>0?(frank/total*100).toFixed(1):50}%;background:var(--accent)"></div></div>
-          </div>
-          <div style="text-align:right">
-            <div style="font-weight:600">${fUSD(frank)}</div>
-            <div class="text-muted" style="font-size:12px">${total>0?(frank/total*100).toFixed(1):0}%</div>
-          </div>
-        </div>
-        <div class="partner-row">
-          <div>
-            <div style="font-weight:600">Santi</div>
-            <div class="partner-bar"><div class="partner-bar-fill" style="width:${total>0?(santi/total*100).toFixed(1):50}%;background:#60A5FA"></div></div>
-          </div>
-          <div style="text-align:right">
-            <div style="font-weight:600">${fUSD(santi)}</div>
-            <div class="text-muted" style="font-size:12px">${total>0?(santi/total*100).toFixed(1):0}%</div>
-          </div>
-        </div>
-        ${Math.abs(pb_balance)>=0.01 ? `<div style="margin-top:12px;padding:10px;background:rgba(${pb_balance>0?'239,68,68':'34,197,94'},.08);border-radius:8px;border:1px solid rgba(${pb_balance>0?'239,68,68':'34,197,94'},.2);font-size:13px">
-          <span class="text-secondary">${pb_balance>0?'Santi debe a Frank':'Frank debe a Santi'}</span>
-          <span class="${pb_balance>0?'text-red':'text-green'} text-bold" style="float:right">${fUSD(Math.abs(pb_balance))}</span>
-        </div>` : ''}
-      </div>
+    <!-- GRÁFICO HERO: Evolución de Caja -->
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title" style="margin-bottom:4px">Evolución de Caja</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Saldo real de caja por movimiento (aportes, cobros, pagos, opex)</div>
+      <div style="position:relative;height:220px"><canvas id="chart-dash-caja"></canvas></div>
     </div>
 
-    <!-- TREND CHARTS -->
+    <!-- GRÁFICO 2: Ventas vs Break-Even -->
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-      <h3 style="font-size:15px;font-weight:600;color:var(--text-primary);margin:0">Tendencias financieras</h3>
+      <h3 style="font-size:15px;font-weight:600;color:var(--text-primary);margin:0">Tendencias</h3>
       <div style="display:flex;gap:6px">
         ${[3,6,12].map(n=>`<button class="btn btn-sm" style="border-radius:6px;padding:4px 12px;font-size:12px;${dashPeriod===n?'background:var(--accent);color:#fff;border-color:var(--accent)':'background:transparent;color:var(--text-muted);border:1px solid var(--border)'}" onclick="changeDashPeriod(${n})">${n}M</button>`).join('')}
       </div>
     </div>
-
     <div class="grid-2" style="margin-bottom:20px">
       <div class="card">
-        <div class="card-title" style="margin-bottom:4px">Costo Operativo vs Margen Bruto</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Gastos (IT/Courier/Varios) vs ganancia sobre productos vendidos</div>
-        <div style="position:relative;height:200px"><canvas id="chart-op-margin"></canvas></div>
+        <div class="card-title" style="margin-bottom:4px">Ventas vs Break-Even</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Unidades vendidas por mes vs umbral de break-even</div>
+        <div style="position:relative;height:200px"><canvas id="chart-dash-breakeven"></canvas></div>
       </div>
       <div class="card">
         <div class="card-title" style="margin-bottom:4px">Margen Neto Mensual</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Margen bruto − costos operativos: lo que queda en el bolsillo</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Lo que queda en el bolsillo cada mes (ingresos − COGS − opex)</div>
         <div style="position:relative;height:200px"><canvas id="chart-net-margin"></canvas></div>
       </div>
     </div>
-    <div class="grid-2" style="margin-bottom:20px">
-      <div class="card">
-        <div class="card-title" style="margin-bottom:4px">P&amp;L Mensual Desglosado</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Ingresos vs costo de producto vendido vs gasto operativo</div>
-        <div style="position:relative;height:200px"><canvas id="chart-pnl"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title" style="margin-bottom:4px">Cashflow Acumulado</div>
-        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Suma corriente del margen neto — ¿el negocio suma o resta?</div>
-        <div style="position:relative;height:200px"><canvas id="chart-cashflow"></canvas></div>
-      </div>
-    </div>
 
+    <!-- RECIENTES -->
     <div class="grid-2">
       <div class="card">
         <div class="card-title" style="margin-bottom:12px">Últimas Ventas</div>
         ${recentSales.length===0 ? '<p class="text-muted" style="font-size:13px;padding:16px 0">Sin ventas registradas</p>' :
-          recentSales.map(s=>{
-            return `<div class="recent-item">
-              <div><div class="recent-name">${getSaleName(s)}</div><div class="recent-meta">${s.id} · ${fDate(s.sale_date)} · ${s.channel}</div></div>
-              <div style="text-align:right"><div style="font-weight:600">${fUSD(s.sale_price_usd)}</div><div class="recent-meta">${s.collected_by}</div></div>
-            </div>`;
-          }).join('')
+          recentSales.map(s=>`<div class="recent-item">
+            <div><div class="recent-name">${getSaleName(s)}</div><div class="recent-meta">${s.id} · ${fDate(s.entrega_date||s.sale_date)} · ${s.channel}</div></div>
+            <div style="text-align:right"><div style="font-weight:600">${fUSD(s.sale_price_usd)}</div><div class="recent-meta">${s.estado||''}</div></div>
+          </div>`).join('')
         }
       </div>
       <div class="card">
@@ -942,6 +1118,288 @@ function renderDashCharts(n){
 
   const baseOpts = {
     responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{display:false},
+      tooltip:{backgroundColor:tooltipBg,borderColor:tooltipBorder,borderWidth:1,titleColor:isDark?'#fff':'#111',bodyColor:tickColor,callbacks:{label:ctx=>' '+fUSD(ctx.parsed.y)}}},
+    scales:{
+      x:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11}}},
+      y:{grid:{color:gridColor},ticks:{color:tickColor,font:{size:11},callback:v=>'$'+Math.round(v)}}
+    }
+  };
+
+  // Hero chart: Evolución de Caja (from ledger, grouped by month)
+  const cCaja = document.getElementById('chart-dash-caja');
+  if(cCaja){
+    Chart.getChart(cCaja)?.destroy();
+    const ledger = buildCashLedger();
+    // Group saldo by month label (take last saldo per month)
+    const cajaByMonth = {};
+    ledger.forEach(mv=>{
+      const mk = mv.date ? mv.date.substring(0,7) : null;
+      if(mk) cajaByMonth[mk] = mv.saldo_usd;
+    });
+    // Align to the same n-month window using the key already in buildMonthlyData
+    const cajaFinal = data.map(m=>cajaByMonth[m.key]??0);
+    const lastVal = cajaFinal[cajaFinal.length-1]??0;
+    new Chart(cCaja,{type:'line',data:{labels,datasets:[{
+      label:'Caja',data:cajaFinal,
+      borderColor:lastVal>=0?'#22C55E':'#EF4444',
+      backgroundColor:lastVal>=0?'rgba(34,197,94,0.08)':'rgba(239,68,68,0.08)',
+      borderWidth:2,pointRadius:4,fill:true,tension:0.35,
+      pointBackgroundColor:cajaFinal.map(v=>v>=0?'#22C55E':'#EF4444')
+    }]},options:{...baseOpts,
+      plugins:{...baseOpts.plugins,legend:{display:false},
+        tooltip:{...baseOpts.plugins.tooltip,callbacks:{label:ctx=>' Caja: '+fUSD(ctx.parsed.y)}}},
+      scales:{...baseOpts.scales,y:{...baseOpts.scales.y,
+        grid:{...baseOpts.scales.y.grid,color:ctx=>ctx.tick.value===0?'rgba(255,255,255,0.2)':gridColor},
+        ticks:{...baseOpts.scales.y.ticks,callback:v=>'$'+Math.round(v)}}}}});
+  }
+
+  // Chart 2: Ventas por mes vs Break-Even
+  const cBE = document.getElementById('chart-dash-breakeven');
+  if(cBE){
+    Chart.getChart(cBE)?.destroy();
+    const be = getBreakEven();
+    const ventasCounts = data.map(m=>m.ventas_count||0);
+    new Chart(cBE,{type:'bar',data:{labels,datasets:[
+      {label:'Ventas',data:ventasCounts,backgroundColor:'rgba(59,130,246,0.5)',borderColor:'#3B82F6',borderWidth:1.5,borderRadius:4},
+      ...(be!=null&&isFinite(be) ? [{
+        label:`Break-Even (${Math.ceil(be)})`,
+        data:data.map(()=>Math.ceil(be)),
+        type:'line',borderColor:'#F59E0B',borderWidth:1.5,borderDash:[4,4],
+        pointRadius:0,fill:false,tension:0
+      }] : [])
+    ]},options:{...baseOpts,
+      plugins:{...baseOpts.plugins,legend:{display:be!=null&&isFinite(be),labels:{color:tickColor,font:{size:11},boxWidth:12}},
+        tooltip:{...baseOpts.plugins.tooltip,callbacks:{label:ctx=>ctx.dataset.label==='Ventas'?' '+ctx.parsed.y+' ventas':' umbral: '+ctx.parsed.y}}},
+      scales:{...baseOpts.scales,y:{...baseOpts.scales.y,
+        ticks:{...baseOpts.scales.y.ticks,callback:v=>Math.round(v),stepSize:1},beginAtZero:true}}}});
+  }
+
+  // Chart 3: Margen Neto Mensual
+  const cNM = document.getElementById('chart-net-margin');
+  if(cNM){ Chart.getChart(cNM)?.destroy(); new Chart(cNM,{type:'line',data:{labels,datasets:[{
+    label:'Margen neto',
+    data:data.map(m=>m.margen_neto),
+    segment:{borderColor:ctx=>ctx.p1.parsed.y>=0?'#22C55E':'#EF4444',backgroundColor:ctx=>ctx.p1.parsed.y>=0?'rgba(34,197,94,0.1)':'rgba(239,68,68,0.1)'},
+    backgroundColor:'rgba(34,197,94,0.08)',borderWidth:2,pointRadius:3,
+    pointBackgroundColor:data.map(m=>m.margen_neto>=0?'#22C55E':'#EF4444'),fill:true,tension:0.3
+  }]},options:{...baseOpts,
+    scales:{...baseOpts.scales,y:{...baseOpts.scales.y,
+      ticks:{...baseOpts.scales.y.ticks,callback:v=>'$'+Math.round(v)},
+      grid:{...baseOpts.scales.y.grid,color:ctx=>ctx.tick.value===0?'rgba(255,255,255,0.2)':gridColor}}}}});}
+}
+
+// ─── FINANZAS ─────────────────────────────────────────────────────────────────
+let finPeriod = 6;
+
+function renderFinanzas(){
+  const inv     = getInventory();
+  const combos  = getCombos();
+  const sales   = getSales().filter(s=>s.estado==='entregado');
+  const exp     = getExpenses();
+  const tc      = currentTC;
+
+  // ── Liquidez ──
+  const caja       = getCajaActual();
+  const cajaARS    = caja * tc;
+  const runway     = getRunway();
+  const anticipos  = getAnticiposClientes();
+  const runwayColor = runway===Infinity||runway>=6 ? '#22C55E' : runway>=2 ? '#F59E0B' : '#EF4444';
+  const runwayLabel = runway===Infinity ? '∞' : isNaN(runway)||runway<0 ? '—' : runway.toFixed(1);
+
+  // ── Rentabilidad ──
+  let ingresos=0, cogs=0;
+  sales.forEach(s=>{
+    ingresos += parseFloat(s.sale_price_usd)||0;
+    cogs += getSaleCogs(s, inv, combos, tc);
+  });
+  const margenBruto  = ingresos - cogs;
+  const margenNeto   = margenBruto - exp.filter(e=>e.category!=='Courier').reduce((a,e)=>a+calcExpEquiv(e,tc),0)
+                                   - exp.filter(e=>e.category==='Courier').reduce((a,e)=>a+calcExpEquiv(e,tc),0);
+  const markupPct    = cogs>0    ? (margenBruto/cogs*100)     : 0;
+  const margenPctIng = ingresos>0 ? (margenBruto/ingresos*100) : 0;
+  const margenNetoPct= ingresos>0 ? (margenNeto/ingresos*100)  : 0;
+
+  // ── Capital ──
+  const capitalTotal    = getCapitalInvertidoTotal();
+  const capitalCongelado= getCapitalCongelado();
+  const vendidos        = inv.filter(i=>i.status==='Vendido').length;
+  const enStock         = inv.filter(i=>i.status==='En Stock').length;
+  const reservados      = inv.filter(i=>i.status==='Reservado').length;
+  const sellThrough     = getSellThrough();
+
+  // ── Planificación ──
+  const breakEven = getBreakEven();
+  const ventasEsteMes = (() => {
+    const hoy = new Date();
+    const mk = `${hoy.getFullYear()}-${String(hoy.getMonth()+1).padStart(2,'0')}`;
+    return sales.filter(s=>(s.entrega_date||s.sale_date||'').startsWith(mk)).length;
+  })();
+
+  // ── Marketing ──
+  const cac  = getCAC();
+  const roas = getROAS();
+  const salesByChannel = {};
+  const marginByChannel = {};
+  sales.forEach(s=>{
+    const ch = s.channel||'Otro';
+    salesByChannel[ch] = (salesByChannel[ch]||0)+1;
+    const item = inv.find(i=>i.id===s.inventory_id);
+    if(item){ const c=calcItem(item,tc); marginByChannel[ch]=(marginByChannel[ch]||0)+(c.margin||0); }
+  });
+
+  // ── Gastos por categoría ──
+  const catExp = {IT:0,Courier:0,Pauta:0,CM:0,Varios:0};
+  exp.forEach(e=>{ if(e.category in catExp) catExp[e.category]+=calcExpEquiv(e,tc); });
+  const maxExp = Math.max(...Object.values(catExp),0.01);
+
+  document.getElementById('section-finanzas').innerHTML = `
+    <div class="section-header">
+      <h2 class="section-title">Finanzas</h2>
+      <div style="display:flex;gap:8px">
+        ${[3,6,12].map(n=>`<button class="btn${finPeriod===n?' btn-primary':' btn-ghost'}" onclick="finPeriod=${n};renderFinanzas()">${n}m</button>`).join('')}
+      </div>
+    </div>
+
+    <!-- LIQUIDEZ -->
+    <div class="section-subtitle" style="margin:0 0 12px">Liquidez</div>
+    <div class="grid-4" style="margin-bottom:20px">
+      <div class="card" style="grid-column:span 2">
+        <div class="card-title">Caja actual</div>
+        <div class="card-value" style="font-size:2rem">${fUSD(caja)}</div>
+        <div class="card-sub">${fARS(cajaARS)} al TC de hoy</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Runway</div>
+        <div class="card-value" style="color:${runwayColor}">${runwayLabel} <span style="font-size:1rem;font-weight:400">meses</span></div>
+        <div class="card-sub">Burn opex ≈ ${fUSD(getGastoOpPromMensual())}/mes</div>
+      </div>
+      <div class="card" style="border:1px solid #F59E0B22">
+        <div class="card-title" style="color:#F59E0B">Anticipos clientes</div>
+        <div class="card-value" style="font-size:1.5rem">${fUSD(anticipos)}</div>
+        <div class="card-sub">Pasivo — señas no entregadas</div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title" style="margin-bottom:4px">Evolución de Caja</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px">Saldo real de caja por fecha (aportes, cobros, pagos proveedor, opex)</div>
+      <div style="position:relative;height:220px"><canvas id="chart-caja-evol"></canvas></div>
+    </div>
+
+    <!-- RENTABILIDAD -->
+    <div class="section-subtitle" style="margin:20px 0 12px">Rentabilidad</div>
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="card card-sm"><div class="card-title">Ingresos</div><div class="card-value" style="font-size:1.4rem">${fUSD(ingresos)}</div><div class="card-sub">Solo entregados</div></div>
+      <div class="card card-sm"><div class="card-title">Margen Bruto</div><div class="card-value" style="font-size:1.4rem;${margenBruto<0?'color:#EF4444':''}">${fUSD(margenBruto)}</div><div class="card-sub">${margenPctIng.toFixed(1)}% s/ ingresos</div></div>
+      <div class="card card-sm"><div class="card-title">Markup s/ costo</div><div class="card-value" style="font-size:1.4rem">${markupPct.toFixed(1)}%</div><div class="card-sub">Para pricing</div></div>
+      <div class="card card-sm"><div class="card-title">Margen s/ ingresos</div><div class="card-value" style="font-size:1.4rem">${margenPctIng.toFixed(1)}%</div><div class="card-sub">Rentabilidad real</div></div>
+    </div>
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card"><div class="card-title">Margen Neto</div>
+        <div style="display:flex;align-items:baseline;gap:12px">
+          <div class="card-value" style="font-size:1.6rem;${margenNeto<0?'color:#EF4444':'color:#22C55E'}">${fUSD(margenNeto)}</div>
+          <div style="font-size:1.1rem;${margenNetoPct<0?'color:#EF4444':'color:#22C55E'}">${margenNetoPct.toFixed(1)}%</div>
+        </div>
+        <div class="card-sub">Acumulado histórico (desde inicio)</div>
+      </div>
+      <div class="card"><div class="card-title" style="margin-bottom:12px">Margen Neto Acumulado</div>
+        <div style="position:relative;height:120px"><canvas id="chart-fin-margen-acum"></canvas></div>
+      </div>
+    </div>
+    <div class="grid-2" style="margin-bottom:20px">
+      <div class="card"><div class="card-title" style="margin-bottom:4px">P&amp;L Mensual Desglosado</div>
+        <div style="position:relative;height:200px"><canvas id="chart-fin-pnl"></canvas></div>
+      </div>
+      <div class="card"><div class="card-title" style="margin-bottom:4px">Costo Operativo vs Margen Bruto</div>
+        <div style="position:relative;height:200px"><canvas id="chart-fin-op-margin"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title" style="margin-bottom:4px">Margen Neto Mensual</div>
+      <div style="position:relative;height:180px"><canvas id="chart-fin-net-margin"></canvas></div>
+    </div>
+
+    <!-- CAPITAL E INVENTARIO -->
+    <div class="section-subtitle" style="margin:20px 0 12px">Capital e inventario</div>
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="card card-sm"><div class="card-title">Capital Invertido</div><div class="card-value" style="font-size:1.3rem">${fUSD(capitalTotal)}</div><div class="card-sub">Total desembolsado a proveedores</div></div>
+      <div class="card card-sm"><div class="card-title">Capital Congelado</div><div class="card-value" style="font-size:1.3rem;color:#F59E0B">${fUSD(capitalCongelado)}</div><div class="card-sub">Stock sin vender</div></div>
+      <div class="card card-sm"><div class="card-title">Sell-Through</div><div class="card-value" style="font-size:1.3rem">${(sellThrough*100).toFixed(0)}%</div><div class="card-sub">${vendidos} vendidos · ${enStock} stock · ${reservados} reservados</div></div>
+      <div class="card card-sm"><div class="card-title">Ítems en Stock</div><div class="card-value" style="font-size:1.3rem">${enStock}</div><div class="card-sub">${reservados} reservados</div></div>
+    </div>
+
+    <!-- PLANIFICACIÓN -->
+    <div class="section-subtitle" style="margin:20px 0 12px">Planificación</div>
+    <div class="grid-2" style="margin-bottom:16px">
+      <div class="card">
+        <div class="card-title">Break-Even</div>
+        <div class="card-value" style="font-size:2rem">${breakEven!=null ? breakEven.toFixed(1) : '—'} <span style="font-size:1rem;font-weight:400">unidades/mes</span></div>
+        <div class="card-sub">Para cubrir gastos operativos con el margen promedio actual</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Este mes</div>
+        <div style="display:flex;align-items:center;gap:16px;margin-top:8px">
+          <div>
+            <div style="font-size:2rem;font-weight:700;${ventasEsteMes>=(breakEven||Infinity)?'color:#22C55E':'color:#F59E0B'}">${ventasEsteMes}</div>
+            <div style="font-size:12px;color:var(--text-muted)">ventas realizadas</div>
+          </div>
+          <div style="font-size:1.5rem;color:var(--text-muted)">vs</div>
+          <div>
+            <div style="font-size:2rem;font-weight:700">${breakEven!=null ? Math.ceil(breakEven) : '—'}</div>
+            <div style="font-size:12px;color:var(--text-muted)">necesarias</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title" style="margin-bottom:4px">Ventas vs Break-Even por mes</div>
+      <div style="position:relative;height:180px"><canvas id="chart-fin-breakeven"></canvas></div>
+    </div>
+
+    <!-- MARKETING / CANALES -->
+    <div class="section-subtitle" style="margin:20px 0 12px">Marketing y canales</div>
+    <div class="grid-4" style="margin-bottom:16px">
+      <div class="card card-sm"><div class="card-title">CAC</div><div class="card-value" style="font-size:1.3rem">${cac>0?fUSD(cac):'—'}</div><div class="card-sub">Pauta+CM / ventas totales</div></div>
+      <div class="card card-sm"><div class="card-title">ROAS</div><div class="card-value" style="font-size:1.3rem">${roas>0?roas.toFixed(1)+'x':'—'}</div><div class="card-sub">Ingresos / gasto en ads</div></div>
+      <div class="card card-sm" style="grid-column:span 2">
+        <div class="card-title" style="margin-bottom:8px">Ventas por canal</div>
+        ${Object.entries(salesByChannel).map(([ch,n])=>`<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>${ch}</span><span>${n} venta${n!==1?'s':''} · ${fUSD(marginByChannel[ch]||0)} margen</span></div>`).join('') || '<div style="color:var(--text-muted);font-size:13px">Sin ventas</div>'}
+      </div>
+    </div>
+    <div style="font-size:11px;color:var(--text-muted);margin-bottom:20px">⚠ CAC y ROAS son combinados (no distinguen orgánico de pago). Para atribución precisa, separar campañas por canal.</div>
+
+    <!-- GASTOS -->
+    <div class="section-subtitle" style="margin:20px 0 12px">Gastos operativos</div>
+    <div class="card" style="margin-bottom:20px">
+      <div class="card-title" style="margin-bottom:16px">Gastos por categoría (acumulado)</div>
+      ${Object.entries(catExp).map(([cat,val])=>`
+        <div class="cat-row">
+          <span class="cat-label">${cat}</span>
+          <div class="cat-track"><div class="cat-fill" style="width:${(val/maxExp*100).toFixed(1)}%"></div></div>
+          <span class="cat-val">${fUSD(val)}</span>
+        </div>`).join('')}
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-size:13px">
+        <span class="text-secondary">Total gastos op</span>
+        <span class="text-bold">${fUSD(Object.values(catExp).reduce((a,b)=>a+b,0))}</span>
+      </div>
+    </div>
+  `;
+
+  requestAnimationFrame(()=>renderFinanzasCharts());
+}
+
+function renderFinanzasCharts(){
+  if(typeof Chart==='undefined') return;
+  const data = buildMonthlyData(finPeriod);
+  const labels = data.map(m=>m.label);
+  const isDark = document.documentElement.getAttribute('data-theme')!=='light';
+  const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)';
+  const tickColor = isDark ? '#888' : '#999';
+  const tooltipBg = isDark ? '#1A1A1A' : '#fff';
+  const tooltipBorder = isDark ? '#2C2C2C' : '#e5e7eb';
+
+  const baseOpts = {
+    responsive:true, maintainAspectRatio:false,
     plugins:{legend:{display:true,labels:{color:tickColor,font:{size:11},boxWidth:12,padding:12}},
       tooltip:{backgroundColor:tooltipBg,borderColor:tooltipBorder,borderWidth:1,titleColor:isDark?'#fff':'#111',bodyColor:tickColor,callbacks:{label:ctx=>' '+fUSD(ctx.parsed.y)}}},
     scales:{
@@ -950,48 +1408,73 @@ function renderDashCharts(n){
     }
   };
 
-  const c1 = document.getElementById('chart-op-margin');
-  if(c1){ Chart.getChart(c1)?.destroy(); new Chart(c1,{type:'bar',data:{labels,datasets:[
-    {label:'Costo operativo',data:data.map(m=>m.gastos_op),backgroundColor:'rgba(232,98,44,0.35)',borderColor:'#E8622C',borderWidth:1.5,borderRadius:4,order:2},
-    {label:'Margen bruto',data:data.map(m=>m.margen_bruto),type:'line',borderColor:'#22C55E',backgroundColor:'rgba(34,197,94,0.1)',borderWidth:2,pointRadius:3,pointBackgroundColor:'#22C55E',fill:false,tension:0.3,order:1}
-  ]},options:{...baseOpts,plugins:{...baseOpts.plugins,tooltip:{...baseOpts.plugins.tooltip,
-    callbacks:{label:ctx=>' '+fUSD(ctx.parsed.y),afterBody:(items)=>{
-      const i = items[0]?.dataIndex;
-      if(i===undefined) return;
-      return [`  Diferencia: ${fUSD(data[i].margen_bruto - data[i].gastos_op)}`];
-    }}}}}});}
+  // Gráfico: Evolución de Caja (ledger real)
+  const cC = document.getElementById('chart-caja-evol');
+  if(cC){
+    const ledger = buildCashLedger();
+    const cajaLabels = ledger.map(m=>m.date.substring(5));
+    const cajaSaldos = ledger.map(m=>m.saldo_usd);
+    const lastSaldo = cajaSaldos[cajaSaldos.length-1]||0;
+    Chart.getChart(cC)?.destroy();
+    new Chart(cC,{type:'line',data:{labels:cajaLabels,datasets:[{
+      label:'Caja (USD)',data:cajaSaldos,
+      borderColor:lastSaldo>=0?'#22C55E':'#EF4444',
+      backgroundColor:lastSaldo>=0?'rgba(34,197,94,0.1)':'rgba(239,68,68,0.1)',
+      borderWidth:2,pointRadius:2,fill:true,tension:0.3,
+      pointBackgroundColor:cajaSaldos.map(v=>v>=0?'#22C55E':'#EF4444')
+    }]},options:{...baseOpts,plugins:{...baseOpts.plugins,legend:{display:false}}}});
+  }
 
-  const c2 = document.getElementById('chart-net-margin');
-  if(c2){ Chart.getChart(c2)?.destroy(); new Chart(c2,{type:'line',data:{labels,datasets:[{
-    label:'Margen neto',
-    data:data.map(m=>m.margen_neto),
-    borderColor:ctx=>(ctx.raw>=0?'#22C55E':'#EF4444'),
+  // Margen Neto Acumulado (mini)
+  const cMA = document.getElementById('chart-fin-margen-acum');
+  if(cMA){ Chart.getChart(cMA)?.destroy(); new Chart(cMA,{type:'line',data:{labels,datasets:[{
+    label:'Margen Neto Acum.',data:data.map(m=>m.margen_neto_acum),
+    borderColor:data[data.length-1]?.margen_neto_acum>=0?'#22C55E':'#EF4444',
+    backgroundColor:data[data.length-1]?.margen_neto_acum>=0?'rgba(34,197,94,0.12)':'rgba(239,68,68,0.12)',
+    borderWidth:2,pointRadius:2,fill:true,tension:0.4
+  }]},options:{...baseOpts,plugins:{...baseOpts.plugins,legend:{display:false}}}}); }
+
+  // P&L Desglosado
+  const cPnl = document.getElementById('chart-fin-pnl');
+  if(cPnl){ Chart.getChart(cPnl)?.destroy(); new Chart(cPnl,{type:'bar',data:{labels,datasets:[
+    {label:'Ingresos',data:data.map(m=>m.ingresos),backgroundColor:'rgba(59,130,246,0.5)',borderColor:'#3B82F6',borderWidth:1.5,borderRadius:3},
+    {label:'Costo producto',data:data.map(m=>m.cogs),backgroundColor:'rgba(232,98,44,0.45)',borderColor:'#E8622C',borderWidth:1.5,borderRadius:3},
+    {label:'Gasto op',data:data.map(m=>m.gastos_op),backgroundColor:'rgba(107,114,128,0.4)',borderColor:'#6B7280',borderWidth:1.5,borderRadius:3}
+  ]},options:{...baseOpts}}); }
+
+  // Costo Operativo vs Margen Bruto
+  const cOM = document.getElementById('chart-fin-op-margin');
+  if(cOM){ Chart.getChart(cOM)?.destroy(); new Chart(cOM,{type:'bar',data:{labels,datasets:[
+    {label:'Costo operativo',data:data.map(m=>m.gastos_op),backgroundColor:'rgba(232,98,44,0.35)',borderColor:'#E8622C',borderWidth:1.5,borderRadius:4,order:2},
+    {label:'Margen bruto',data:data.map(m=>m.margen_bruto),type:'line',borderColor:'#22C55E',backgroundColor:'rgba(34,197,94,0.1)',borderWidth:2,pointRadius:3,fill:false,tension:0.3,order:1}
+  ]},options:{...baseOpts}}); }
+
+  // Margen Neto Mensual
+  const cNM = document.getElementById('chart-fin-net-margin');
+  if(cNM){ Chart.getChart(cNM)?.destroy(); new Chart(cNM,{type:'line',data:{labels,datasets:[{
+    label:'Margen neto',data:data.map(m=>m.margen_neto),
     segment:{borderColor:ctx=>ctx.p1.parsed.y>=0?'#22C55E':'#EF4444',backgroundColor:ctx=>ctx.p1.parsed.y>=0?'rgba(34,197,94,0.1)':'rgba(239,68,68,0.1)'},
     backgroundColor:'rgba(34,197,94,0.1)',borderWidth:2,pointRadius:3,
     pointBackgroundColor:data.map(m=>m.margen_neto>=0?'#22C55E':'#EF4444'),fill:true,tension:0.3
   }]},options:{...baseOpts,plugins:{...baseOpts.plugins,legend:{display:false}},
-    scales:{...baseOpts.scales,y:{...baseOpts.scales.y,
-      ticks:{...baseOpts.scales.y.ticks,callback:v=>'$'+Math.round(v)},
-      grid:{...baseOpts.scales.y.grid,color:ctx=>ctx.tick.value===0?'rgba(255,255,255,0.2)':gridColor}
-    }}}});}
+    scales:{...baseOpts.scales,y:{...baseOpts.scales.y,grid:{...baseOpts.scales.y.grid,color:ctx=>ctx.tick.value===0?'rgba(255,255,255,0.2)':gridColor}}}}}); }
 
-  const c3 = document.getElementById('chart-pnl');
-  if(c3){ Chart.getChart(c3)?.destroy(); new Chart(c3,{type:'bar',data:{labels,datasets:[
-    {label:'Ingresos',data:data.map(m=>m.ingresos),backgroundColor:'rgba(59,130,246,0.5)',borderColor:'#3B82F6',borderWidth:1.5,borderRadius:3},
-    {label:'Costo producto',data:data.map(m=>m.cogs),backgroundColor:'rgba(232,98,44,0.45)',borderColor:'#E8622C',borderWidth:1.5,borderRadius:3},
-    {label:'Gasto op',data:data.map(m=>m.gastos_op),backgroundColor:'rgba(107,114,128,0.4)',borderColor:'#6B7280',borderWidth:1.5,borderRadius:3}
-  ]},options:{...baseOpts}});}
-
-  const c4 = document.getElementById('chart-cashflow');
-  if(c4){ Chart.getChart(c4)?.destroy(); new Chart(c4,{type:'line',data:{labels,datasets:[{
-    label:'Cashflow acumulado',
-    data:data.map(m=>m.cashflow_acum),
-    borderColor:data[data.length-1]?.cashflow_acum>=0?'#22C55E':'#EF4444',
-    backgroundColor:data[data.length-1]?.cashflow_acum>=0?'rgba(34,197,94,0.12)':'rgba(239,68,68,0.12)',
-    borderWidth:2,pointRadius:3,fill:true,tension:0.4,
-    pointBackgroundColor:data.map(m=>m.cashflow_acum>=0?'#22C55E':'#EF4444')
-  }]},options:{...baseOpts,plugins:{...baseOpts.plugins,legend:{display:false}},
-    scales:{...baseOpts.scales,y:{...baseOpts.scales.y,ticks:{...baseOpts.scales.y.ticks,callback:v=>'$'+Math.round(v)}}}}});}
+  // Ventas vs Break-Even
+  const cBE = document.getElementById('chart-fin-breakeven');
+  if(cBE){
+    const inv   = getInventory();
+    const tc    = currentTC;
+    const allSales = getSales().filter(s=>s.estado==='entregado');
+    const salesPerMonth = data.map(m=>{
+      return allSales.filter(s=>(s.entrega_date||s.sale_date||'').startsWith(m.key)).length;
+    });
+    const be = getBreakEven();
+    Chart.getChart(cBE)?.destroy();
+    new Chart(cBE,{type:'bar',data:{labels,datasets:[
+      {label:'Ventas realizadas',data:salesPerMonth,backgroundColor:salesPerMonth.map(v=>v>=(be||Infinity)?'rgba(34,197,94,0.5)':'rgba(232,98,44,0.4)'),borderColor:salesPerMonth.map(v=>v>=(be||Infinity)?'#22C55E':'#E8622C'),borderWidth:1.5,borderRadius:4},
+      ...(be!=null?[{label:`Break-even (${Math.ceil(be)})`,data:data.map(()=>be),type:'line',borderColor:'#F59E0B',borderWidth:2,pointRadius:0,borderDash:[6,3]}]:[])
+    ]},options:{...baseOpts,plugins:{...baseOpts.plugins,tooltip:{...baseOpts.plugins.tooltip,callbacks:{label:ctx=>ctx.dataset.type==='line'?' Break-even: '+fUSD(ctx.parsed.y):` ${ctx.parsed.y} ventas`}}},
+      scales:{...baseOpts.scales,y:{...baseOpts.scales.y,ticks:{...baseOpts.scales.y.ticks,callback:v=>Math.round(v)}}}}}); }
 }
 
 // ─── INVENTORY ────────────────────────────────────────────────────────────────
@@ -1826,7 +2309,7 @@ function collectSaleForm(){
 function renderExpenses(){
   const exp = getExpenses();
   const tc = currentTC;
-  const cats = ['IT','Courier','Varios'];
+  const cats = ['IT','Courier','Pauta','CM','Varios'];
 
   let filtered = exp.filter(e=>{
     if(expFilter.category && e.category!==expFilter.category) return false;
@@ -1935,7 +2418,7 @@ function deleteExpense(id){
 
 function buildExpenseForm(exp){
   const v = exp||{};
-  const cats = ['IT','Courier','Varios'];
+  const cats = ['IT','Courier','Pauta','CM','Varios'];
   return `
     <div class="form-group">
       <label class="form-label">Descripción *</label>
@@ -2958,6 +3441,28 @@ function runMigrationsV4(){
   localStorage.setItem('amp_mig_v4','1');
 }
 
+function runMigrationsV5(){
+  if(localStorage.getItem('amp_mig_v5')) return;
+  const tc = currentTC || 1000;
+  // Backfill tc_at_date en inventory
+  const inv = getInventory();
+  inv.forEach(i=>{ if(!i.tc_at_date){ i.tc_at_date=tc; i.tc_estimado=true; } });
+  saveInventory(inv);
+  // Backfill tc_at_date en partners
+  const movs = getPartners();
+  movs.forEach(m=>{ if(!m.tc_at_date){ m.tc_at_date=tc; m.tc_estimado=true; } });
+  savePartners(movs);
+  // Backfill estado y entrega_date en ventas
+  const sales = getSales();
+  sales.forEach(s=>{
+    if(!s.estado) s.estado='entregado';
+    if(!s.entrega_date) s.entrega_date=s.sale_date;
+    if(!s.tc_at_date) s.tc_at_date=s.tc_used||tc;
+  });
+  saveSales(sales);
+  localStorage.setItem('amp_mig_v5','1');
+}
+
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 async function initApp(){
   initTheme();
@@ -2966,6 +3471,7 @@ async function initApp(){
   runMigrationsV2();
   runMigrationsV3();
   runMigrationsV4();
+  runMigrationsV5();
   if(!localStorage.getItem(K.init)){
     saveInventory(INIT_INVENTORY);
     saveSales(INIT_SALES);
@@ -2982,6 +3488,925 @@ async function initApp(){
   // fetch TC in background
   fetchTC(true).then(()=>{ if(currentSection==='dashboard') renderDashboard(); });
 }
+
+// ─── VALIDADOR MODULE START ────────────────────────────────────────────────────
+
+// ── Seed data ──────────────────────────────────────────────────────────────────
+const INIT_VAL_PRODUCTS = [
+  {id:'VAL-0001',nombre:'Rega Brio',categoria:'Ampli',fob:825,peso:5.0,tiene_dist_oficial:false,precio_competencia_usd:1600,competidor:'Audioconcept',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0002',nombre:'Marantz CD6007',categoria:'CD',fob:650,peso:8.8,tiene_dist_oficial:true,precio_competencia_usd:1200,competidor:'Avalon',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0003',nombre:'Kanto YU6',categoria:'Parlante activo',fob:579,peso:13.0,tiene_dist_oficial:false,precio_competencia_usd:1065,competidor:'Mercado Libre',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0004',nombre:'Fluance RT85',categoria:'Bandeja',fob:549.99,peso:9.0,tiene_dist_oficial:false,precio_competencia_usd:null,competidor:null,popularidad:'Media',unidades:1,notas:'Sin competencia local'},
+  {id:'VAL-0005',nombre:'iFi hip-dac 3',categoria:'DAC',fob:199,peso:0.6,tiene_dist_oficial:false,precio_competencia_usd:339,competidor:'iFi Argentina',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0006',nombre:'Cambridge AXA35',categoria:'Ampli',fob:449,peso:7.0,tiene_dist_oficial:false,precio_competencia_usd:850,competidor:'Audioconcept',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0007',nombre:'KEF Q1 Meta',categoria:'Bookshelf',fob:399.99,peso:14.5,tiene_dist_oficial:false,precio_competencia_usd:1050,competidor:'Avalon',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0008',nombre:'ELAC Debut 3.0 DB63',categoria:'Bookshelf',fob:499,peso:18.0,tiene_dist_oficial:false,precio_competencia_usd:758,competidor:'Avisistemas',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0009',nombre:'Denon PMA-600NE',categoria:'Ampli',fob:599,peso:8.1,tiene_dist_oficial:true,precio_competencia_usd:900,competidor:'Avalon-Audioconcept',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0010',nombre:'Music Hall MMF-1.3',categoria:'Bandeja',fob:399,peso:6.0,tiene_dist_oficial:false,precio_competencia_usd:null,competidor:null,popularidad:'Media',unidades:1,notas:'Sin competencia local'},
+  {id:'VAL-0011',nombre:'Pro-Ject Debut EVO 2',categoria:'Bandeja',fob:799,peso:7.5,tiene_dist_oficial:false,precio_competencia_usd:1500,competidor:'Audioconcept',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0012',nombre:'WiiM Pro Plus',categoria:'Streamer',fob:219,peso:1.0,tiene_dist_oficial:false,precio_competencia_usd:380,competidor:'Avalon',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0013',nombre:'WiiM Ultra',categoria:'Streamer',fob:329,peso:2.3,tiene_dist_oficial:true,precio_competencia_usd:650,competidor:'Avalon',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0014',nombre:'WiiM Amp Ultra',categoria:'Ampli',fob:529,peso:3.5,tiene_dist_oficial:false,precio_competencia_usd:900,competidor:'Audioconcept-PUIG',popularidad:'Media',unidades:1,notas:'Competencia rango 900-945; uso 900'},
+  {id:'VAL-0015',nombre:'Wharfedale Super Denton',categoria:'Bookshelf',fob:1499,peso:22.0,tiene_dist_oficial:false,precio_competencia_usd:2530,competidor:'Audiopuan',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0016',nombre:'Cambridge L/R S',categoria:'Parlante activo',fob:549,peso:7.0,tiene_dist_oficial:false,precio_competencia_usd:null,competidor:null,popularidad:'Media',unidades:1,notas:'Sin competencia local'},
+  {id:'VAL-0017',nombre:'Marantz Model 60n',categoria:'Ampli',fob:1600,peso:15.5,tiene_dist_oficial:true,precio_competencia_usd:2400,competidor:'Audioconcept',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0018',nombre:'KEF LS50 Meta',categoria:'Bookshelf',fob:1599.99,peso:18.0,tiene_dist_oficial:false,precio_competencia_usd:2444,competidor:'Mercado Libre',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0019',nombre:'Pro-Ject T1 Evo Phono',categoria:'Bandeja',fob:599,peso:5.5,tiene_dist_oficial:false,precio_competencia_usd:2870,competidor:null,popularidad:'Media',unidades:1,notas:'Competidor sin nombre'},
+  {id:'VAL-0020',nombre:'Audio-Technica AT-LP120XUSB',categoria:'Bandeja',fob:399,peso:15.0,tiene_dist_oficial:true,precio_competencia_usd:708,competidor:'GetBackMusic',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0021',nombre:'KEF Q3 Meta',categoria:'Bookshelf',fob:899,peso:19.0,tiene_dist_oficial:false,precio_competencia_usd:1900,competidor:'Avalon',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0022',nombre:'ELAC Debut 3.0 DF63',categoria:'Floorstander',fob:1298,peso:40.0,tiene_dist_oficial:false,precio_competencia_usd:null,competidor:null,popularidad:'Media',unidades:1,notas:'Sin competencia local'},
+  {id:'VAL-0023',nombre:'Eversolo Play CD Edition',categoria:'CD',fob:799,peso:4.0,tiene_dist_oficial:false,precio_competencia_usd:1300,competidor:'Avalon-Audioconcept',popularidad:'Media',unidades:1,notas:''},
+  {id:'VAL-0024',nombre:'NAD C 700 V2',categoria:'Ampli',fob:1999,peso:5.3,tiene_dist_oficial:true,precio_competencia_usd:3100,competidor:'Audioconcept',popularidad:'Media',unidades:1,notas:'Distribucion oficial en AR'},
+];
+
+const INIT_VAL_SETTINGS = {
+  c1_tributos_pct:20, c1_tasa_pct:3, c1_iva_pct:21,
+  c1_honorarios:100, c1_domicilio:15,
+  c1_flete_intl:15, c1_gastos_origen:1, c1_almacenaje:1,
+  c2_tax_pct:3.5, c2_flete:50,
+  undercut_pct:5, margen_objetivo_pct:20, margen_sin_comp_pct:30,
+  piso_margen_pct:12, piso_margen_abs:90, umbral_ticket_alto:250,
+  dias_almacenaje_default:1, descuento_combo_pct:8
+};
+
+// ── Storage ────────────────────────────────────────────────────────────────────
+function getValProducts(){ return load('amp_val_products') || null; }
+function saveValProducts(d){ save('amp_val_products', d); }
+function getValSettings(){ return load('amp_val_settings') || null; }
+function saveValSettings(d){ save('amp_val_settings', d); }
+function getValCombos(){ return load('amp_val_combos') || []; }
+function saveValCombos(d){ save('amp_val_combos', d); }
+
+function valProducts(){
+  let p = getValProducts();
+  if(!p){ p = INIT_VAL_PRODUCTS.map(x=>({...x})); saveValProducts(p); }
+  return p;
+}
+function valSettings(){
+  let s = getValSettings();
+  if(!s){ s = {...INIT_VAL_SETTINGS}; saveValSettings(s); }
+  return s;
+}
+
+// ── Calc functions ─────────────────────────────────────────────────────────────
+function calcValC1(p, s){
+  const fob = parseFloat(p.fob)||0;
+  const peso = parseFloat(p.peso)||0;
+  const dias = parseFloat(s.dias_almacenaje_default)||1;
+  const tributos       = fob * (s.c1_tributos_pct/100);
+  const tasa           = fob * (s.c1_tasa_pct/100);
+  const iva            = fob * (s.c1_iva_pct/100);
+  const flete_intl     = peso * s.c1_flete_intl;
+  const gastos_origen  = peso * s.c1_gastos_origen;
+  const almacenaje     = peso * s.c1_almacenaje * dias;
+  const honorarios     = s.c1_honorarios;
+  const domicilio      = s.c1_domicilio;
+  const costo = fob + tributos + tasa + iva + honorarios + domicilio + flete_intl + gastos_origen + almacenaje;
+  return {costo, tributos, tasa, iva, flete_intl, gastos_origen, almacenaje, honorarios, domicilio};
+}
+
+function calcValC2(p, s){
+  const fob = parseFloat(p.fob)||0;
+  const peso = parseFloat(p.peso)||0;
+  const tax  = fob * (s.c2_tax_pct/100);
+  const flete = peso * s.c2_flete;
+  const costo = fob + tax + flete;
+  return {costo, tax, flete};
+}
+
+function calcValCosts(p, s){
+  const c1 = calcValC1(p, s);
+  const c2 = calcValC2(p, s);
+  const canal = c1.costo <= c2.costo ? 'C1' : 'C2';
+  const costo = Math.min(c1.costo, c2.costo);
+  return {c1, c2, costo, canal};
+}
+
+function calcValVeredicto(p, s){
+  const {c1, c2, costo, canal} = calcValCosts(p, s);
+  const pc = p.precio_competencia_usd;
+  let veredicto, precio_recomendado, margen_abs, margen_pct, detalle;
+
+  if(p.override_veredicto && p.override_veredicto !== ''){
+    // still compute everything, then override at end
+  }
+
+  if(pc === null || pc === undefined){
+    veredicto = 'PRICING-POWER';
+    precio_recomendado = costo * (1 + s.margen_sin_comp_pct/100);
+    margen_abs = precio_recomendado - costo;
+    margen_pct = s.margen_sin_comp_pct;
+    detalle = 'Sin competencia local — libertad de pricing';
+  } else if(costo >= pc){
+    veredicto = 'EVITAR';
+    precio_recomendado = null;
+    margen_abs = null;
+    margen_pct = null;
+    detalle = `Costo ${fUSD(costo)} ≥ precio competencia ${fUSD(pc)}`;
+  } else {
+    const precio_comp = pc * (1 - s.undercut_pct/100);
+    margen_abs = precio_comp - costo;
+    margen_pct = (margen_abs / costo) * 100;
+    precio_recomendado = precio_comp;
+
+    const pasa_pct        = margen_pct >= s.piso_margen_pct;
+    const pasa_ticketalto = margen_abs >= s.umbral_ticket_alto;
+    const pasa_pisoabs    = margen_abs >= s.piso_margen_abs;
+    const standalone_viable = (pasa_pct || pasa_ticketalto) && pasa_pisoabs;
+
+    if(!standalone_viable){
+      veredicto = 'COMBO-ONLY';
+      detalle = `Margen abs ${fUSD(margen_abs)} / ${margen_pct.toFixed(1)}% — no pasa pisos standalone`;
+    } else if(margen_pct >= s.margen_objetivo_pct){
+      veredicto = 'MOTOR DE MARGEN';
+      detalle = `Margen ${margen_pct.toFixed(1)}% ≥ objetivo ${s.margen_objetivo_pct}%`;
+    } else {
+      veredicto = 'STANDALONE';
+      detalle = `Margen ${margen_pct.toFixed(1)}% — viable pero bajo objetivo`;
+    }
+  }
+
+  const override = p.override_veredicto && p.override_veredicto !== '' ? p.override_veredicto : null;
+  const veredicto_final = override || veredicto;
+
+  return {veredicto: veredicto_final, veredicto_base: veredicto, override, precio_recomendado, margen_abs, margen_pct, costo, canal, detalle, c1, c2};
+}
+
+function calcValSensibilidad(p, s){
+  const result = {peso_breakeven: null, precio_comp_breakeven: null, canal_crossover: null};
+  const pc = p.precio_competencia_usd;
+
+  // Canal crossover weight: solve C1=C2 algebraically
+  // C1_var = fob*(trib+tasa+iva)/100 + (c1_flete+c1_gastos+c1_alm*dias)*W + hono + dom
+  // C2_var = fob*c2_tax/100 + c2_flete*W
+  // C1=C2 => W*(c2_flete - c1_flete - c1_gastos - c1_alm*dias) = fob*(trib+tasa+iva-c2_tax)/100 + hono + dom
+  const fob = parseFloat(p.fob)||0;
+  const dias = parseFloat(s.dias_almacenaje_default)||1;
+  const numerator = fob*((s.c1_tributos_pct+s.c1_tasa_pct+s.c1_iva_pct-s.c2_tax_pct)/100) + s.c1_honorarios + s.c1_domicilio;
+  const denominator = s.c2_flete - s.c1_flete_intl - s.c1_gastos_origen - s.c1_almacenaje*dias;
+  if(Math.abs(denominator) > 0.001){
+    const w = numerator / denominator;
+    if(w > 0) result.canal_crossover = w;
+  }
+
+  // Peso breakeven: find weight where veredicto changes (binary search [0..200])
+  const verBase = calcValVeredicto(p, s).veredicto_base;
+  if(verBase !== 'EVITAR' && verBase !== 'PRICING-POWER'){
+    let lo=0, hi=200;
+    for(let i=0;i<40;i++){
+      const mid=(lo+hi)/2;
+      const pTest = {...p, peso:mid};
+      const v = calcValVeredicto(pTest, s).veredicto_base;
+      if(v === verBase) lo=mid; else hi=mid;
+    }
+    if(hi < 199.9) result.peso_breakeven = (lo+hi)/2;
+  }
+
+  // Precio competencia breakeven: find price where veredicto changes
+  if(pc !== null && pc !== undefined && verBase !== 'EVITAR'){
+    let lo=0, hi=pc*3;
+    for(let i=0;i<40;i++){
+      const mid=(lo+hi)/2;
+      const pTest = {...p, precio_competencia_usd:mid};
+      const v = calcValVeredicto(pTest, s).veredicto_base;
+      if(v === verBase) lo=mid; else hi=mid;
+    }
+    if(lo > 0.1) result.precio_comp_breakeven = (lo+hi)/2;
+  }
+
+  return result;
+}
+
+function calcComboBlended(selectedProducts, s, mismo_envio){
+  if(!selectedProducts || selectedProducts.length === 0) return null;
+  const results = selectedProducts.map(p => calcValVeredicto(p, s));
+  let total_cost = 0;
+  let price_sum = 0;
+
+  const anyC1 = results.some(r => r.canal === 'C1');
+
+  results.forEach((r, i) => {
+    const p = selectedProducts[i];
+    let cost;
+    if(mismo_envio && anyC1){
+      // Each C1 product: remove honorarios+domicilio, then compare with C2
+      const c1_adj = r.c1.costo - s.c1_honorarios - s.c1_domicilio;
+      const c2_cost = r.c2.costo;
+      cost = Math.min(c1_adj, c2_cost);
+    } else {
+      cost = r.costo;
+    }
+    total_cost += cost;
+    // If mismo_envio C1, add fixed costs once for the whole combo
+  });
+
+  if(mismo_envio && anyC1){
+    total_cost += s.c1_honorarios + s.c1_domicilio;
+  }
+
+  results.forEach(r => {
+    if(r.precio_recomendado) price_sum += r.precio_recomendado;
+  });
+
+  const price_combo = price_sum * (1 - s.descuento_combo_pct/100);
+  const blended_margin_abs = price_combo - total_cost;
+  const blended_margin_pct = total_cost > 0 ? (blended_margin_abs / total_cost) * 100 : 0;
+
+  return {total_cost, price_combo, blended_margin_abs, blended_margin_pct, individual: results};
+}
+
+// ── State ──────────────────────────────────────────────────────────────────────
+let valTab = 'libreria';
+let valFilter = {categoria:'', veredicto:''};
+let valSort = {field:'nombre', dir:1};
+let valComboSelected = [];
+let valMismoEnvio = false;
+
+// ── Veredicto helpers ──────────────────────────────────────────────────────────
+const VAL_COLORS = {
+  'MOTOR DE MARGEN':'#22C55E',
+  'STANDALONE':'#86EFAC',
+  'PRICING-POWER':'#3B82F6',
+  'COMBO-ONLY':'#F59E0B',
+  'EVITAR':'#EF4444'
+};
+const VAL_LABELS = {
+  'MOTOR DE MARGEN':'Motor de Margen',
+  'STANDALONE':'Standalone',
+  'PRICING-POWER':'Pricing Power',
+  'COMBO-ONLY':'Combo Only',
+  'EVITAR':'Evitar'
+};
+
+function valBadge(v){
+  const color = VAL_COLORS[v] || '#A0A0A0';
+  const label = VAL_LABELS[v] || v;
+  return `<span style="display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;background:${color}22;color:${color};border:1px solid ${color}44">${label}</span>`;
+}
+
+function valRowBg(v){
+  const map = {
+    'MOTOR DE MARGEN':'rgba(34,197,94,0.06)',
+    'STANDALONE':'rgba(134,239,172,0.04)',
+    'PRICING-POWER':'rgba(59,130,246,0.06)',
+    'COMBO-ONLY':'rgba(245,158,11,0.06)',
+    'EVITAR':'rgba(239,68,68,0.06)'
+  };
+  return map[v]||'';
+}
+
+// ── Render main ────────────────────────────────────────────────────────────────
+function renderValidador(){
+  const el = document.getElementById('section-validador');
+  if(!el) return;
+
+  const tabs = [
+    {id:'libreria',label:'Librería'},
+    {id:'combos',label:'Combos'},
+    {id:'simulador',label:'Simulador'},
+    {id:'val-settings',label:'Ajustes'}
+  ];
+
+  const tabBtns = tabs.map(t => {
+    const active = valTab===t.id;
+    return `<button class="btn btn-sm" style="border-radius:6px;margin-right:4px;${active?'background:var(--accent);color:#fff;':'background:var(--bg-card);color:var(--text-muted);border:1px solid var(--border);'}" onclick="valTab='${t.id}';renderValidador()">${t.label}</button>`;
+  }).join('');
+
+  let body = '';
+  if(valTab==='libreria') body = renderValLibreria();
+  else if(valTab==='combos') body = renderValCombos();
+  else if(valTab==='simulador') body = renderValSimulador();
+  else if(valTab==='val-settings') body = renderValSettingsTab();
+
+  el.innerHTML = `
+    <div style="margin-bottom:20px">
+      <h2 style="font-size:22px;font-weight:700;margin:0 0 4px">Validador de Productos</h2>
+      <p style="color:var(--text-muted);font-size:13px;margin:0">Evaluación pre-importación — todos los valores en USD</p>
+    </div>
+    <div style="margin-bottom:20px">${tabBtns}</div>
+    ${body}
+  `;
+}
+
+// ── Librería ───────────────────────────────────────────────────────────────────
+function renderValLibreria(){
+  const s = valSettings();
+  let prods = valProducts();
+
+  // Get unique categories
+  const cats = [...new Set(prods.map(p=>p.categoria))].sort();
+
+  // Compute veredicto for filter
+  let enriched = prods.map(p => {
+    const r = calcValVeredicto(p, s);
+    return {...p, _r:r};
+  });
+
+  if(valFilter.categoria) enriched = enriched.filter(p=>p.categoria===valFilter.categoria);
+  if(valFilter.veredicto) enriched = enriched.filter(p=>p._r.veredicto===valFilter.veredicto);
+
+  enriched.sort((a,b)=>{
+    let av=a[valSort.field], bv=b[valSort.field];
+    if(valSort.field==='fob'||valSort.field==='peso'){ av=parseFloat(av)||0; bv=parseFloat(bv)||0; }
+    else if(valSort.field==='_margen'){ av=a._r.margen_pct||0; bv=b._r.margen_pct||0; }
+    else if(valSort.field==='_precio'){ av=a._r.precio_recomendado||0; bv=b._r.precio_recomendado||0; }
+    if(av<bv) return -1*valSort.dir;
+    if(av>bv) return 1*valSort.dir;
+    return 0;
+  });
+
+  function sortBtn(field, label){
+    const active = valSort.field===field;
+    const icon = active ? (valSort.dir===1?'↑':'↓') : '';
+    return `<span style="cursor:pointer;user-select:none;${active?'color:var(--accent);':''}" onclick="valSort.field='${field}';valSort.dir=valSort.field==='${field}'?-valSort.dir:1;valSort.field='${field}';renderValidador()">${label}${icon}</span>`;
+  }
+
+  // Fix sort toggle: simpler approach
+  function sortTh(field, label){
+    const active = valSort.field===field;
+    const icon = active?(valSort.dir===1?' ↑':' ↓'):'';
+    return `<th style="cursor:pointer;${active?'color:var(--accent)':''}" onclick="if(valSort.field==='${field}'){valSort.dir*=-1;}else{valSort.field='${field}';valSort.dir=1;}renderValidador()">${label}${icon}</th>`;
+  }
+
+  const rows = enriched.map(p=>{
+    const r = p._r;
+    const warnPeso = !p.peso_confirmado && (r.veredicto==='STANDALONE'||r.veredicto==='COMBO-ONLY') ? ' ⚠' : '';
+    const bg = valRowBg(r.veredicto);
+    return `<tr style="background:${bg};cursor:pointer" onclick="openValFicha('${p.id}')">
+      <td style="font-weight:600">${p.nombre}${warnPeso}</td>
+      <td><span style="font-size:11px;color:var(--text-muted)">${p.categoria}</span></td>
+      <td>${fUSD(p.fob)}</td>
+      <td>${p.peso} kg</td>
+      <td>${r.canal}</td>
+      <td>${fUSD(r.costo)}</td>
+      <td>${r.precio_recomendado!==null?fUSD(r.precio_recomendado):'—'}</td>
+      <td>${r.margen_pct!==null?fPct(r.margen_pct):'—'}</td>
+      <td>${r.margen_abs!==null?fUSD(r.margen_abs):'—'}</td>
+      <td>${valBadge(r.veredicto)}</td>
+      <td>${p.tiene_dist_oficial?'<span style="color:var(--yellow)">⚠ Dist. oficial</span>':''}</td>
+    </tr>`;
+  }).join('');
+
+  const veredictoOpts = ['MOTOR DE MARGEN','STANDALONE','PRICING-POWER','COMBO-ONLY','EVITAR'];
+
+  return `
+    <div style="display:flex;gap:12px;margin-bottom:16px;align-items:center;flex-wrap:wrap">
+      <select class="form-control" style="width:180px" onchange="valFilter.categoria=this.value;renderValidador()">
+        <option value="">Todas las categorías</option>
+        ${cats.map(c=>`<option value="${c}"${valFilter.categoria===c?'selected':''}>${c}</option>`).join('')}
+      </select>
+      <select class="form-control" style="width:180px" onchange="valFilter.veredicto=this.value;renderValidador()">
+        <option value="">Todos los veredictos</option>
+        ${veredictoOpts.map(v=>`<option value="${v}"${valFilter.veredicto===v?'selected':''}>${VAL_LABELS[v]||v}</option>`).join('')}
+      </select>
+      <span style="color:var(--text-muted);font-size:12px;margin-left:auto">${enriched.length} productos</span>
+      <button class="btn btn-primary btn-sm" onclick="openValProductForm(null)">+ Producto</button>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead><tr>
+          ${sortTh('nombre','Producto')}
+          <th>Cat.</th>
+          ${sortTh('fob','FOB')}
+          ${sortTh('peso','Peso')}
+          <th>Canal</th>
+          ${sortTh('_margen','Costo landed')}
+          ${sortTh('_precio','Precio rec.')}
+          <th>Margen %</th>
+          <th>Margen $</th>
+          <th>Veredicto</th>
+          <th></th>
+        </tr></thead>
+        <tbody>${rows||'<tr><td colspan="11" style="text-align:center;color:var(--text-muted);padding:40px">Sin productos</td></tr>'}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function openValFicha(id){
+  const prods = valProducts();
+  const p = prods.find(x=>x.id===id);
+  if(!p) return;
+  const s = valSettings();
+  const html = buildValFicha(p, s);
+  // Use custom panel without save button in footer (ficha has its own buttons)
+  document.getElementById('panelTitle').textContent = p.nombre;
+  document.getElementById('panelBody').innerHTML = html;
+  document.getElementById('panelFooter').innerHTML = `
+    <button class="btn btn-secondary" onclick="closePanel()">Cerrar</button>
+    <button class="btn btn-primary" onclick="openValProductForm('${id}')">✏️ Editar</button>
+  `;
+  panelCallback = null;
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('slidePanel').classList.add('open');
+}
+
+function buildValFicha(p, s){
+  const r = calcValVeredicto(p, s);
+  const sens = calcValSensibilidad(p, s);
+  const {c1, c2} = r;
+
+  const overrideBadge = r.override ? `<span style="margin-left:8px;font-size:11px;background:#F59E0B22;color:#F59E0B;border:1px solid #F59E0B44;border-radius:8px;padding:2px 8px">⚠ override manual</span>` : '';
+
+  function row(label, val, highlight){
+    return `<tr><td style="color:var(--text-muted);font-size:12px;padding:4px 8px 4px 0">${label}</td><td style="text-align:right;font-size:13px;${highlight?'font-weight:700;color:var(--accent)':''};padding:4px 0">${val}</td></tr>`;
+  }
+
+  const c1Table = `
+    <table style="width:100%">
+      ${row('FOB', fUSD(p.fob))}
+      ${row('Tributos ('+s.c1_tributos_pct+'%)', fUSD(c1.tributos))}
+      ${row('Tasa estadística ('+s.c1_tasa_pct+'%)', fUSD(c1.tasa))}
+      ${row('IVA ('+s.c1_iva_pct+'%)', fUSD(c1.iva))}
+      ${row('Honorarios', fUSD(c1.honorarios))}
+      ${row('Domicilio', fUSD(c1.domicilio))}
+      ${row('Flete intl ('+p.peso+'kg × $'+s.c1_flete_intl+')', fUSD(c1.flete_intl))}
+      ${row('Gastos origen', fUSD(c1.gastos_origen))}
+      ${row('Almacenaje', fUSD(c1.almacenaje))}
+      ${row('Costo C1', fUSD(c1.costo), true)}
+    </table>`;
+
+  const c2Table = `
+    <table style="width:100%">
+      ${row('FOB', fUSD(p.fob))}
+      ${row('Tax ('+s.c2_tax_pct+'%)', fUSD(c2.tax))}
+      ${row('Flete ('+p.peso+'kg × $'+s.c2_flete+')', fUSD(c2.flete))}
+      ${row('—','')}
+      ${row('—','')}
+      ${row('—','')}
+      ${row('—','')}
+      ${row('—','')}
+      ${row('—','')}
+      ${row('Costo C2', fUSD(c2.costo), true)}
+    </table>`;
+
+  const sensHtml = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-top:4px">
+      <div class="card-sm" style="padding:12px">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Canal crossover (peso)</div>
+        <div style="font-size:14px;font-weight:600">${sens.canal_crossover!==null?sens.canal_crossover.toFixed(1)+' kg':'N/A'}</div>
+        <div style="font-size:10px;color:var(--text-muted)">peso donde C1=C2</div>
+      </div>
+      <div class="card-sm" style="padding:12px">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Peso breakeven veredicto</div>
+        <div style="font-size:14px;font-weight:600">${sens.peso_breakeven!==null?sens.peso_breakeven.toFixed(1)+' kg':'N/A'}</div>
+        <div style="font-size:10px;color:var(--text-muted)">veredicto cambia aquí</div>
+      </div>
+      <div class="card-sm" style="padding:12px">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px">Precio comp. breakeven</div>
+        <div style="font-size:14px;font-weight:600">${sens.precio_comp_breakeven!==null?fUSD(sens.precio_comp_breakeven):'N/A'}</div>
+        <div style="font-size:10px;color:var(--text-muted)">comp. donde cambia veredicto</div>
+      </div>
+    </div>`;
+
+  const warnPeso = !p.peso_confirmado && (r.veredicto==='STANDALONE'||r.veredicto==='COMBO-ONLY')
+    ? `<div style="background:#F59E0B18;border:1px solid #F59E0B44;border-radius:8px;padding:8px 12px;font-size:12px;color:#F59E0B;margin-bottom:12px">⚠ Peso no confirmado — sensibilidad puede variar</div>`
+    : '';
+
+  return `
+    ${warnPeso}
+    <div style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:13px;color:var(--text-muted)">${p.categoria}</span>
+        <span style="color:var(--border)">|</span>
+        <span style="font-size:13px;color:var(--text-muted)">FOB ${fUSD(p.fob)}</span>
+        <span style="color:var(--border)">|</span>
+        <span style="font-size:13px;color:var(--text-muted)">${p.peso} kg${p.peso_confirmado?'':' ⚠'}</span>
+        ${p.tiene_dist_oficial?'<span style="font-size:11px;background:#F59E0B18;color:#F59E0B;border-radius:8px;padding:2px 8px;border:1px solid #F59E0B44">Dist. oficial</span>':''}
+      </div>
+    </div>
+
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:16px">
+      <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:600">VEREDICTO</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        ${valBadge(r.veredicto)}${overrideBadge}
+        <span style="font-size:13px;color:var(--text-secondary)">${r.detalle||''}</span>
+      </div>
+      ${r.precio_recomendado!==null?`
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px">
+        <div><div style="font-size:11px;color:var(--text-muted)">Canal óptimo</div><div style="font-size:16px;font-weight:700">${r.canal}</div></div>
+        <div><div style="font-size:11px;color:var(--text-muted)">Costo landed</div><div style="font-size:16px;font-weight:700">${fUSD(r.costo)}</div></div>
+        <div><div style="font-size:11px;color:var(--text-muted)">Precio rec.</div><div style="font-size:16px;font-weight:700;color:var(--accent)">${fUSD(r.precio_recomendado)}</div></div>
+        <div><div style="font-size:11px;color:var(--text-muted)">Margen $</div><div style="font-size:16px;font-weight:700;color:var(--green)">${fUSD(r.margen_abs)}</div></div>
+        <div><div style="font-size:11px;color:var(--text-muted)">Margen %</div><div style="font-size:16px;font-weight:700;color:var(--green)">${fPct(r.margen_pct)}</div></div>
+        ${p.precio_competencia_usd?`<div><div style="font-size:11px;color:var(--text-muted)">Competencia</div><div style="font-size:16px;font-weight:700">${fUSD(p.precio_competencia_usd)}</div></div>`:''}
+      </div>`:''}
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px;${r.canal==='C1'?'border-color:var(--accent)':''}">
+        <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px">Canal 1 — Formal${r.canal==='C1'?' ✓':''}</div>
+        ${c1Table}
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px;${r.canal==='C2'?'border-color:var(--accent)':''}">
+        <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:8px">Canal 2 — Alternativo${r.canal==='C2'?' ✓':''}</div>
+        ${c2Table}
+      </div>
+    </div>
+
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:16px">
+      <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:10px">ANÁLISIS DE SENSIBILIDAD</div>
+      ${sensHtml}
+    </div>
+
+    ${p.competidor?`<div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Competidor: <span style="color:var(--text-secondary)">${p.competidor}</span></div>`:''}
+    ${p.notas?`<div style="font-size:12px;color:var(--text-muted);background:var(--bg-input);border-radius:6px;padding:8px 10px">${p.notas}</div>`:''}
+
+    <div style="margin-top:16px;display:flex;gap:8px">
+      <button class="btn btn-secondary btn-sm" onclick="toggleValCandidato('${p.id}')">
+        ${p.es_candidato?'★ Candidato del mes':'☆ Marcar candidato'}
+      </button>
+      <button class="btn btn-danger btn-sm" onclick="deleteValProduct('${p.id}')">Eliminar</button>
+    </div>
+  `;
+}
+
+function openValProductForm(id){
+  const prods = valProducts();
+  const p = id ? prods.find(x=>x.id===id) : null;
+  const s = valSettings();
+  const cats = ['Ampli','Bandeja','Bookshelf','CD','DAC','Floorstander','Parlante activo','Streamer','Otros'];
+
+  const html = `
+    <div style="display:grid;gap:14px">
+      <div><label class="form-label">Nombre</label><input class="form-control" id="vf_nombre" value="${p?p.nombre:''}" placeholder="Ej: Rega Brio"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">Categoría</label>
+          <select class="form-control" id="vf_categoria">
+            ${cats.map(c=>`<option value="${c}"${p&&p.categoria===c?'selected':''}>${c}</option>`).join('')}
+          </select>
+        </div>
+        <div><label class="form-label">FOB (USD)</label><input class="form-control" id="vf_fob" type="number" step="0.01" value="${p?p.fob:''}"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><label class="form-label">Peso (kg)</label><input class="form-control" id="vf_peso" type="number" step="0.1" value="${p?p.peso:''}"></div>
+        <div><label class="form-label">Unidades</label><input class="form-control" id="vf_unidades" type="number" value="${p?p.unidades:1}"></div>
+      </div>
+      <div><label class="form-label">Precio competencia (USD, vacío = sin comp.)</label><input class="form-control" id="vf_pc" type="number" step="0.01" value="${p&&p.precio_competencia_usd!==null?p.precio_competencia_usd:''}"></div>
+      <div><label class="form-label">Competidor</label><input class="form-control" id="vf_competidor" value="${p?p.competidor||'':''}"></div>
+      <div style="display:flex;gap:16px;align-items:center">
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+          <input type="checkbox" id="vf_dist_oficial" ${p&&p.tiene_dist_oficial?'checked':''}> Distribución oficial en AR
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
+          <input type="checkbox" id="vf_peso_confirmado" ${p&&p.peso_confirmado?'checked':''}> Peso confirmado
+        </label>
+      </div>
+      <div><label class="form-label">Override veredicto (vacío = automático)</label>
+        <select class="form-control" id="vf_override">
+          <option value="">Automático</option>
+          ${['MOTOR DE MARGEN','STANDALONE','PRICING-POWER','COMBO-ONLY','EVITAR'].map(v=>`<option value="${v}"${p&&p.override_veredicto===v?'selected':''}>${VAL_LABELS[v]||v}</option>`).join('')}
+        </select>
+      </div>
+      <div><label class="form-label">Notas</label><textarea class="form-control" id="vf_notas" rows="2">${p?p.notas||'':''}</textarea></div>
+    </div>
+  `;
+
+  openPanel(id ? 'Editar: '+p.nombre : 'Nuevo Producto (Validador)', html, (data)=>{
+    saveValProduct(data, id);
+  });
+  // Override currentFormSection so submitPanel collects the right data
+  currentFormSection = 'val-product';
+}
+
+function collectValProductForm(){
+  const pcVal = document.getElementById('vf_pc').value.trim();
+  return {
+    nombre: document.getElementById('vf_nombre').value.trim(),
+    categoria: document.getElementById('vf_categoria').value,
+    fob: parseFloat(document.getElementById('vf_fob').value)||0,
+    peso: parseFloat(document.getElementById('vf_peso').value)||0,
+    unidades: parseInt(document.getElementById('vf_unidades').value)||1,
+    precio_competencia_usd: pcVal!==''?parseFloat(pcVal):null,
+    competidor: document.getElementById('vf_competidor').value.trim()||null,
+    tiene_dist_oficial: document.getElementById('vf_dist_oficial').checked,
+    peso_confirmado: document.getElementById('vf_peso_confirmado').checked,
+    override_veredicto: document.getElementById('vf_override').value,
+    notas: document.getElementById('vf_notas').value.trim(),
+    popularidad: 'Media'
+  };
+}
+
+function saveValProduct(data, existingId){
+  let prods = valProducts();
+  if(existingId){
+    const idx = prods.findIndex(x=>x.id===existingId);
+    if(idx>=0) prods[idx] = {...prods[idx], ...data};
+  } else {
+    const maxNum = prods.reduce((m,p)=>{ const n=parseInt(p.id.replace('VAL-','')); return n>m?n:m; },0);
+    const newId = 'VAL-'+(maxNum+1).toString().padStart(4,'0');
+    prods.push({id:newId, es_candidato:false, ...data});
+  }
+  saveValProducts(prods);
+  closePanel();
+  renderValidador();
+}
+
+function deleteValProduct(id){
+  openConfirm(()=>{
+    let prods = valProducts().filter(p=>p.id!==id);
+    saveValProducts(prods);
+    closePanel();
+    renderValidador();
+  });
+}
+
+function toggleValCandidato(id){
+  let prods = valProducts();
+  const p = prods.find(x=>x.id===id);
+  if(p){ p.es_candidato = !p.es_candidato; saveValProducts(prods); }
+  // Re-render ficha in panel
+  const s = valSettings();
+  const updated = prods.find(x=>x.id===id);
+  if(updated) document.getElementById('panelBody').innerHTML = buildValFicha(updated, s);
+  // Also update libreria if visible
+  if(valTab==='libreria') renderValidador();
+}
+
+// ── Combos ─────────────────────────────────────────────────────────────────────
+function renderValCombos(){
+  const s = valSettings();
+  const prods = valProducts();
+  const savedCombos = getValCombos();
+
+  const productRows = prods.map(p=>{
+    const r = calcValVeredicto(p, s);
+    const checked = valComboSelected.includes(p.id);
+    return `<tr style="${checked?'background:rgba(232,98,44,0.08)':''}">
+      <td><input type="checkbox" ${checked?'checked':''} onchange="valComboToggle('${p.id}',this.checked)"></td>
+      <td style="font-weight:500">${p.nombre}</td>
+      <td style="color:var(--text-muted);font-size:12px">${p.categoria}</td>
+      <td>${fUSD(r.costo)}</td>
+      <td>${r.precio_recomendado!==null?fUSD(r.precio_recomendado):'—'}</td>
+      <td>${valBadge(r.veredicto)}</td>
+    </tr>`;
+  }).join('');
+
+  // Live calc
+  let liveHtml = '';
+  if(valComboSelected.length >= 2){
+    const sel = prods.filter(p=>valComboSelected.includes(p.id));
+    const res = calcComboBlended(sel, s, valMismoEnvio);
+    if(res){
+      const marginColor = res.blended_margin_pct >= s.margen_objetivo_pct ? 'var(--green)' : res.blended_margin_pct >= s.piso_margen_pct ? 'var(--yellow)' : 'var(--red)';
+      liveHtml = `
+        <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+          <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:10px">COMBO LIVE — ${sel.length} productos${valMismoEnvio?' (mismo envío)':''}</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
+            <div><div style="font-size:11px;color:var(--text-muted)">Costo total</div><div style="font-size:18px;font-weight:700">${fUSD(res.total_cost)}</div></div>
+            <div><div style="font-size:11px;color:var(--text-muted)">Precio combo (-${s.descuento_combo_pct}%)</div><div style="font-size:18px;font-weight:700;color:var(--accent)">${fUSD(res.price_combo)}</div></div>
+            <div><div style="font-size:11px;color:var(--text-muted)">Margen $</div><div style="font-size:18px;font-weight:700;color:${marginColor}">${fUSD(res.blended_margin_abs)}</div></div>
+            <div><div style="font-size:11px;color:var(--text-muted)">Margen %</div><div style="font-size:18px;font-weight:700;color:${marginColor}">${fPct(res.blended_margin_pct)}</div></div>
+          </div>
+          <div style="margin-top:12px">
+            <input id="valComboName" class="form-control" style="width:240px;display:inline-block;margin-right:8px" placeholder="Nombre del combo…">
+            <button class="btn btn-primary btn-sm" onclick="saveValComboFromUI()">Guardar combo</button>
+          </div>
+        </div>`;
+    }
+  }
+
+  const savedRows = savedCombos.map(c=>`
+    <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-weight:600">${c.name}</div>
+        <div style="font-size:12px;color:var(--text-muted)">${(c.productos||[]).join(', ')}</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:13px">${fUSD(c.total_cost)} → <span style="color:var(--accent)">${fUSD(c.price_combo)}</span></div>
+        <div style="font-size:12px;color:var(--text-muted)">${fPct(c.blended_margin_pct)}</div>
+      </div>
+      <button class="btn btn-danger btn-icon btn-sm" onclick="deleteValCombo('${c.id}')" style="margin-left:12px">🗑️</button>
+    </div>`).join('');
+
+  return `
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px;flex-wrap:wrap">
+      <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer">
+        <input type="checkbox" ${valMismoEnvio?'checked':''} onchange="valMismoEnvio=this.checked;renderValidador()">
+        Mismo envío (C1 comparte honorarios + domicilio)
+      </label>
+      ${valComboSelected.length>0?`<button class="btn btn-secondary btn-sm" onclick="valComboSelected=[];renderValidador()">Limpiar selección</button>`:''}
+    </div>
+    ${liveHtml}
+    <div class="table-wrap" style="margin-bottom:24px">
+      <table class="table">
+        <thead><tr><th>✓</th><th>Producto</th><th>Cat.</th><th>Costo</th><th>Precio rec.</th><th>Veredicto</th></tr></thead>
+        <tbody>${productRows}</tbody>
+      </table>
+    </div>
+    ${savedCombos.length>0?`<div><div style="font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:10px">COMBOS GUARDADOS</div>${savedRows}</div>`:''}
+  `;
+}
+
+function valComboToggle(id, checked){
+  if(checked){ if(!valComboSelected.includes(id)) valComboSelected.push(id); }
+  else { valComboSelected = valComboSelected.filter(x=>x!==id); }
+  renderValidador();
+}
+
+function saveValComboFromUI(){
+  const nameEl = document.getElementById('valComboName');
+  const name = nameEl ? nameEl.value.trim() : '';
+  if(!name){ alert('Ponele un nombre al combo'); return; }
+  const s = valSettings();
+  const prods = valProducts().filter(p=>valComboSelected.includes(p.id));
+  const res = calcComboBlended(prods, s, valMismoEnvio);
+  if(!res) return;
+  const combos = getValCombos();
+  const id = 'VCOM-'+(Date.now());
+  combos.push({
+    id, name,
+    productos: prods.map(p=>p.nombre),
+    ids: valComboSelected.slice(),
+    mismo_envio: valMismoEnvio,
+    total_cost: res.total_cost,
+    price_combo: res.price_combo,
+    blended_margin_abs: res.blended_margin_abs,
+    blended_margin_pct: res.blended_margin_pct,
+    created_at: new Date().toISOString()
+  });
+  saveValCombos(combos);
+  valComboSelected = [];
+  renderValidador();
+}
+
+function deleteValCombo(id){
+  openConfirm(()=>{
+    const combos = getValCombos().filter(c=>c.id!==id);
+    saveValCombos(combos);
+    renderValidador();
+  });
+}
+
+// ── Simulador ──────────────────────────────────────────────────────────────────
+function renderValSimulador(){
+  const s = valSettings();
+  const prods = valProducts();
+  const candidatos = prods.filter(p=>p.es_candidato);
+  const all = prods.map(p=>({p, r:calcValVeredicto(p,s)}));
+
+  // Per-category breakdown
+  const cats = {};
+  all.forEach(({p,r})=>{
+    if(!cats[p.categoria]) cats[p.categoria]={count:0,motor:0,standalone:0,combo:0,evitar:0,pricing:0};
+    const c=cats[p.categoria]; c.count++;
+    if(r.veredicto==='MOTOR DE MARGEN') c.motor++;
+    else if(r.veredicto==='STANDALONE') c.standalone++;
+    else if(r.veredicto==='COMBO-ONLY') c.combo++;
+    else if(r.veredicto==='EVITAR') c.evitar++;
+    else if(r.veredicto==='PRICING-POWER') c.pricing++;
+  });
+
+  // Overall stats
+  const stats = {motor:0,standalone:0,combo:0,evitar:0,pricing:0};
+  all.forEach(({r})=>{
+    if(r.veredicto==='MOTOR DE MARGEN') stats.motor++;
+    else if(r.veredicto==='STANDALONE') stats.standalone++;
+    else if(r.veredicto==='COMBO-ONLY') stats.combo++;
+    else if(r.veredicto==='EVITAR') stats.evitar++;
+    else if(r.veredicto==='PRICING-POWER') stats.pricing++;
+  });
+
+  const catRows = Object.entries(cats).map(([cat,c])=>`
+    <tr>
+      <td>${cat}</td>
+      <td>${c.count}</td>
+      <td style="color:#22C55E">${c.motor}</td>
+      <td style="color:#86EFAC">${c.standalone}</td>
+      <td style="color:#3B82F6">${c.pricing}</td>
+      <td style="color:#F59E0B">${c.combo}</td>
+      <td style="color:#EF4444">${c.evitar}</td>
+    </tr>`).join('');
+
+  const candidatoCards = candidatos.length===0
+    ? `<p style="color:var(--text-muted);font-size:13px">Sin candidatos marcados. Abrí la ficha de un producto y marcalo como candidato del mes.</p>`
+    : candidatos.map(p=>{
+        const r = calcValVeredicto(p, s);
+        return `<div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+          <div>
+            <div style="font-weight:600;margin-bottom:4px">${p.nombre} <span style="font-size:11px;color:var(--text-muted)">${p.categoria}</span></div>
+            <div style="display:flex;gap:8px;align-items:center">${valBadge(r.veredicto)}<span style="font-size:12px;color:var(--text-muted)">FOB ${fUSD(p.fob)} · Costo ${fUSD(r.costo)}</span></div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:18px;font-weight:700;color:var(--accent)">${r.precio_recomendado!==null?fUSD(r.precio_recomendado):'—'}</div>
+            <div style="font-size:12px;color:var(--text-muted)">${r.margen_pct!==null?fPct(r.margen_pct)+' margen':'sin precio'}</div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="toggleValCandidato('${p.id}');renderValidador()">★</button>
+        </div>`;
+      }).join('');
+
+  return `
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px">
+      <div class="card-sm" style="padding:14px;border-color:#22C55E44"><div style="font-size:11px;color:var(--text-muted)">Motor de Margen</div><div style="font-size:28px;font-weight:700;color:#22C55E">${stats.motor}</div></div>
+      <div class="card-sm" style="padding:14px;border-color:#86EFAC44"><div style="font-size:11px;color:var(--text-muted)">Standalone</div><div style="font-size:28px;font-weight:700;color:#86EFAC">${stats.standalone}</div></div>
+      <div class="card-sm" style="padding:14px;border-color:#3B82F644"><div style="font-size:11px;color:var(--text-muted)">Pricing Power</div><div style="font-size:28px;font-weight:700;color:#3B82F6">${stats.pricing}</div></div>
+      <div class="card-sm" style="padding:14px;border-color:#F59E0B44"><div style="font-size:11px;color:var(--text-muted)">Combo Only</div><div style="font-size:28px;font-weight:700;color:#F59E0B">${stats.combo}</div></div>
+      <div class="card-sm" style="padding:14px;border-color:#EF444444"><div style="font-size:11px;color:var(--text-muted)">Evitar</div><div style="font-size:28px;font-weight:700;color:#EF4444">${stats.evitar}</div></div>
+    </div>
+
+    <div style="margin-bottom:24px">
+      <div style="font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:12px">CANDIDATOS DEL MES ★</div>
+      <div style="display:grid;gap:8px">${candidatoCards}</div>
+    </div>
+
+    <div>
+      <div style="font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:10px">BREAKDOWN POR CATEGORÍA</div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Categoría</th><th>Total</th><th style="color:#22C55E">Motor</th><th style="color:#86EFAC">Standalone</th><th style="color:#3B82F6">Pricing P.</th><th style="color:#F59E0B">Combo</th><th style="color:#EF4444">Evitar</th></tr></thead>
+          <tbody>${catRows}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+// ── Settings tab ───────────────────────────────────────────────────────────────
+function renderValSettingsTab(){
+  const s = valSettings();
+  function numField(id, label, val, step){
+    return `<div><label class="form-label" style="font-size:12px">${label}</label><input class="form-control" id="vs_${id}" type="number" step="${step||0.1}" value="${val}" style="font-size:13px"></div>`;
+  }
+  return `
+    <div style="max-width:700px">
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+        <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:12px">CANAL 1 — FORMAL</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+          ${numField('c1_tributos_pct','Tributos %',s.c1_tributos_pct,0.1)}
+          ${numField('c1_tasa_pct','Tasa estadística %',s.c1_tasa_pct,0.1)}
+          ${numField('c1_iva_pct','IVA %',s.c1_iva_pct,0.1)}
+          ${numField('c1_honorarios','Honorarios (fijos $)',s.c1_honorarios,1)}
+          ${numField('c1_domicilio','Domicilio (fijo $)',s.c1_domicilio,1)}
+          ${numField('c1_flete_intl','Flete intl ($/kg)',s.c1_flete_intl,0.5)}
+          ${numField('c1_gastos_origen','Gastos origen ($/kg)',s.c1_gastos_origen,0.1)}
+          ${numField('c1_almacenaje','Almacenaje ($/kg/día)',s.c1_almacenaje,0.1)}
+          ${numField('dias_almacenaje_default','Días almacenaje default',s.dias_almacenaje_default,1)}
+        </div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+        <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:12px">CANAL 2 — ALTERNATIVO</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          ${numField('c2_tax_pct','Tax %',s.c2_tax_pct,0.1)}
+          ${numField('c2_flete','Flete ($/kg)',s.c2_flete,1)}
+        </div>
+      </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:16px">
+        <div style="font-size:12px;font-weight:600;color:var(--text-muted);margin-bottom:12px">REGLAS DE VEREDICTO</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+          ${numField('undercut_pct','Undercut competencia %',s.undercut_pct,0.5)}
+          ${numField('margen_objetivo_pct','Margen objetivo %',s.margen_objetivo_pct,0.5)}
+          ${numField('margen_sin_comp_pct','Margen sin comp. %',s.margen_sin_comp_pct,0.5)}
+          ${numField('piso_margen_pct','Piso margen % (standalone)',s.piso_margen_pct,0.5)}
+          ${numField('piso_margen_abs','Piso margen abs $ (standalone)',s.piso_margen_abs,5)}
+          ${numField('umbral_ticket_alto','Umbral ticket alto $',s.umbral_ticket_alto,10)}
+          ${numField('descuento_combo_pct','Descuento combo %',s.descuento_combo_pct,0.5)}
+        </div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" onclick="saveValSettingsFromUI()">Guardar ajustes</button>
+        <button class="btn btn-secondary" onclick="resetValSettings()">Restaurar defaults</button>
+      </div>
+    </div>
+  `;
+}
+
+function saveValSettingsFromUI(){
+  function n(id){ return parseFloat(document.getElementById('vs_'+id).value)||0; }
+  const s = {
+    c1_tributos_pct:n('c1_tributos_pct'), c1_tasa_pct:n('c1_tasa_pct'), c1_iva_pct:n('c1_iva_pct'),
+    c1_honorarios:n('c1_honorarios'), c1_domicilio:n('c1_domicilio'),
+    c1_flete_intl:n('c1_flete_intl'), c1_gastos_origen:n('c1_gastos_origen'), c1_almacenaje:n('c1_almacenaje'),
+    c2_tax_pct:n('c2_tax_pct'), c2_flete:n('c2_flete'),
+    undercut_pct:n('undercut_pct'), margen_objetivo_pct:n('margen_objetivo_pct'),
+    margen_sin_comp_pct:n('margen_sin_comp_pct'), piso_margen_pct:n('piso_margen_pct'),
+    piso_margen_abs:n('piso_margen_abs'), umbral_ticket_alto:n('umbral_ticket_alto'),
+    dias_almacenaje_default:n('dias_almacenaje_default'), descuento_combo_pct:n('descuento_combo_pct')
+  };
+  saveValSettings(s);
+  renderValidador();
+}
+
+function resetValSettings(){
+  saveValSettings({...INIT_VAL_SETTINGS});
+  renderValidador();
+}
+
+// ── Hook into submitPanel ──────────────────────────────────────────────────────
+// Patch submitPanel to handle val-product form
+const _origSubmitPanel = submitPanel;
+function submitPanel(){
+  if(currentFormSection==='val-product'){
+    const data = collectValProductForm();
+    if(data && panelCallback) panelCallback(data);
+    return;
+  }
+  _origSubmitPanel();
+}
+
+// ── openConfirm helper — delegates to existing confirmDelete ───────────────────
+function openConfirm(cb){ confirmDelete(cb); }
+
+// ─── VALIDADOR MODULE END ──────────────────────────────────────────────────────
 
 // Keyboard: close panel with Escape
 document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closePanel(); closeModal(); } });
