@@ -3600,8 +3600,8 @@ function calcValVeredicto(p, s){
   } else if(costo >= pc){
     veredicto = 'EVITAR';
     precio_recomendado = null;
-    margen_abs = null;
-    margen_pct = null;
+    margen_abs = pc - costo;
+    margen_pct = (margen_abs / costo) * 100;
     detalle = `Costo ${fUSD(costo)} ≥ precio competencia ${fUSD(pc)}`;
   } else {
     const precio_comp = pc * (1 - s.undercut_pct/100);
@@ -3629,7 +3629,8 @@ function calcValVeredicto(p, s){
   const override = p.override_veredicto && p.override_veredicto !== '' ? p.override_veredicto : null;
   const veredicto_final = override || veredicto;
 
-  return {veredicto: veredicto_final, veredicto_base: veredicto, override, precio_recomendado, margen_abs, margen_pct, costo, canal, detalle, c1, c2};
+  const precio_si_match = (pc !== null && pc !== undefined) ? pc : null;
+  return {veredicto: veredicto_final, veredicto_base: veredicto, override, precio_recomendado, precio_si_match, margen_abs, margen_pct, costo, canal, detalle, c1, c2};
 }
 
 function calcValSensibilidad(p, s){
@@ -3808,7 +3809,9 @@ function renderValLibreria(){
   enriched.sort((a,b)=>{
     let av=a[valSort.field], bv=b[valSort.field];
     if(valSort.field==='fob'||valSort.field==='peso'){ av=parseFloat(av)||0; bv=parseFloat(bv)||0; }
-    else if(valSort.field==='_margen'){ av=a._r.margen_pct||0; bv=b._r.margen_pct||0; }
+    else if(valSort.field==='_costo'){ av=a._r.costo||0; bv=b._r.costo||0; }
+    else if(valSort.field==='_margen_pct'){ av=a._r.margen_pct??-Infinity; bv=b._r.margen_pct??-Infinity; }
+    else if(valSort.field==='_margen_abs'){ av=a._r.margen_abs??-Infinity; bv=b._r.margen_abs??-Infinity; }
     else if(valSort.field==='_precio'){ av=a._r.precio_recomendado||0; bv=b._r.precio_recomendado||0; }
     if(av<bv) return -1*valSort.dir;
     if(av>bv) return 1*valSort.dir;
@@ -3840,8 +3843,10 @@ function renderValLibreria(){
       <td>${r.canal}</td>
       <td>${fUSD(r.costo)}</td>
       <td>${r.precio_recomendado!==null?fUSD(r.precio_recomendado):'—'}</td>
-      <td>${r.margen_pct!==null?fPct(r.margen_pct):'—'}</td>
-      <td>${r.margen_abs!==null?fUSD(r.margen_abs):'—'}</td>
+      <td style="color:${r.margen_pct!==null&&r.margen_pct<0?'#EF4444':''}">${r.margen_pct!==null?fPct(r.margen_pct):'—'}</td>
+      <td style="color:${r.margen_abs!==null&&r.margen_abs<0?'#EF4444':''}">${r.margen_abs!==null?fUSD(r.margen_abs):'—'}</td>
+      <td>${p.precio_encontrado!=null?fUSD(p.precio_encontrado):'—'}</td>
+      <td>${(()=>{ if(p.precio_encontrado==null) return '—'; const mg=(p.precio_encontrado-r.costo)/r.costo*100; return `<span style="color:${mg>=0?'#22C55E':'#EF4444'}">${fPct(mg)}</span>`; })()}</td>
       <td>${valBadge(r.veredicto)}</td>
       <td>${p.tiene_dist_oficial?'<span style="color:var(--yellow)">⚠ Dist. oficial</span>':''}</td>
     </tr>`;
@@ -3870,14 +3875,16 @@ function renderValLibreria(){
           ${sortTh('fob','FOB')}
           ${sortTh('peso','Peso')}
           <th>Canal</th>
-          ${sortTh('_margen','Costo landed')}
+          ${sortTh('_costo','Costo landed')}
           ${sortTh('_precio','Precio rec.')}
-          <th>Margen %</th>
-          <th>Margen $</th>
+          ${sortTh('_margen_pct','Margen %')}
+          ${sortTh('_margen_abs','Margen $')}
+          <th>Precio enc.</th>
+          <th>Mg. si matcheo</th>
           <th>Veredicto</th>
           <th></th>
         </tr></thead>
-        <tbody>${rows||'<tr><td colspan="11" style="text-align:center;color:var(--text-muted);padding:40px">Sin productos</td></tr>'}</tbody>
+        <tbody>${rows||'<tr><td colspan="13" style="text-align:center;color:var(--text-muted);padding:40px">Sin productos</td></tr>'}</tbody>
       </table>
     </div>
   `;
@@ -3982,15 +3989,15 @@ function buildValFicha(p, s){
         ${valBadge(r.veredicto)}${overrideBadge}
         <span style="font-size:13px;color:var(--text-secondary)">${r.detalle||''}</span>
       </div>
-      ${r.precio_recomendado!==null?`
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:12px">
         <div><div style="font-size:11px;color:var(--text-muted)">Canal óptimo</div><div style="font-size:16px;font-weight:700">${r.canal}</div></div>
         <div><div style="font-size:11px;color:var(--text-muted)">Costo landed</div><div style="font-size:16px;font-weight:700">${fUSD(r.costo)}</div></div>
-        <div><div style="font-size:11px;color:var(--text-muted)">Precio rec.</div><div style="font-size:16px;font-weight:700;color:var(--accent)">${fUSD(r.precio_recomendado)}</div></div>
-        <div><div style="font-size:11px;color:var(--text-muted)">Margen $</div><div style="font-size:16px;font-weight:700;color:var(--green)">${fUSD(r.margen_abs)}</div></div>
-        <div><div style="font-size:11px;color:var(--text-muted)">Margen %</div><div style="font-size:16px;font-weight:700;color:var(--green)">${fPct(r.margen_pct)}</div></div>
+        <div><div style="font-size:11px;color:var(--text-muted)">${r.precio_recomendado!==null?'Precio rec.':'Precio comp. (ref)'}</div><div style="font-size:16px;font-weight:700;color:${r.precio_recomendado!==null?'var(--accent)':'#EF4444'}">${r.precio_recomendado!==null?fUSD(r.precio_recomendado):(r.precio_si_match!==null?fUSD(r.precio_si_match):'—')}</div></div>
+        <div><div style="font-size:11px;color:var(--text-muted)">Margen $</div><div style="font-size:16px;font-weight:700;color:${r.margen_abs!==null&&r.margen_abs<0?'#EF4444':'var(--green)'}">${r.margen_abs!==null?fUSD(r.margen_abs):'—'}</div></div>
+        <div><div style="font-size:11px;color:var(--text-muted)">Margen %</div><div style="font-size:16px;font-weight:700;color:${r.margen_pct!==null&&r.margen_pct<0?'#EF4444':'var(--green)'}">${r.margen_pct!==null?fPct(r.margen_pct):'—'}</div></div>
         ${p.precio_competencia_usd?`<div><div style="font-size:11px;color:var(--text-muted)">Competencia</div><div style="font-size:16px;font-weight:700">${fUSD(p.precio_competencia_usd)}</div></div>`:''}
-      </div>`:''}
+        ${p.precio_encontrado!=null?`<div><div style="font-size:11px;color:var(--text-muted)">Precio encontrado</div><div style="font-size:16px;font-weight:700">${fUSD(p.precio_encontrado)}</div></div><div><div style="font-size:11px;color:var(--text-muted)">Mg. si matcheo</div><div style="font-size:16px;font-weight:700;color:${(p.precio_encontrado-r.costo)/r.costo>=0?'#22C55E':'#EF4444'}">${fPct((p.precio_encontrado-r.costo)/r.costo*100)}</div></div>`:''}
+      </div>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
@@ -4042,8 +4049,9 @@ function openValProductForm(id){
         <div><label class="form-label">Peso (kg)</label><input class="form-control" id="vf_peso" type="number" step="0.1" value="${p?p.peso:''}"></div>
         <div><label class="form-label">Unidades</label><input class="form-control" id="vf_unidades" type="number" value="${p?p.unidades:1}"></div>
       </div>
-      <div><label class="form-label">Precio competencia (USD, vacío = sin comp.)</label><input class="form-control" id="vf_pc" type="number" step="0.01" value="${p&&p.precio_competencia_usd!==null?p.precio_competencia_usd:''}"></div>
+      <div><label class="form-label">Precio competencia benchmark (USD, vacío = sin comp.)</label><input class="form-control" id="vf_pc" type="number" step="0.01" value="${p&&p.precio_competencia_usd!==null?p.precio_competencia_usd:''}"></div>
       <div><label class="form-label">Competidor</label><input class="form-control" id="vf_competidor" value="${p?p.competidor||'':''}"></div>
+      <div><label class="form-label">Precio que encontraste vos (USD, opcional)</label><input class="form-control" id="vf_pe" type="number" step="0.01" value="${p&&p.precio_encontrado!=null?p.precio_encontrado:''}"></div>
       <div style="display:flex;gap:16px;align-items:center">
         <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer">
           <input type="checkbox" id="vf_dist_oficial" ${p&&p.tiene_dist_oficial?'checked':''}> Distribución oficial en AR
@@ -4071,6 +4079,7 @@ function openValProductForm(id){
 
 function collectValProductForm(){
   const pcVal = document.getElementById('vf_pc').value.trim();
+  const peVal = document.getElementById('vf_pe').value.trim();
   return {
     nombre: document.getElementById('vf_nombre').value.trim(),
     categoria: document.getElementById('vf_categoria').value,
@@ -4079,6 +4088,7 @@ function collectValProductForm(){
     unidades: parseInt(document.getElementById('vf_unidades').value)||1,
     precio_competencia_usd: pcVal!==''?parseFloat(pcVal):null,
     competidor: document.getElementById('vf_competidor').value.trim()||null,
+    precio_encontrado: peVal!==''?parseFloat(peVal):null,
     tiene_dist_oficial: document.getElementById('vf_dist_oficial').checked,
     peso_confirmado: document.getElementById('vf_peso_confirmado').checked,
     override_veredicto: document.getElementById('vf_override').value,
