@@ -428,7 +428,7 @@ function mergeArrayData(local, cloud){
 }
 
 async function syncFromCloud(){
-  const COLL_KEYS = ['amp_inv','amp_sales','amp_exp','amp_partners','amp_settings','amp_init','amp_senas','amp_combos'];
+  const COLL_KEYS = ['amp_inv','amp_sales','amp_exp','amp_partners','amp_settings','amp_init','amp_senas','amp_combos','amp_val_products','amp_val_settings','amp_val_combos'];
   const ALL_KEYS  = ['amp_tombstones', ...COLL_KEYS];
   try {
     const {data,error} = await _sb.from('app_state').select('key,value,updated_at');
@@ -3487,6 +3487,21 @@ async function initApp(){
   renderDashboard();
   // fetch TC in background
   fetchTC(true).then(()=>{ if(currentSection==='dashboard') renderDashboard(); });
+
+  // Realtime: re-sync and re-render when another user saves
+  _sb.channel('app_state_changes')
+    .on('postgres_changes', {event:'UPDATE', schema:'public', table:'app_state'}, async (payload)=>{
+      const k = payload.new.key;
+      const v = payload.new.value;
+      const ts = payload.new.updated_at;
+      const localTs = localStorage.getItem(k+'_ts');
+      if(localTs && localTs >= ts) return; // ya tenemos esta versión o más nueva
+      localStorage.setItem(k, JSON.stringify(v));
+      localStorage.setItem(k+'_ts', ts);
+      renderCurrentSection();
+      if(currentSection==='dashboard') renderDashboard();
+    })
+    .subscribe();
 }
 
 // ─── VALIDADOR MODULE START ────────────────────────────────────────────────────
