@@ -3780,13 +3780,84 @@ function renderValidador(){
   else if(valTab==='val-settings') body = renderValSettingsTab();
 
   el.innerHTML = `
-    <div style="margin-bottom:20px">
-      <h2 style="font-size:22px;font-weight:700;margin:0 0 4px">Validador de Productos</h2>
-      <p style="color:var(--text-muted);font-size:13px;margin:0">Evaluación pre-importación — todos los valores en USD</p>
+    <div style="margin-bottom:20px;display:flex;align-items:flex-start;justify-content:space-between">
+      <div>
+        <h2 style="font-size:22px;font-weight:700;margin:0 0 4px">Validador de Productos</h2>
+        <p style="color:var(--text-muted);font-size:13px;margin:0">Evaluación pre-importación — todos los valores en USD</p>
+      </div>
+      <button onclick="openValGuia()" title="Cómo usar el Validador" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg-card);color:var(--text-muted);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:4px">?</button>
     </div>
     <div style="margin-bottom:20px">${tabBtns}</div>
     ${body}
   `;
+}
+
+function openValGuia(){
+  const html = `
+    <div style="display:grid;gap:20px;font-size:13px;line-height:1.6">
+
+      <div style="background:var(--bg-input);border-radius:8px;padding:12px 14px;color:var(--text-muted)">
+        Usalo <strong style="color:var(--text-secondary)">antes</strong> de decidir si importar un producto. Cargás FOB + peso + precio de la competencia → el Validador te dice si tiene sentido.
+      </div>
+
+      <div>
+        <div style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.08em;margin-bottom:10px">PASO A PASO</div>
+        <div style="display:grid;gap:12px">
+
+          <div style="display:flex;gap:12px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div>
+            <div><strong style="color:var(--text-secondary)">Buscá el precio de la competencia</strong><br>Audioconcept, Avalon, Mercado Libre, etc. Ese número es clave — sin él el veredicto tiene menos información.</div>
+          </div>
+
+          <div style="display:flex;gap:12px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div>
+            <div><strong style="color:var(--text-secondary)">Hacé click en "+ Producto"</strong><br>Completá: nombre, categoría, FOB (precio en origen), peso, precio de la competencia y quién lo vende. Si el peso es estimado, no tildes "Peso confirmado".</div>
+          </div>
+
+          <div style="display:flex;gap:12px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div>
+            <div><strong style="color:var(--text-secondary)">Leé el veredicto</strong><br>Click en la fila para ver la ficha completa: desglose C1 vs C2, precio recomendado, margen, y análisis de sensibilidad (cuánto margen de error tenés en el peso antes de que el veredicto cambie).</div>
+          </div>
+
+          <div style="display:flex;gap:12px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">4</div>
+            <div><strong style="color:var(--text-secondary)">Decidís qué hacer</strong>
+              <div style="margin-top:8px;display:grid;gap:4px">
+                <div style="display:flex;gap:8px;align-items:center"><span style="background:#22C55E22;color:#22C55E;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600">Motor de Margen</span><span style="color:var(--text-muted)">Prioritario — incluirlo en la próxima tanda</span></div>
+                <div style="display:flex;gap:8px;align-items:center"><span style="background:#86EFAC22;color:#86EFAC;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600">Standalone</span><span style="color:var(--text-muted)">Viable — puede entrar si hay lugar</span></div>
+                <div style="display:flex;gap:8px;align-items:center"><span style="background:#3B82F622;color:#3B82F6;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600">Pricing-Power</span><span style="color:var(--text-muted)">Sin competencia local — fijás el precio vos</span></div>
+                <div style="display:flex;gap:8px;align-items:center"><span style="background:#F59E0B22;color:#F59E0B;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600">Combo-Only</span><span style="color:var(--text-muted)">Solo funciona en combo con un Motor de Margen</span></div>
+                <div style="display:flex;gap:8px;align-items:center"><span style="background:#EF444422;color:#EF4444;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:600">Evitar</span><span style="color:var(--text-muted)">El costo supera el precio de la competencia</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:12px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">5</div>
+            <div><strong style="color:var(--text-secondary)">Marcalo como candidato del mes</strong><br>En la ficha del producto, hacé click en "☆ Marcar candidato". Eso lo agrega al <strong style="color:var(--text-secondary)">Simulador</strong>, que calcula el margen blended del portfolio completo de esa tanda.</div>
+          </div>
+
+          <div style="display:flex;gap:12px">
+            <div style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">6</div>
+            <div><strong style="color:var(--text-secondary)">Armá combos si los hay</strong><br>Tab <strong style="color:var(--text-secondary)">Combos</strong>: seleccionás los productos y activás "mismo envío" si viajan juntos — los costos fijos de importación ($115) se cuentan una sola vez en lugar de por producto.</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div style="background:var(--bg-input);border-radius:8px;padding:12px 14px">
+        <div style="font-size:11px;font-weight:700;color:var(--text-muted);margin-bottom:6px">REGLA GENERAL</div>
+        <div style="color:var(--text-secondary)">Un buen portfolio mensual mezcla <strong>1–2 Motores de Margen</strong> que sostienen el margen del negocio, con Standalones o Pricing-Power que completan el catálogo.</div>
+      </div>
+
+    </div>
+  `;
+  document.getElementById('panelTitle').textContent = '¿Cómo usar el Validador?';
+  document.getElementById('panelBody').innerHTML = html;
+  document.getElementById('panelFooter').innerHTML = `<button class="btn btn-secondary" onclick="closePanel()">Cerrar</button>`;
+  panelCallback = null;
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('slidePanel').classList.add('open');
 }
 
 // ── Librería ───────────────────────────────────────────────────────────────────
