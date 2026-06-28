@@ -978,21 +978,38 @@ function renderDashboard(){
   const margenNetoPctMes = ingresosMes>0 ? (margenNetoMes/ingresosMes*100) : 0;
   const ventasEsteMes    = sales.filter(s=>(s.entrega_date||s.sale_date||'').startsWith(mk)).length;
 
+  // Posición neta = caja + inventario al costo - capital invertido
+  const posicionNeta = caja + capitalCongelado - getCapitalInvertidoTotal();
+  const posColor = posicionNeta >= 0 ? '#22C55E' : '#EF4444';
+
   // Recientes
   const recentSales = [...allSales].sort((a,b)=>(b.entrega_date||b.sale_date).localeCompare(a.entrega_date||a.sale_date)).slice(0,5);
   const recentExp   = [...exp].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
 
   document.getElementById('section-dashboard').innerHTML = `
-    <div class="section-header">
+    <div class="section-header" style="display:flex;align-items:center;justify-content:space-between">
       <h2 class="section-title">Dashboard</h2>
+      <button onclick="openDashGuia()" title="¿Qué significa cada indicador?" style="width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--bg-card);color:var(--text-muted);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">?</button>
+    </div>
+
+    <!-- POSICIÓN NETA: banner superior -->
+    <div class="card" style="margin-bottom:16px;border-left:3px solid ${posColor};display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:16px 20px">
+      <div>
+        <div class="card-title">Posición Neta del Negocio</div>
+        <div style="font-size:2rem;font-weight:800;color:${posColor}">${fUSD(posicionNeta)}</div>
+        <div class="card-sub">Caja ${fUSD(caja)} + Stock ${fUSD(capitalCongelado)} − Capital invertido ${fUSD(getCapitalInvertidoTotal())}</div>
+      </div>
+      <div style="text-align:right;font-size:12px;color:var(--text-muted);max-width:220px;line-height:1.5">
+        ${posicionNeta<0 ? `Falta recuperar <strong style="color:#EF4444">${fUSD(Math.abs(posicionNeta))}</strong> de la inversión inicial` : `La inversión inicial está recuperada`}
+      </div>
     </div>
 
     <!-- FILA 1: Liquidez + Stock -->
     <div class="grid-4" style="margin-bottom:16px">
-      <div class="card" style="grid-column:span 2">
-        <div class="card-title">Caja actual</div>
+      <div class="card card-sm" style="grid-column:span 2">
+        <div class="card-title">Caja operacional</div>
         <div class="card-value" style="font-size:1.8rem">${fUSD(caja)}</div>
-        <div class="card-sub">${fARS(cajaARS)} al TC de hoy</div>
+        <div class="card-sub">${fARS(cajaARS)} al TC de hoy · ventas cobradas − opex</div>
       </div>
       <div class="card card-sm">
         <div class="card-title">Runway</div>
@@ -3805,6 +3822,74 @@ function renderValidador(){
     <div style="margin-bottom:20px">${tabBtns}</div>
     ${body}
   `;
+}
+
+function openDashGuia(){
+  const html = `
+    <div style="display:grid;gap:20px;font-size:13px;line-height:1.6">
+
+      <div style="background:var(--bg-input);border-radius:8px;padding:12px 14px;color:var(--text-muted)">
+        Estos indicadores te dan la foto financiera real del negocio. No todos dicen lo mismo — entender cada uno evita confusiones.
+      </div>
+
+      <div>
+        <div style="font-weight:700;color:#EF4444;margin-bottom:4px">Posición Neta del Negocio</div>
+        <p style="margin:0 0 6px">La foto más honesta. Responde: <em>si cerráramos el negocio hoy, ¿cuánto queda?</em></p>
+        <p style="margin:0;color:var(--text-muted)">Fórmula: <strong>Caja + Valor del stock al costo − Capital total invertido</strong></p>
+        <p style="margin:4px 0 0;color:var(--text-muted)">Si es negativo significa que no recuperamos aún la inversión inicial. Es normal en etapas tempranas — lo que importa es la tendencia: ¿mejora mes a mes?</p>
+      </div>
+
+      <div>
+        <div style="font-weight:700;margin-bottom:4px">Caja operacional</div>
+        <p style="margin:0 0 6px">El efectivo disponible generado por operaciones. Responde: <em>¿cuánto cash tenemos en la cuenta del negocio?</em></p>
+        <p style="margin:0;color:var(--text-muted)">Fórmula: <strong>Cobros de ventas − Gastos operativos</strong></p>
+        <p style="margin:4px 0 0;color:var(--text-muted)">No incluye el capital inmovilizado en stock. Puede ser positivo aunque la posición neta sea negativa.</p>
+      </div>
+
+      <div>
+        <div style="font-weight:700;margin-bottom:4px">Runway</div>
+        <p style="margin:0 0 6px">Cuántos meses podemos operar sin vender nada más. Responde: <em>¿cuánto tiempo nos da la caja actual?</em></p>
+        <p style="margin:0;color:var(--text-muted)">Fórmula: <strong>Caja ÷ Gasto operativo promedio mensual</strong></p>
+      </div>
+
+      <div>
+        <div style="font-weight:700;margin-bottom:4px">En Stock</div>
+        <p style="margin:0;color:var(--text-muted)">Unidades disponibles para vender hoy (estado "stock"). No incluye reservados ni vendidos.</p>
+      </div>
+
+      <div>
+        <div style="font-weight:700;margin-bottom:4px">Margen Neto</div>
+        <p style="margin:0 0 6px">Qué porcentaje de las ventas se convierte en ganancia después de todos los costos.</p>
+        <p style="margin:0;color:var(--text-muted)">Fórmula: <strong>(Ventas − COGS − Gastos op.) ÷ Ventas × 100</strong></p>
+      </div>
+
+      <div>
+        <div style="font-weight:700;margin-bottom:4px">Capital Congelado (stock al costo)</div>
+        <p style="margin:0 0 6px">Plata que está "dormida" en inventario sin vender. Suma el costo de compra de cada unidad en stock.</p>
+        <p style="margin:0;color:var(--text-muted)">No es pérdida — cuando se venda va a convertirse en caja. Pero hasta entonces no podemos usarla.</p>
+      </div>
+
+      <div>
+        <div style="font-weight:700;margin-bottom:4px">Sell-Through</div>
+        <p style="margin:0 0 6px">Qué porcentaje del inventario total ya se vendió.</p>
+        <p style="margin:0;color:var(--text-muted)">Fórmula: <strong>Vendidos ÷ (Vendidos + En stock) × 100</strong></p>
+        <p style="margin:4px 0 0;color:var(--text-muted)">Apuntar a más de 60-70% es señal de buena rotación.</p>
+      </div>
+
+      <div>
+        <div style="font-weight:700;margin-bottom:4px">Break-Even mensual</div>
+        <p style="margin:0 0 6px">Cuánto tenemos que facturar por mes para cubrir los gastos operativos sin perder plata.</p>
+        <p style="margin:0;color:var(--text-muted)">Fórmula: <strong>Gastos op. mensuales ÷ Margen Bruto %</strong></p>
+      </div>
+
+    </div>
+  `;
+  document.getElementById('panelTitle').textContent = '¿Qué significa cada indicador?';
+  document.getElementById('panelBody').innerHTML = html;
+  document.getElementById('panelFooter').innerHTML = `<button class="btn btn-secondary" onclick="closePanel()">Cerrar</button>`;
+  panelCallback = null;
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('slidePanel').classList.add('open');
 }
 
 function openValGuia(){
